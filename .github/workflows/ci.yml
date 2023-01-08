@@ -44,8 +44,8 @@ jobs:
       run: ctest -C ${{env.BUILD_TYPE}}
 
     - name: Publish PPA
-       - uses: yuezk/publish-ppa-package@main
-         with:
+      uses: yuezk/publish-ppa-package@main
+      with:
            repository: 'ppa:hamilton8415.github.io/ppa'
            gpg_private_key: ${{ secrets.PPA_GPG_PRIVATE_KEY }}
            gpg_passphrase: ${{ secrets.PPA_GPG_PASSPHRASE }}

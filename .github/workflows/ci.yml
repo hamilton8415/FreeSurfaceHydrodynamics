@@ -18,9 +18,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3A
+    - uses: actions/checkout@v3
     
-    - name: valgrind
+    - name: Install Eigen
       run: |
         sudo apt-get install libeigen
     

@@ -48,5 +48,6 @@ jobs:
       with:
            repository: 'ppa:hamilton8415.github.io/ppa'
            gpg_private_key: ${{ secrets.PPA_GPG_PRIVATE_KEY }}
+           gpg_passphrase: ''
            pkgdir: '${{ github.workspace }}/_packages/'
 

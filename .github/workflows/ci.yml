@@ -23,7 +23,10 @@ jobs:
     - name: Install Eigen
       run: |
         sudo apt-get install libeigen3-dev
-    
+        sudo apt-get install libboost-system
+        sudo apt-get install libboost-iostreams
+        sudo apt-get install libboost-filesystem
+
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type

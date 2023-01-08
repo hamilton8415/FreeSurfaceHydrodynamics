@@ -1,7 +1,6 @@
 # these are cache variables, so they could be overwritten with -D,
-set(CPACK_PACKAGE_NAME ${PROJECT_NAME}
-    CACHE STRING "package name"
-)
+set(CPACK_PACKAGE_NAME libFSHydrodynamics CACHE STRING "package name")
+
 # which is useful in case of packing only selected components instead of the whole thing
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Free Surface Hydrodynamics Library"
     CACHE STRING "Package description for the package metadata"
@@ -9,6 +8,8 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Free Surface Hydrodynamics Library"
 set(CPACK_PACKAGE_VENDOR "MBARI")
 
 set(CPACK_VERBATIM_VARIABLES YES)
+
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libeigen3-dev (>=3.4.0)")
 
 set(CPACK_PACKAGE_INSTALL_DIRECTORY ${CPACK_PACKAGE_NAME})
 SET(CPACK_OUTPUT_FILE_PREFIX "${CMAKE_SOURCE_DIR}/_packages")

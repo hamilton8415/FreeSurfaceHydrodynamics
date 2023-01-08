@@ -57,3 +57,6 @@ install(EXPORT FreeSurfaceHydrodynamicsConfig DESTINATION share/FreeSurfaceHydro
 
 export(TARGETS ${PROJECT_NAME} FILE FreeSurfaceHydrodynamicsConfig.cmake)
 
+
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(Packing)

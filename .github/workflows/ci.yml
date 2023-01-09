@@ -43,9 +43,9 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{env.BUILD_TYPE}}
  
-    - name: Build .deb
-      working-directory: ${{github.workspace}}/build
-      run: cpack -G DEB
+   # - name: Build .deb
+   #   working-directory: ${{github.workspace}}/build
+   #   run: cpack -G DEB
  
     - name: Publish PPA
       uses: yuezk/publish-ppa-package@main
@@ -53,5 +53,5 @@ jobs:
            repository: 'ppa:hamilton8415.github.io/ppa'
            gpg_private_key: ${{ secrets.PPA_GPG_PRIVATE_KEY }}
            gpg_passphrase: ${{ secrets.PPA_GPG_PASSPHRASE }}
-           pkgdir: '${{ github.workspace }}/_packages/'
+           pkgdir: '${{ github.workspace }}/build/'
 

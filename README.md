@@ -18,12 +18,12 @@ $ sudo dpkg install ./_packages/*.deb
 Or, better, tranfer it to a ppa repository.  In this case https://github.com/hamilton8415/ppa
 
 To do so, do the following:
-$ cd ~; git clone git@github.com:hamilton8415/ppa.git
-$ cp FreeSurfaceHydrodynamics/_packages/*.deb ~/ppa/.
-$ cd ~/ppa  
-$ ./scripts/sign_debian.sh
-$ git commit -a
-$ git push
+'''$ cd ~; git clone git@github.com:hamilton8415/ppa.git
+'''$ cp FreeSurfaceHydrodynamics/_packages/*.deb ~/ppa/.
+'''$ cd ~/ppa  
+'''$ ./scripts/sign_debian.sh
+'''$ git commit -a
+'''$ git push
 
 After a few minutes, the new debian file should be availble in the ppa repository, so to install on any machine:
 $ sudo apt update

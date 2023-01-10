@@ -1,7 +1,9 @@
-```$ mkdir build
-```$ cd build
-```$ cmake ..
-```$ make
+  ```
+  $ mkdir build
+  $ cd build
+  $ cmake ..
+  $ make
+  ```
 
 At this point one can install on this local machine directly as follows:
 ```$ sudo make install

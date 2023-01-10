@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(FreeSurfaceHydrodynamics VERSION 1.0.0 LANGUAGES CXX)
+project(FreeSurfaceHydrodynamics VERSION 1.0.1 LANGUAGES CXX)
 
 
 
@@ -19,7 +19,7 @@ set(BOOST_USE_MULTITHREADED ON)
 set(BOOST_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.71.0 COMPONENTS system iostreams filesystem)
 
-
+set(CMAKE_INSTALL_PREFIX  /opt/${PROJECT_NAME}/)
 include(GNUInstallDirs)
 
 set(LIB_SOURCE_FILES src/FS_Hydrodynamics.cpp src/LinearIncidentWave.cpp src/interp1d.cpp)
@@ -54,6 +54,8 @@ install(TARGETS ${PROJECT_NAME} EXPORT FreeSurfaceHydrodynamicsConfig
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
 
 install(EXPORT FreeSurfaceHydrodynamicsConfig DESTINATION share/FreeSurfaceHydrodynamics/cmake)
+
+install(FILES cmake/etc/ld.so.conf.d/${PROJECT_NAME}.conf DESTINATION /etc/ld.so.conf.d/) 
 
 export(TARGETS ${PROJECT_NAME} FILE FreeSurfaceHydrodynamicsConfig.cmake)
 

@@ -9,5 +9,6 @@ This is a library for computing the forces on a body in the presence of waves, a
 
 ## How to install
 
+  ``` sudo apt install ```
 
 ## How to use

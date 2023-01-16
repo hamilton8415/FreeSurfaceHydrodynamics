@@ -73,28 +73,38 @@ How to build</h2>
 <div class="line">$ cmake ..</div>
 <div class="line">$ make</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md1"></a>
-Run Examples</h2>
-<p>There are two example programs that exercise the library in an interactive way. The source for these is in the examples directory, and after building, they can be run from the build directory as follows:</p>
-<div class="fragment"><div class="line">$ IncidentWave_Ex1</div>
-</div><!-- fragment --><p> This program exercises the <a class="el" href="classLinearIncidentWave.html" title="The IncidentWave class generates wave heights and fluid velocities at specified points and times....">LinearIncidentWave</a> class by computing the wave elevation that represents a mono-chromatic wave specified by randomally selected amplitude, frequency and phase. The result is plotted at the origin for a range of time, and then also spatially at a selection of time-snapshots.</p>
-<p>A more involved examples exercises all of the features of the library, computing the different types of wave-body interaction forces for a floating body, with hydrodynamic behaviors described by included WAMIT output files. The program has a number of options that can be seen by executing the following in the build directory: </p><div class="fragment"><div class="line">$ ./FS_Hydrodynamics_Ex1 -h</div>
-<div class="line">Usage: Test_FS_Hydrodynamics [-cbgremh]</div>
-<div class="line">    -c :  Plot Hydrodynamic Coefficients</div>
-<div class="line">    -b :  Test Bouyancy Forces</div>
-<div class="line">    -g :  Test Gravity Forces</div>
-<div class="line">    -r :  Test Radiation Forces</div>
-<div class="line">    -e :  Test Exciting Forces</div>
-<div class="line">    -m :  Test Motions</div>
-<div class="line">    -h :  This help message</div>
-</div><!-- fragment --><p>The options perform the following actions:</p><ul>
-<li>'-c': This reads and plots all of the non-zero hydrodynamic coefficients from the included WAMIT output files for the wave-radiation and wave-exciting forces. The WAMIT data contains these in both the frequency domain (plotted as a function of frequency), and time-domain (plotted as impulse-response functions). These hydrodynamic coefficients define the forces computed in the other examples.</li>
-<li>'-b': This option computes the buoyancy forces in all six degrees of freedom, as a function of displacement that is specified as a sinesoidal motion with time.</li>
-<li>'-g': This plots the force and moment due to gravity as the body moves in a sinusoidal motion.</li>
-<li>'-r': This plots all non-zero radiation forces computed from the hydrodynamic coefficients for a prescribed sinesoidal motion in each of six degrees of freedom. These radiation forces are computed both in the frequency domain (which assumes the body has been oscillating forever), and in the time-domain, which assumes the body has just begun oscillating. After some small nunber of cycles, the transients at the start of the time-domain simulations should die out and the time-domain and frequency domain results should match. Slight differences are due to numerical inaccuracies and may be larger or smaller depending on the frequency of the prescribed motion.</li>
-<li>'-e' This plots six degrees of wave-exciting force for a single frequency and single-direction incoming wave. Again these are computed in both the time- and frequency-domain, and should match closely. The transient at the start is not present here because the wave-exciting force computation in the time-domain includes a convolution of the impulse response function over previous times.</li>
-<li>'-m': This computes the resulting sinesoidal motion resulting from an incoming monochromatic wave by solving the equations of motion for the floating body subject to all of the above forces (buoyancy, gravity, wave-radiation, ane wave-exciting). Based on the frequency domain hydrodynamic coefficients these results are computed as Response Amplitude Operators that indicate the bodies motion amplitude and phase relative to the amplitude and phase of the incoming wave. These results are also computed in the time-domain and compared to the frequency domain results. Again these should match after the transients that result from the time-domain initial condition being zero speed at time equal zero.</li>
-</ul>
-<h2><a class="anchor" id="autotoc_md2"></a>
+Examples</h2>
+<p>There are a number of example programs that exercise various portions of the library in an interactive way. The source for these is in the examples directory and can be run from the build directory as indicated below. Looking at the source code for these examples is a good way to understand the use of the library:</p>
+<h4><a class="anchor" id="autotoc_md2"></a>
+Incident Waves</h4>
+<div class="fragment"><div class="line">$ ./IncidentWaveExamples</div>
+</div><!-- fragment --><p> IncidentWaveExamples.cpp exercises the <a class="el" href="classLinearIncidentWave.html" title="The IncidentWave class generates wave heights and fluid velocities at specified points and times....">LinearIncidentWave</a> class by computing the wave elevation that represents specified wave. By default the wave is a monochromatic wave of Amplitude 1.0 meter, Period 12.0 seconds, Phase angle of zero degrees, and direction of 180 degrees (approaching from the positive x direction). These defaults can be over-ridden by the [-a], [-t], [-p], [-b] options respectively. The '-h' option provides some guidance. In every case, the resulting wave-elevation is plotted at the origin for a range of time, and then also spatially at a selection of time-snapshots.</p>
+<h4><a class="anchor" id="autotoc_md3"></a>
+Hydrodynamic Coefficients</h4>
+<div class="fragment"><div class="line">$ ./PlotCoeffsExample</div>
+</div><!-- fragment --><p> PlotCoeffsExample.cpp uses the <a class="el" href="classFS__HydroDynamics.html">FS_HydroDynamics</a> class to read and plot all of the non-zero hydrodynamic coefficients from the included WAMIT output files for the wave-radiation and wave-exciting forces. The WAMIT data contains these in both the frequency domain (plotted as a function of frequency), and time-domain (plotted as impulse-response functions). These hydrodynamic coefficients define the forces computed in the other examples.</p>
+<h4><a class="anchor" id="autotoc_md4"></a>
+Buoyancy Forces</h4>
+<div class="fragment"><div class="line">$ ./BuoyancyForceExample</div>
+</div><!-- fragment --><p>BuoyancyForceExample.cpp uses the <a class="el" href="classFS__HydroDynamics.html">FS_HydroDynamics</a> class to compute the hydrostatic force and moments on the buoy in various orientations. the [-a] option can be used to adjust the range of motion. Options for period and phase do not exist because the resulting and forces and moment are static so the rates of change do not matter. Use the [-h] option for more details.</p>
+<h4><a class="anchor" id="autotoc_md5"></a>
+Gravity Forces</h4>
+<div class="fragment"><div class="line">$ ./GravityForceExample</div>
+</div><!-- fragment --><p> GravityForceExample.cpp uses the <a class="el" href="classFS__HydroDynamics.html">FS_HydroDynamics</a> class to compute the force and moments due to gravity on the buoy in various orientations. the [-a] option can be used to adjust the range of motion. Options for period and phase do not exist because the resulting and forces and moment are static so the rates of change do not matter. Use the [-h] option for more details.</p>
+<h4><a class="anchor" id="autotoc_md6"></a>
+Wave Radiation Forces</h4>
+<div class="fragment"><div class="line">$ ./RadiationForceExample</div>
+</div><!-- fragment --><p> RadiationForceExample.cpp uses the <a class="el" href="classFS__HydroDynamics.html">FS_HydroDynamics</a> class to compute and plot all non-zero radiation forces computed from the hydrodynamic coefficients for a prescribed sinesoidal motion in each of six degrees of freedom. These radiation forces are computed both in the frequency domain (which assumes the body has been oscillating forever), and also in the time-domain by convolving the motion with the impulse rsponse function. In the time domain, the body starts from rest and after some small nunber of cycles the transients at the start of the time-domain simulations should die out and the time-domain and frequency domain results should match. Slight differences are due to numerical inaccuracies and may be larger or smaller depending on the frequency of the prescribed motion. A default motion amplitude, period, and phase are used, but these can be changed with the [-atp] options. <br  />
+ Use the [-h] option for more details.</p>
+<h4><a class="anchor" id="autotoc_md7"></a>
+Wave Exciting Forces</h4>
+<div class="fragment"><div class="line">$ ./ExcitingForceExample</div>
+</div><!-- fragment --><p> ExcitingForceExample.cpp uses both the <a class="el" href="classFS__HydroDynamics.html">FS_HydroDynamics</a> and <a class="el" href="classLinearIncidentWave.html" title="The IncidentWave class generates wave heights and fluid velocities at specified points and times....">LinearIncidentWave</a> class to compute and plot wave-exciting force for each of six degrees of freedom for a single frequency and single-direction incoming wave. Again these are computed in both the time- and frequency-domain, and should match closely. The transient at the start is not present here because the wave-exciting force computation in the time-domain includes a convolution of the impulse response function over previous times. A default incident wave amplitude, period, phase, and direction are used, but these can be changed with the [-atpb] options. Use the [-h] option for more details.</p>
+<h4><a class="anchor" id="autotoc_md8"></a>
+Floating Body Motions</h4>
+<div class="fragment"><div class="line">$ ./MotionExample</div>
+</div><!-- fragment --><p> MotionExample.cpp uses both the <a class="el" href="classFS__HydroDynamics.html">FS_HydroDynamics</a> and <a class="el" href="classLinearIncidentWave.html" title="The IncidentWave class generates wave heights and fluid velocities at specified points and times....">LinearIncidentWave</a> class to compute and plot the resulting sinesoidal motion excited by an incoming monochromatic wave. This is accomplished by solving the differential equations of motion for the floating body subject to all of the above forces (buoyancy, gravity, wave-radiation, ane wave-exciting). Based on the frequency domain hydrodynamic coefficients these results are computed as Response Amplitude Operators that indicate the bodies motion amplitude and phase relative to the amplitude and phase of the incoming wave. These results are also computed in the time-domain and compared to the frequency domain results. Again these should match after the transients that result from the time-domain initial condition being zero speed at time equal zero. A default incident wave amplitude, period, phase, and direction are used, but these can be changed with the [-atpb] options. Use the [-h] option for more details.</p>
+<h2><a class="anchor" id="autotoc_md9"></a>
 How to install</h2>
 <p>The library can be installed locally after building from source by exectuing the following from the build directory: </p><div class="fragment"><div class="line">$ sudo make install</div>
 </div><!-- fragment --><p>Alternatively, debians of the most recent release are maintained and can be installed after updating apt with the appropriate ppa</p>
@@ -102,17 +112,20 @@ How to install</h2>
 <div class="line">$ sudo curl -s --compressed -o /etc/apt/sources.list.d/my_list_file.list &quot;https://hamilton8415.github.io/ppa/my_list_file.list&quot;</div>
 <div class="line">$ sudo apt update</div>
 <div class="line">$ sudo apt install libfshydrodynamics</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md3"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md10"></a>
 How to use in another project using CMake</h2>
-<p>After installing in either of the above methods, include the following lines in the CMakeLists.txt file: </p><div class="fragment"><div class="line">find_package(FreeSurfaceHydrodynamics REQUIRED)</div>
+<p>After installing by either of the above methods, include the following lines in the CMakeLists.txt file: </p><div class="fragment"><div class="line">find_package(FreeSurfaceHydrodynamics REQUIRED)</div>
 <div class="line">add_executable(YourProgram YourProgram.cpp)</div>
 <div class="line">target_link_libraries(YourProgram FreeSurfaceHydrodynamics)</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md4"></a>
-Theory</h2>
-<h2><a class="anchor" id="autotoc_md5"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md11"></a>
 Current limitations</h2>
-<h2><a class="anchor" id="autotoc_md6"></a>
-Documentation</h2>
+<p>Currently, this library has a number of limitations that may be addressed in future releases.</p><ul>
+<li>Single Wave Direction: At this time only long-crestline waves from a single-direction can be included. Adding additional directions through superposition is a straightforward addition, but computational time for wave-exciting forces will grow linearly with the number of directions included.</li>
+<li>Hydrodynamic Coefficient Data: At this time only WAMIT output files can be read to supply the needed hydrodynamic coefficients. Further, only the *.1, *.3 files can be read for frequency domain data are supported, and *_IR.1 and *_JR.3 files for the time-domain impulse response function. Of course, the information between the frequency-domain and time-domain is redundant and it is possible to compute the needed impulse-response functions from the frequency domain data. This is not done at this time, instead relying on the f2t utility that is part of WAMIT.</li>
+<li>Axi-symmetric bodies: This library is currently most useful for axi-symmetric bodies, with this assumption the wave-exciting forces can be computed from a single wave-direction result from the Boundary-Element-Solver (WAMIT), regardless of body orientation in space. Facilities to read-in hydrodynamic coefficients for more than one wave-direction are not present and would be needed to evaluate the wave-exciting forces on non axi-symmetric bodies of arbitrary orientation.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md12"></a>
+Source Code Documentation</h2>
 <p>Doxygen generated documentation can be viewed here: <a href="https://hamilton8415.github.io/FreeSurfaceHydrodynamics/">https://hamilton8415.github.io/FreeSurfaceHydrodynamics/</a> </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->

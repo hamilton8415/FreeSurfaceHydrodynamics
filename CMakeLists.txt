@@ -39,11 +39,26 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1)
 
-add_executable(IncidentWave_Ex1 examples/IncidentWave_Ex1.cpp)
-target_link_libraries(IncidentWave_Ex1 FreeSurfaceHydrodynamics)
+add_executable(IncidentWaveExample examples/IncidentWaveExample.cpp)
+target_link_libraries(IncidentWaveExample FreeSurfaceHydrodynamics)
 
-add_executable(FS_Hydrodynamics_Ex1 examples/FS_Hydrodynamics_Ex1.cpp)
-target_link_libraries(FS_Hydrodynamics_Ex1 FreeSurfaceHydrodynamics)
+add_executable(PlotCoeffsExample examples/PlotCoeffsExample.cpp)
+target_link_libraries(PlotCoeffsExample FreeSurfaceHydrodynamics)
+
+add_executable(BuoyancyForceExample examples/BuoyancyForceExample.cpp)
+target_link_libraries(BuoyancyForceExample FreeSurfaceHydrodynamics)
+
+add_executable(GravityForceExample examples/GravityForceExample.cpp)
+target_link_libraries(GravityForceExample FreeSurfaceHydrodynamics)
+
+add_executable(RadiationForceExample examples/RadiationForceExample.cpp)
+target_link_libraries(RadiationForceExample FreeSurfaceHydrodynamics)
+
+add_executable(ExcitingForceExample examples/ExcitingForceExample.cpp)
+target_link_libraries(ExcitingForceExample FreeSurfaceHydrodynamics)
+
+add_executable(MotionExample examples/MotionExample.cpp)
+target_link_libraries(MotionExample FreeSurfaceHydrodynamics)
 
 file(COPY examples/example_hydrodynamic_coeffs DESTINATION .)
 

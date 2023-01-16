@@ -65,21 +65,55 @@ $(function() {
 <div class="title">FreeSurfaceHydrodynamics Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_docs_mainpage"></a> This is a library for computing the forces on a body in the presence of waves, and the resulting motions if desired. The theory is based upon linearied free-surface wave-body intereactions and relies on hydrodynamic coefficients computed by other methods, usually a boundary element method solution performed by a program such as WAMIT.</p>
+<div class="textblock"><p><a class="anchor" id="md_README"></a> This is a library for computing the forces on a body in the presence of waves, and the resulting motions if desired. The theory is based upon linearied free-surface wave-body intereactions and relies on hydrodynamic coefficients computed by other methods, usually a boundary element method solution performed by a program such as WAMIT.</p>
 <h2><a class="anchor" id="autotoc_md0"></a>
-Library basics</h2>
-<p>This library</p>
-<h2><a class="anchor" id="autotoc_md1"></a>
 How to build</h2>
 <p>To build the library and examples from source, in the top-level directory of the repository do the following: </p><div class="fragment"><div class="line">$ mkdir build</div>
 <div class="line">$ cd build</div>
 <div class="line">$ cmake ..</div>
 <div class="line">$ make</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md2"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md1"></a>
+Run Examples</h2>
+<p>There are two example programs that exercise the library in an interactive way. The source for these is in the examples directory, and after building, they can be run from the build directory as follows:</p>
+<div class="fragment"><div class="line">$ IncidentWave_Ex1</div>
+</div><!-- fragment --><p> This program exercises the <a class="el" href="classLinearIncidentWave.html" title="The IncidentWave class generates wave heights and fluid velocities at specified points and times....">LinearIncidentWave</a> class by computing the wave elevation that represents a mono-chromatic wave specified by randomally selected amplitude, frequency and phase. The result is plotted at the origin for a range of time, and then also spatially at a selection of time-snapshots.</p>
+<p>A more involved examples exercises all of the features of the library, computing the different types of wave-body interaction forces for a floating body, with hydrodynamic behaviors described by included WAMIT output files. The program has a number of options that can be seen by executing the following in the build directory: </p><div class="fragment"><div class="line">$ ./FS_Hydrodynamics_Ex1 -h</div>
+<div class="line">Usage: Test_FS_Hydrodynamics [-cbgremh]</div>
+<div class="line">    -c :  Plot Hydrodynamic Coefficients</div>
+<div class="line">    -b :  Test Bouyancy Forces</div>
+<div class="line">    -g :  Test Gravity Forces</div>
+<div class="line">    -r :  Test Radiation Forces</div>
+<div class="line">    -e :  Test Exciting Forces</div>
+<div class="line">    -m :  Test Motions</div>
+<div class="line">    -h :  This help message</div>
+</div><!-- fragment --><p>The options perform the following actions:</p><ul>
+<li>'-c': This reads and plots all of the non-zero hydrodynamic coefficients from the included WAMIT output files for the wave-radiation and wave-exciting forces. The WAMIT data contains these in both the frequency domain (plotted as a function of frequency), and time-domain (plotted as impulse-response functions). These hydrodynamic coefficients define the forces computed in the other examples.</li>
+<li>'b': This option computes the buoyancy forces in all six degrees of freedom, as a function of displacement that is specified as a sinesoidal motion with time.</li>
+<li>'g': This plots the force and moment due to gravity as the body moves in a sinusoidal motion.</li>
+<li>'r': This plots all non-zero radiation forces computed from the hydrodynamic coefficients for a prescribed sinesoidal motion in each of six degrees of freedom. These radiation forces are computed both in the frequency domain (which assumes the body has been oscillating forever), and in the time-domain, which assumes the body has just begun oscillating. After some small nunber of cycles, the transients at the start of the time-domain simulations should die out and the time-domain and frequency domain results should match. Slight differences are due to numerical inaccuracies and may be larger or smaller depending on the frequency of the prescribed motion.</li>
+<li>'e' This plots six degrees of wave-exciting force for a single frequency and single-direction incoming wave. Again these are computed in both the time- and frequency-domain, and should match closely. The transient at the start is not present here because the wave-exciting force computation in the time-domain includes a convolution of the impulse response function over previous times.</li>
+<li>'m': This computes the resulting sinesoidal motion resulting from an incoming monochromatic wave by solving the equations of motion for the floating body subject to all of the above forces (buoyancy, gravity, wave-radiation, ane wave-exciting). Based on the frequency domain hydrodynamic coefficients these results are computed as Response Amplitude Operators that indicate the bodies motion amplitude and phase relative to the amplitude and phase of the incoming wave. These results are also computed in the time-domain and compared to the frequency domain results. Again these should match after the transients that result from the time-domain initial condition being zero speed at time equal zero.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md2"></a>
 How to install</h2>
-<p><code>sudo apt install</code></p>
-<h2><a class="anchor" id="autotoc_md3"></a>
-How to use</h2>
+<p>The library can be installed locally after building from source by exectuing the following from the build directory: </p><div class="fragment"><div class="line">$ sudo make install</div>
+</div><!-- fragment --><p>Alternatively, debians of the most recent release are maintained and can be installed after updating apt with the appropriate ppa</p>
+<div class="fragment"><div class="line">$ curl -s --compressed &quot;https://hamilton8415.github.io/ppa/KEY.gpg&quot; | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/ppa.gpg &gt;/dev/null</div>
+<div class="line">$ sudo curl -s --compressed -o /etc/apt/sources.list.d/my_list_file.list &quot;https://hamilton8415.github.io/ppa/my_list_file.list&quot;</div>
+<div class="line">$ sudo apt update</div>
+<div class="line">$ sudo apt install libfshydrodynamics</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md3"></a>
+How to use in another project using CMake</h2>
+<p>After installing in either of the above methods, include the following lines in the CMakeLists.txt file: </p><div class="fragment"><div class="line">find_package(FreeSurfaceHydrodynamics REQUIRED)</div>
+<div class="line">add_executable(YourProgram YourProgram.cpp)</div>
+<div class="line">target_link_libraries(YourProgram FreeSurfaceHydrodynamics)</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md4"></a>
+Theory</h2>
+<h2><a class="anchor" id="autotoc_md5"></a>
+Current limitations</h2>
+<h2><a class="anchor" id="autotoc_md6"></a>
+Documentation</h2>
+<p>Doxygen generated documentation can be viewed here: <a href="https://hamilton8415.github.io/FreeSurfaceHydrodynamics/">https://hamilton8415.github.io/FreeSurfaceHydrodynamics/</a> </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->

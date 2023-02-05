@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['radiationdamping_30',['RadiationDamping',['../classFS__HydroDynamics.html#a41ed907ab8c75462109d80a04e741b6f',1,'FS_HydroDynamics::RadiationDamping(double omega, int i, int j)'],['../classFS__HydroDynamics.html#a0eb89826e81034da424b272eb49620dc',1,'FS_HydroDynamics::RadiationDamping(double omega)']]],
-  ['readwamitdata_5ffd_31',['ReadWAMITData_FD',['../classFS__HydroDynamics.html#ae8b2c141c2da01da430c82560f18084a',1,'FS_HydroDynamics']]],
-  ['readwamitdata_5ftd_32',['ReadWAMITData_TD',['../classFS__HydroDynamics.html#ae5ffba00fa8f4e412bf3cba008ee8bc0',1,'FS_HydroDynamics']]]
+  ['majorversionnumber_36',['MajorVersionNumber',['../classFS__HydroDynamics.html#aea9287b3ea4964885330ec968b9dbe14',1,'FS_HydroDynamics::MajorVersionNumber()'],['../classLinearIncidentWave.html#a904c37846d9c632a8acbeb8af21d0436',1,'LinearIncidentWave::MajorVersionNumber()']]],
+  ['minorversionnumber_37',['MinorVersionNumber',['../classFS__HydroDynamics.html#a4bd2e399890b594de7a0fef5beda1f5f',1,'FS_HydroDynamics::MinorVersionNumber()'],['../classLinearIncidentWave.html#a23753342b66c97c29f728241c3635538',1,'LinearIncidentWave::MinorVersionNumber()']]]
 ];

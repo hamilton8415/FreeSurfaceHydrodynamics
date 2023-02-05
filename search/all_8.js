@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['s_14',['S',['../classFS__HydroDynamics.html#a713864c893135dd6b28a135ca95f15b0',1,'FS_HydroDynamics']]],
-  ['s11_15',['S11',['../classFS__HydroDynamics.html#acb38a9876f820860272e1fea66a0360b',1,'FS_HydroDynamics']]],
-  ['s22_16',['S22',['../classFS__HydroDynamics.html#ad1b1a5882b2f1397a8aedbd0315cce4e',1,'FS_HydroDynamics']]],
-  ['settomonochromatic_17',['SetToMonoChromatic',['../classLinearIncidentWave.html#afc96485352777032608375a2bce1445f',1,'LinearIncidentWave']]],
-  ['settopiersonmoskowitzspectrum_18',['SetToPiersonMoskowitzSpectrum',['../classLinearIncidentWave.html#add0bb1925bfb46ce7385fcd151838d73',1,'LinearIncidentWave::SetToPiersonMoskowitzSpectrum(double Hs, double beta)'],['../classLinearIncidentWave.html#a79d3f68bb52492ebb37c789ec7fc99b0',1,'LinearIncidentWave::SetToPiersonMoskowitzSpectrum(double Hs, double Tp, double beta, int n_phases)']]]
+  ['radiationdamping_13',['RadiationDamping',['../classFS__HydroDynamics.html#a41ed907ab8c75462109d80a04e741b6f',1,'FS_HydroDynamics::RadiationDamping(double omega, int i, int j)'],['../classFS__HydroDynamics.html#a0eb89826e81034da424b272eb49620dc',1,'FS_HydroDynamics::RadiationDamping(double omega)']]],
+  ['readwamitdata_5ffd_14',['ReadWAMITData_FD',['../classFS__HydroDynamics.html#ae8b2c141c2da01da430c82560f18084a',1,'FS_HydroDynamics']]],
+  ['readwamitdata_5ftd_15',['ReadWAMITData_TD',['../classFS__HydroDynamics.html#ae5ffba00fa8f4e412bf3cba008ee8bc0',1,'FS_HydroDynamics']]],
+  ['rnatord_16',['rnatord',['../structmlinterp_1_1rnatord.html',1,'mlinterp']]]
 ];

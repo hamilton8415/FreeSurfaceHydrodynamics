@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['waveexcitingforcecomponents_35',['WaveExcitingForceComponents',['../classFS__HydroDynamics.html#a70628226098539b88d1a4c24b6b78969',1,'FS_HydroDynamics::WaveExcitingForceComponents(double omega, int j)'],['../classFS__HydroDynamics.html#a9d336f34b7e9c55b844dbbd8a33a345e',1,'FS_HydroDynamics::WaveExcitingForceComponents(double omega)']]]
+  ['radiationdamping_39',['RadiationDamping',['../classFS__HydroDynamics.html#a41ed907ab8c75462109d80a04e741b6f',1,'FS_HydroDynamics::RadiationDamping(double omega, int i, int j)'],['../classFS__HydroDynamics.html#a0eb89826e81034da424b272eb49620dc',1,'FS_HydroDynamics::RadiationDamping(double omega)']]],
+  ['readwamitdata_5ffd_40',['ReadWAMITData_FD',['../classFS__HydroDynamics.html#ae8b2c141c2da01da430c82560f18084a',1,'FS_HydroDynamics']]],
+  ['readwamitdata_5ftd_41',['ReadWAMITData_TD',['../classFS__HydroDynamics.html#ae5ffba00fa8f4e412bf3cba008ee8bc0',1,'FS_HydroDynamics']]]
 ];

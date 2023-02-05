@@ -29,6 +29,7 @@ To do so, do the following:
   $ cp FreeSurfaceHydrodynamics/_packages/*.deb ~/ppa/.
   $ cd ~/ppa  
   $ ./scripts/sign_debian.sh
+  $ git add [new .deb files]
   $ git commit -a
   $ git push
 ```

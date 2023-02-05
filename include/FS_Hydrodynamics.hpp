@@ -71,6 +71,10 @@ public:
   Eigen::Matrix<std::complex<double>, 6, 1> ComplexAmplitude(double omega);
   std::complex<double> ComplexAmplitude(double omega, int mode);
 
+  std::string Version();
+  int MajorVersionNumber();
+  int MinorVersionNumber();
+  int PatchVersionNumber();
 
   friend std::ostream &
   operator<<(std::ostream & out, const FS_HydroDynamics & f);

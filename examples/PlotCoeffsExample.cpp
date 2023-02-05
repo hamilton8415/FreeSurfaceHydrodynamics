@@ -41,17 +41,6 @@ int main(int argc, char **argv) {
   }
   signal(SIGINT, signal_callback_handler);
 
-  double dt = 0.005;
-
-  int c;
-  while ((c = getopt(argc, argv, "h")) != -1) {
-    switch (c) {
-    case 'h':
-      std::cout << "Usage: PlotCoeffsExample" << std::endl;
-      break;
-    }
-  }
-
   const char *modes[6] = {"Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"};
   LinearIncidentWave Inc;
   LinearIncidentWave &IncRef = Inc;
@@ -59,6 +48,20 @@ int main(int argc, char **argv) {
   double g = 9.81;
   double buoy_mass = 1400; // kg
   FS_HydroDynamics BuoyA5(IncRef, 1.0, g, rho);
+
+  double dt = 0.005;
+
+  int c;
+  while ((c = getopt(argc, argv, "h")) != -1) {
+    switch (c) {
+    case 'h':
+      std::cout << "Version " << BuoyA5.Version() << std::endl;
+      std::cout << "Usage: PlotCoeffsExample" << std::endl;
+      return 0;
+      break;
+    }
+  }
+
   BuoyA5.SetWaterplane(5.47, 1.37,
                        1.37); // Set area and 2nd moments of area for waterplane
   BuoyA5.SetCOB(0, 0,

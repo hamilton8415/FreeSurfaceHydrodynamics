@@ -22,6 +22,7 @@
 #include <vector>
 #include <string>
 
+#include "config.h"
 #include "IncidentWave.hpp"
 #include "interp1d.hpp"
 #include "mlinterp.hpp"
@@ -901,3 +902,15 @@ void FS_HydroDynamics::operator()(
 	dxdt[0] = x[1];
 	dxdt[1] = -x[0] - m_gam * x[1];
 }
+
+/// \brief Returns Version String
+std::string FS_HydroDynamics::Version() { return PROJECT_VER; }
+
+/// \brief Returns Major Version Number
+int FS_HydroDynamics::MajorVersionNumber() { return PROJECT_VER_MAJOR; }
+
+/// \brief Returns Minor Version Number
+int FS_HydroDynamics::MinorVersionNumber() { return PROJECT_VER_MINOR; }
+
+/// \brief Returns Major Version Number
+int FS_HydroDynamics::PatchVersionNumber() { return PROJECT_VER_PATCH; }

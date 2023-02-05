@@ -49,6 +49,10 @@ public:
   double eta(double x, double y, double t);
   // Eigen::VectorXd eta(double x, double y, Eigen::VectorXd t);
   double etadot(double x, double y, double t);
+  std::string Version();
+  int MajorVersionNumber();
+  int MinorVersionNumber();
+  int PatchVersionNumber();
 
 public:
   WaveSpectrumType m_SpectrumType = WaveSpectrumType::MonoChromatic;

@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
-project(FreeSurfaceHydrodynamics VERSION 1.0.1 LANGUAGES CXX)
+project(FreeSurfaceHydrodynamics VERSION 1.1.0 LANGUAGES CXX)
+
+configure_file(${PROJECT_SOURCE_DIR}/include/config.h.in
+               ${PROJECT_BINARY_DIR}/include/config.h)
 
 #------------------------------------------------------------------------
 # Compile as C++17
@@ -43,6 +46,7 @@ target_link_libraries(FreeSurfaceHydrodynamics PUBLIC Eigen3::Eigen Boost::syste
 target_include_directories(${PROJECT_NAME}
     PUBLIC
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
       $<INSTALL_INTERFACE:include>
     PRIVATE
       ${gnuplot-iostream_INCLUDE_DIRS}
@@ -54,31 +58,31 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 add_executable(IncidentWaveExample examples/IncidentWaveExample.cpp)
 target_link_libraries(IncidentWaveExample FreeSurfaceHydrodynamics)
-target_include_directories(IncidentWaveExample PRIVATE ${gnuplot-iostream_INCLUDE_DIRS})
+target_include_directories(IncidentWaveExample PRIVATE ${PROJECT_BINARY_DIR}/include ${gnuplot-iostream_INCLUDE_DIRS})
 
 add_executable(PlotCoeffsExample examples/PlotCoeffsExample.cpp)
 target_link_libraries(PlotCoeffsExample FreeSurfaceHydrodynamics)
-target_include_directories(PlotCoeffsExample PRIVATE ${gnuplot-iostream_INCLUDE_DIRS})
+target_include_directories(PlotCoeffsExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
 
 add_executable(BuoyancyForceExample examples/BuoyancyForceExample.cpp)
 target_link_libraries(BuoyancyForceExample FreeSurfaceHydrodynamics)
-target_include_directories(BuoyancyForceExample PRIVATE ${gnuplot-iostream_INCLUDE_DIRS})
+target_include_directories(BuoyancyForceExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
 
 add_executable(GravityForceExample examples/GravityForceExample.cpp)
 target_link_libraries(GravityForceExample FreeSurfaceHydrodynamics)
-target_include_directories(GravityForceExample PRIVATE ${gnuplot-iostream_INCLUDE_DIRS})
+target_include_directories(GravityForceExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
 
 add_executable(RadiationForceExample examples/RadiationForceExample.cpp)
 target_link_libraries(RadiationForceExample FreeSurfaceHydrodynamics)
-target_include_directories(RadiationForceExample PRIVATE ${gnuplot-iostream_INCLUDE_DIRS})
+target_include_directories(RadiationForceExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
 
 add_executable(ExcitingForceExample examples/ExcitingForceExample.cpp)
 target_link_libraries(ExcitingForceExample FreeSurfaceHydrodynamics)
-target_include_directories(ExcitingForceExample PRIVATE ${gnuplot-iostream_INCLUDE_DIRS})
+target_include_directories(ExcitingForceExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
 
 add_executable(MotionExample examples/MotionExample.cpp)
 target_link_libraries(MotionExample FreeSurfaceHydrodynamics)
-target_include_directories(MotionExample PRIVATE ${gnuplot-iostream_INCLUDE_DIRS})
+target_include_directories(MotionExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
 
 file(COPY examples/example_hydrodynamic_coeffs DESTINATION .)
 

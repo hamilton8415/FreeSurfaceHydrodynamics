@@ -41,6 +41,14 @@ int main(int argc, char **argv) {
   }
   signal(SIGINT, signal_callback_handler);
 
+  const char *modes[6] = {"Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"};
+  LinearIncidentWave Inc;
+  LinearIncidentWave &IncRef = Inc;
+  double rho = 1025;
+  double g = 9.81;
+  double buoy_mass = 1400; // kg
+  FS_HydroDynamics BuoyA5(IncRef, 1.0, g, rho);
+
   // Defaults
   double A = 1;  // .5 + ((float)(std::rand() % 20) / 10);
   double Tp = 5; // 3.0 + (std::rand() % 9);
@@ -54,6 +62,7 @@ int c;
       A = atof(optarg);
       break;
     case 'h':
+      std::cout << "Version " << BuoyA5.Version() << std::endl;
       std::cout << "Usage: GravityForceExample [-ah]" << std::endl;
       std::cout << " For example:" << std::endl;
       std::cout << "  [-a 2.0] sets the body motion amplitude to 2.0 meters" <<std::endl;
@@ -65,28 +74,10 @@ int c;
   double tf = 2.0 * Tp;
   double dt = 0.01;
 
-  const char *modes[6] = {"Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"};
-  LinearIncidentWave Inc;
-  LinearIncidentWave &IncRef = Inc;
-  double rho = 1025;
-  double g = 9.81;
-  double buoy_mass = 1400; // kg
-  FS_HydroDynamics BuoyA5(IncRef, 1.0, g, rho);
-                           //  BuoyA5.SetWaterplane(5.47, 1.37,
-  //                       1.37); // Set area and 2nd moments of area for
-  //                       waterplane
-  //  BuoyA5.SetCOB(0, 0,
-  //                -.22); // Set COB relative to waterplane coordinate system.
   BuoyA5.SetCOG(0, 0,
                 -.24); // Set COG relative to waterplane coordinate system.
                        //  BuoyA5.SetVolume(buoy_mass / rho);
   BuoyA5.SetMass(buoy_mass);
-
-  //  std::string HydrodynamicsBaseFilename =
-  //      "./example_hydrodynamic_coeffs/BuoyA5";
-  //  BuoyA5.ReadWAMITData_FD(HydrodynamicsBaseFilename);
-  //  BuoyA5.ReadWAMITData_TD(HydrodynamicsBaseFilename);
-  //  BuoyA5.SetTimestepSize(dt);
 
   std::vector<double> pts_t;
   std::vector<double> pts_pos;

@@ -19,7 +19,10 @@
 #include <vector>
 #include <cstdlib>
 
+#include "config.h"
 #include "LinearIncidentWave.hpp"
+
+
 
 /// \brief Constructor, defaults to monotchromatic wave and default gravity and density
 LinearIncidentWave::LinearIncidentWave()
@@ -27,6 +30,8 @@ LinearIncidentWave::LinearIncidentWave()
   m_grav = 9.81;
   m_rho = 1025;
 }
+
+
 
 /// \brief Select PM-Spectrum (default num of phases)
 void LinearIncidentWave::SetToPiersonMoskowitzSpectrum(double Hs, double beta)
@@ -144,3 +149,15 @@ double LinearIncidentWave::etadot(double x, double y, double t)
 
   return etadot;
 }
+
+/// \brief Returns Version String
+std::string LinearIncidentWave::Version() { return PROJECT_VER; }
+
+/// \brief Returns Major Version Number
+int LinearIncidentWave::MajorVersionNumber() { return PROJECT_VER_MAJOR; }
+
+/// \brief Returns Minor Version Number
+int LinearIncidentWave::MinorVersionNumber() { return PROJECT_VER_MINOR; }
+
+/// \brief Returns Major Version Number
+int LinearIncidentWave::PatchVersionNumber() { return PROJECT_VER_PATCH; }

@@ -20,14 +20,25 @@
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 
+
+#include "config.h"
 #include "LinearIncidentWave.hpp"
+
+
+void signal_callback_handler(int signum) {
+  std::string s = "pkill gnuplot_qt";
+  int ret = system(s.c_str());
+  exit(signum);
+}
 
 int main(int argc, char **argv) {
   {
     std::string s = "pkill gnuplot_qt";
     int ret = system(s.c_str());
   }
+  signal(SIGINT, signal_callback_handler);
 
   LinearIncidentWave Inc;
 
@@ -54,6 +65,7 @@ int main(int argc, char **argv) {
       beta = atof(optarg)*M_PI/180.0;
       break;
     case 'h':
+      std::cout << "Version " << Inc.Version() << std::endl;
       std::cout << "Usage: IncidentWaveExample [-atpbh]" << std::endl;
       std::cout << " For example:" << std::endl;
       std::cout << "  [-a 2.0] sets the incident wave amplitude to 2.0 meters" <<std::endl;
@@ -115,6 +127,8 @@ int main(int argc, char **argv) {
     gp.send1d(boost::make_tuple(pts_x, pts_eta));
     gp.send1d(boost::make_tuple(pts_x, pts_eta_true));
   }
-
-  return 0;
+  std::cout << "Enter Ctrl-C to quit.  (Enter 'pkill gnuplot_qt' to clear "
+               "plots if necessary)"
+            << std::endl;
+  while (1);
 }

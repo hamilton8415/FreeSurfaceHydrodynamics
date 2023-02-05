@@ -20,55 +20,24 @@
 #include <cstdlib>
 
 #include "config.h"
+#include "interp1d.hpp"
 #include "LinearIncidentWave.hpp"
 
 
 
 /// \brief Constructor, defaults to monotchromatic wave and default gravity and density
-LinearIncidentWave::LinearIncidentWave()
+LinearIncidentWave::LinearIncidentWave() : m_grav(9.81), m_rho(1025)
 {
-  m_grav = 9.81;
-  m_rho = 1025;
+    std::srand(time(0));
 }
 
-
-
-/// \brief Select PM-Spectrum (default num of phases)
-void LinearIncidentWave::SetToPiersonMoskowitzSpectrum(double Hs, double beta)
+/// \brief Constructor, defaults to monotchromatic wave and default gravity and density
+LinearIncidentWave::LinearIncidentWave(unsigned int seed) : m_grav(9.81), m_rho(1025)
 {
-  SetToPiersonMoskowitzSpectrum(Hs, 8.0, beta, DEFAULT_N_PHASES);
-}
-
-/// \brief Select PM-Spectrum (set num of phases)
-void LinearIncidentWave::SetToPiersonMoskowitzSpectrum(
-  double Hs, double Tp, double beta,
-  int n_phases)
-{
-  m_SpectrumType = WaveSpectrumType::PiersonMoskowitz;
-  m_beta = beta;
-  m_Hs = Hs;
-
-
-  m_omega.resize(n_phases);
-  m_k.resize(n_phases);
-  m_phases.resize(n_phases);
-  m_Spectrum.resize(n_phases);
-  m_A.resize(n_phases);
-
-  double w0 = sqrt(.21 * m_grav / Hs);
-  double a = 0.0081;
-  double b = 0.74;
-  std::srand(time(0));  // Initialize random number generator.
-
-  double d_omega = MAX_FREQ * 2 * M_PI / n_phases;
-
-  for (int i = 0; i < m_k.size(); i++) {
-    m_omega(i) = d_omega * (i + 1);
-    m_k(i) = m_omega(i) * m_omega(i) / m_grav;
-    m_Spectrum(i) = (a * m_grav * m_grav / pow(m_omega(i), 5)) * exp(-b * pow(w0 / m_omega(i), 4));
-    m_A(i) = sqrt(d_omega * 2 * m_Spectrum(i));  // Precompute components once here.
-    m_phases(i) = (2 * M_PI * std::rand()) / RAND_MAX;
-  }
+  if(seed == 0)
+    std::srand(time(0));
+  else
+    std::srand(seed);
 }
 
 /// \brief Select single frequency wave
@@ -88,6 +57,123 @@ void LinearIncidentWave::SetToMonoChromatic(double A, double T, double phase, do
   m_omega(0) = 2 * M_PI / T;
   m_k(0) = m_omega(0) * m_omega(0) / m_grav;
   m_A(0) = A;
+}
+
+/// \brief Select PM-Spectrum (default num of phases)
+void LinearIncidentWave::SetToBretschneiderSpectrum(double Hs, double Tp, double beta)
+{
+  SetToBretschneiderSpectrum(Hs, Tp, beta, DEFAULT_N_PHASES);
+}
+
+/// \brief Select PM-Spectrum (set num of phases)
+void LinearIncidentWave::SetToBretschneiderSpectrum(
+  double Hs, double Tp, double beta,
+  int n_phases)
+{
+  m_SpectrumType = WaveSpectrumType::Bretschneider;
+  m_beta = beta;
+  m_Hs = Hs;
+  m_Tp = Tp;
+  double wp = 2.0*M_PI/Tp;
+
+  m_omega.resize(n_phases);
+  m_k.resize(n_phases);
+  m_phases.resize(n_phases);
+  m_Spectrum.resize(n_phases);
+  m_A.resize(n_phases);
+
+  double d_omega = MAX_FREQ * 2 * M_PI / n_phases;
+
+  for (int i = 0; i < m_k.size(); i++) {
+    m_omega(i) = d_omega * (i + 1);
+    m_k(i) = m_omega(i) * m_omega(i) / m_grav;
+    m_Spectrum(i) = 5.0*Hs*Hs*pow(wp,4) * exp(-1.25*pow(wp/m_omega(i),4)) / (16.0*pow(m_omega(i),5));
+    m_A(i) = sqrt(d_omega * 2 * m_Spectrum(i));  // Precompute components once here.
+    m_phases(i) = (2 * M_PI * std::rand()) / RAND_MAX;
+  }
+}
+
+
+/// \brief Select PM-Spectrum (default num of phases)  
+/// [DEPRECATED - This version including the unused Tp specificatoin may be removed in the future]
+void LinearIncidentWave::SetToPiersonMoskowitzSpectrum(double Hs, double UnusedTp, double beta)
+{
+  SetToPiersonMoskowitzSpectrum(Hs, beta, DEFAULT_N_PHASES);
+}
+
+/// \brief Select PM-Spectrum (set num of phases) 
+/// [DEPRECATED - This version including the unused Tp specificatoin may be removed in the future]
+void LinearIncidentWave::SetToPiersonMoskowitzSpectrum(
+ double Hs, double UnusedTp, double beta, int n_phases)
+ {
+ SetToPiersonMoskowitzSpectrum(Hs, beta, n_phases);
+ }
+
+
+/// \brief Select PM-Spectrum (default num of phases)  
+void LinearIncidentWave::SetToPiersonMoskowitzSpectrum(double Hs, double beta)
+{
+  SetToPiersonMoskowitzSpectrum(Hs, beta, DEFAULT_N_PHASES);
+}
+
+/// \brief Select PM-Spectrum (set num of phases) 
+void LinearIncidentWave::SetToPiersonMoskowitzSpectrum(
+  double Hs, double beta, int n_phases)
+{
+  m_SpectrumType = WaveSpectrumType::PiersonMoskowitz;
+  m_beta = beta;
+  m_Hs = Hs;
+  m_Tp = 2*M_PI*sqrt(m_Hs/m_grav)/0.4019;
+
+  m_omega.resize(n_phases);
+  m_k.resize(n_phases);
+  m_phases.resize(n_phases);
+  m_Spectrum.resize(n_phases);
+  m_A.resize(n_phases);
+
+  double w0 = sqrt(.21 * m_grav / Hs);
+  double a = 0.0081;
+  double b = 0.74;
+
+  double d_omega = MAX_FREQ * 2 * M_PI / n_phases;
+
+  for (int i = 0; i < m_k.size(); i++) {
+    m_omega(i) = d_omega * (i + 1);
+    m_k(i) = m_omega(i) * m_omega(i) / m_grav;
+    m_Spectrum(i) = (a * m_grav * m_grav / pow(m_omega(i), 5)) * exp(-b * pow(w0 / m_omega(i), 4));
+    m_A(i) = sqrt(d_omega * 2 * m_Spectrum(i));  // Precompute components once here.
+    m_phases(i) = (2 * M_PI * std::rand()) / RAND_MAX;
+  }
+}
+
+/// \brief Specify Custom Spectrum (default num of phases)
+void LinearIncidentWave::SetToCustomSpectrum(std::vector<double> omega, std::vector<double> S, double beta)
+{
+  SetToCustomSpectrum(omega, S, beta, DEFAULT_N_PHASES);
+}
+
+/// \brief Specify Custom Spectrum (set num of phases)
+void LinearIncidentWave::SetToCustomSpectrum(std::vector<double> omega, std::vector<double> S, double beta, int n_phases)
+{
+  simple_interp::Interp1d CustomSpectrum(omega, S); 
+
+  m_SpectrumType = WaveSpectrumType::Custom;
+
+  m_omega.resize(n_phases);
+  m_k.resize(n_phases);
+  m_phases.resize(n_phases);
+  m_Spectrum.resize(n_phases);
+  m_A.resize(n_phases);
+
+  double d_omega = MAX_FREQ * 2 * M_PI / n_phases;
+
+  for (int i = 0; i < m_k.size(); i++) {
+    m_omega(i) = d_omega * (i + 1);
+    m_k(i) = m_omega(i) * m_omega(i) / m_grav;
+    m_Spectrum(i) = CustomSpectrum(m_omega(i)); //Interpolate from supplied spectrum
+    m_A(i) = sqrt(d_omega * 2 * m_Spectrum(i));  // Precompute components once here.
+    m_phases(i) = (2 * M_PI * std::rand()) / RAND_MAX;
+  }
 }
 
 std::ostream & operator<<(std::ostream & out, const LinearIncidentWave & IncWave)
@@ -115,9 +201,25 @@ std::ostream & operator<<(std::ostream & out, const LinearIncidentWave & IncWave
       std::cout << "# Spectrum = " << IncWave.m_Spectrum.transpose() << std::endl;
       std::cout << "# Component Amplitudes = " << IncWave.m_A.transpose() << std::endl;
       break;
-
-    case WaveSpectrumType::UserSupplied:
-      std::cout << "# IncidentWave Type = User Defined Spectrum";
+    case WaveSpectrumType::Bretschneider:
+      std::cout << "# IncidentWave Type = Bretschneider" << std::endl;
+      std::cout << "# Hs = " << IncWave.m_Hs << std::endl;
+      std::cout << "# Tp = " << IncWave.m_Tp << std::endl;
+      std::cout << "# Num Phases = " << IncWave.m_Spectrum.size() << std::endl;
+      std::cout << "# Wave Freq = " << IncWave.m_omega.transpose() << std::endl;
+      std::cout << "# Wave Numbers = " << IncWave.m_k.transpose() << std::endl;
+      std::cout << "# Phases = " << IncWave.m_phases.transpose() << std::endl;
+      std::cout << "# Spectrum = " << IncWave.m_Spectrum.transpose() << std::endl;
+      std::cout << "# Component Amplitudes = " << IncWave.m_A.transpose() << std::endl;
+      break;
+    case WaveSpectrumType::Custom:
+      std::cout << "# IncidentWave Type = Custom Spectrum";
+      std::cout << "# Num Phases = " << IncWave.m_Spectrum.size() << std::endl;
+      std::cout << "# Wave Freq = " << IncWave.m_omega.transpose() << std::endl;
+      std::cout << "# Wave Numbers = " << IncWave.m_k.transpose() << std::endl;
+      std::cout << "# Phases = " << IncWave.m_phases.transpose() << std::endl;
+      std::cout << "# Spectrum = " << IncWave.m_Spectrum.transpose() << std::endl;
+      std::cout << "# Component Amplitudes = " << IncWave.m_A.transpose() << std::endl;
       break;
   }
   return out;  // return std::ostream so we can chain calls to operator<<

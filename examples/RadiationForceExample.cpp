@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <vector>
 
+#include "config.h"
 #include "FS_Hydrodynamics.hpp"
 #include "LinearIncidentWave.hpp"
 
@@ -40,14 +41,6 @@ int main(int argc, char **argv) {
     int ret = system(s.c_str());
   }
   signal(SIGINT, signal_callback_handler);
-
-  const char *modes[6] = {"Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"};
-  LinearIncidentWave Inc;
-  LinearIncidentWave &IncRef = Inc;
-  double rho = 1025;
-  double g = 9.81;
-  double buoy_mass = 1400; // kg
-  FS_HydroDynamics BuoyA5(IncRef, 1.0, g, rho);
 
   // Defaults
   double A = 1;
@@ -67,7 +60,7 @@ int main(int argc, char **argv) {
       phase = atof(optarg)*M_PI/180.0;
       break;
     case 'h':
-      std::cout << "Version " << BuoyA5.Version() << std::endl;
+      std::cout << "Version: " << PROJECT_VER << std::endl;
       std::cout << "Usage: RadiationForceExample [-atph]" << std::endl;
       std::cout << " For example:" << std::endl;
       std::cout << "  [-a 2.0] sets the body motoin amplitude to 2.0 meters" <<std::endl;
@@ -77,6 +70,14 @@ int main(int argc, char **argv) {
       break;
     }
   }
+
+  const char *modes[6] = {"Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"};
+  LinearIncidentWave Inc;
+  LinearIncidentWave &IncRef = Inc;
+  double rho = 1025;
+  double g = 9.81;
+  double buoy_mass = 1400; // kg
+  FS_HydroDynamics BuoyA5(IncRef, 1.0, g, rho);
 
   double omega = 2.0 * M_PI / Tp;
   double tf = 3.0 * Tp;

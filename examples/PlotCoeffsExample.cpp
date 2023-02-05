@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <vector>
 
+#include "config.h"
 #include "FS_Hydrodynamics.hpp"
 #include "LinearIncidentWave.hpp"
 
@@ -41,13 +42,6 @@ int main(int argc, char **argv) {
   }
   signal(SIGINT, signal_callback_handler);
 
-  const char *modes[6] = {"Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"};
-  LinearIncidentWave Inc;
-  LinearIncidentWave &IncRef = Inc;
-  double rho = 1025;
-  double g = 9.81;
-  double buoy_mass = 1400; // kg
-  FS_HydroDynamics BuoyA5(IncRef, 1.0, g, rho);
 
   double dt = 0.005;
 
@@ -55,12 +49,20 @@ int main(int argc, char **argv) {
   while ((c = getopt(argc, argv, "h")) != -1) {
     switch (c) {
     case 'h':
-      std::cout << "Version " << BuoyA5.Version() << std::endl;
+      std::cout << "Version: " << PROJECT_VER << std::endl;
       std::cout << "Usage: PlotCoeffsExample" << std::endl;
       return 0;
       break;
     }
   }
+
+  const char *modes[6] = {"Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"};
+  LinearIncidentWave Inc;
+  LinearIncidentWave &IncRef = Inc;
+  double rho = 1025;
+  double g = 9.81;
+  double buoy_mass = 1400; // kg
+  FS_HydroDynamics BuoyA5(IncRef, 1.0, g, rho);
 
   BuoyA5.SetWaterplane(5.47, 1.37,
                        1.37); // Set area and 2nd moments of area for waterplane

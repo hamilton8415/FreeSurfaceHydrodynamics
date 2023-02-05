@@ -40,17 +40,15 @@ int main(int argc, char **argv) {
   }
   signal(SIGINT, signal_callback_handler);
 
-  LinearIncidentWave Inc;
-
-  // Inc.SetToPiersonMoskowitzSpectrum(1, 0, 300);
-  // Inc.SetToPiersonMoskowitzSpectrum(6, 0);
+  WaveSpectrumType SpectrumType = WaveSpectrumType::MonoChromatic;
   double A = 1;
   double T = 12;
   double phase = 0 * M_PI / 180.0;
   double beta = 180 * M_PI / 180.0;
+  unsigned int seed = 0;
 
   int c;
-  while ((c = getopt(argc, argv, ":a:t:p:b:h")) != -1) {
+  while ((c = getopt(argc, argv, "ha:t:p:b:s:S:")) != -1) {
     switch (c) {
     case 'a':
       A = atof(optarg);
@@ -64,20 +62,66 @@ int main(int argc, char **argv) {
     case 'b':
       beta = atof(optarg)*M_PI/180.0;
       break;
+    case 's':
+      seed = atof(optarg);
+      break;
+    case 'S':
+      if(*optarg == 'P')
+        SpectrumType = WaveSpectrumType::PiersonMoskowitz;
+      if(*optarg == 'B')
+        SpectrumType = WaveSpectrumType::Bretschneider;
+      if(*optarg == 'C')
+        SpectrumType = WaveSpectrumType::Custom;
+      break;
     case 'h':
-      std::cout << "Version " << Inc.Version() << std::endl;
-      std::cout << "Usage: IncidentWaveExample [-atpbh]" << std::endl;
+      std::cout << "Version: " << PROJECT_VER << std::endl;
+      std::cout << "Usage: IncidentWaveExample [-atpbch]" << std::endl;
       std::cout << " For example:" << std::endl;
       std::cout << "  [-a 2.0] sets the incident wave amplitude to 2.0 meters" <<std::endl;
-      std::cout << "  [-t 6.0] sets the incident wave period to 6.0 seconds" <<std::endl;
+      std::cout << "  [-t -6.0] sets the monochromatic incident wave period to 6.0 seconds" <<std::endl;
+      std::cout << "  [-t 8.0] sets the peak period of an Pierson Moskowitz incident wave to 8.0 seconds" <<std::endl;
       std::cout << "  [-p 45.0] sets the incident wave phase angle to 45.0 degrees" <<std::endl;
       std::cout << "  [-b 30.0] sets the incident wave direction to 30.0 degrees" <<std::endl;
+      std::cout << "  [-s 30.0] sets the random seed to 42" <<std::endl;
+      std::cout << "  [-S char] Sets Spectrum, 'M' = MonoChromatic, 'P' = PiersonMoskwitz, 'B' = Bretschneider, 'C' = Custom" <<std::endl;
       return 0;
       break;
     }
   }
 
-  Inc.SetToMonoChromatic(A, T, phase, beta);
+LinearIncidentWave Inc(seed);
+switch (SpectrumType) {
+  case WaveSpectrumType::MonoChromatic :
+      Inc.SetToMonoChromatic(A, T, phase, beta);
+    break;
+  case WaveSpectrumType::PiersonMoskowitz :
+    Inc.SetToPiersonMoskowitzSpectrum(2*A,beta);
+    T = Inc.m_Tp;
+    break;
+  case WaveSpectrumType::Bretschneider :
+      Inc.SetToBretschneiderSpectrum(2*A,T,beta);
+
+    break;
+  case WaveSpectrumType::Custom :
+    std::vector<double> omega;
+    std::vector<double> S;
+    double grav = 9.81;
+    double w0 = sqrt(.21 * grav / (2*A));
+    double a = 0.0081;
+    double b = 0.74;
+    int n_spectrum = 100;
+    double d_omega = MAX_FREQ * 2 * M_PI / n_spectrum;
+
+    for (int i = 0; i < n_spectrum; i++) {
+      double w = d_omega* (i + 1); 
+      omega.push_back(w);
+      S.push_back((a * grav * grav / pow(w, 5)) * exp(-b * pow(w0 / w, 4)));
+      }
+    Inc.SetToCustomSpectrum(omega,S,beta);
+    T = 2*M_PI*sqrt((2*A)/grav)/0.4019;
+    break;
+}
+
   double k = pow(2 * M_PI / T, 2) / 9.81;
   std::cout << Inc << std::endl;
 
@@ -87,7 +131,7 @@ int main(int argc, char **argv) {
     double x = 0;
     double y = 0;
     double xx = x * cos(beta) + y * sin(beta);
-    for (double t = 0; t < 4 * T; t += .1) {
+    for (double t = 0; t < 10 * T; t += .1) {
       pts_t.push_back(t);
       pts_eta.push_back(Inc.eta(x, y, t));
       pts_eta_true.push_back(A * cos(k * xx - 2 * M_PI * t / T + phase));

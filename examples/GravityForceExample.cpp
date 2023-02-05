@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <vector>
 
+#include "config.h"
 #include "FS_Hydrodynamics.hpp"
 #include "LinearIncidentWave.hpp"
 
@@ -62,7 +63,7 @@ int c;
       A = atof(optarg);
       break;
     case 'h':
-      std::cout << "Version " << BuoyA5.Version() << std::endl;
+      std::cout << "Version: " << PROJECT_VER << std::endl;
       std::cout << "Usage: GravityForceExample [-ah]" << std::endl;
       std::cout << " For example:" << std::endl;
       std::cout << "  [-a 2.0] sets the body motion amplitude to 2.0 meters" <<std::endl;

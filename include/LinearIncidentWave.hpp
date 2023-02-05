@@ -23,7 +23,7 @@
 #define DEFAULT_N_PHASES 300
 #define MAX_FREQ .3  // Hz
 
-enum class WaveSpectrumType {MonoChromatic, PiersonMoskowitz, UserSupplied};
+enum class WaveSpectrumType {MonoChromatic, Bretschneider, PiersonMoskowitz, Custom};
 
 /**
 \brief The IncidentWave class generates wave heights and fluid velocities at specified points and times.
@@ -41,13 +41,18 @@ class LinearIncidentWave : public IncidentWave
 {
 public:
   LinearIncidentWave();
-  LinearIncidentWave(double L, double g, double rho);
-  friend std::ostream & operator<<(std::ostream & out, const LinearIncidentWave & IncWave);
-  void SetToPiersonMoskowitzSpectrum(double Hs, double beta);
-  void SetToPiersonMoskowitzSpectrum(double Hs, double Tp, double beta, int n_phases);
+  LinearIncidentWave(unsigned int seed);
   void SetToMonoChromatic(double A, double T, double phase, double beta);
+  void SetToPiersonMoskowitzSpectrum(double Hs, double beta);
+  void SetToPiersonMoskowitzSpectrum(double Hs, double beta, int n_phases);
+  void SetToPiersonMoskowitzSpectrum(double Hs, double UnusedTp, double beta);
+  void SetToPiersonMoskowitzSpectrum(double Hs, double UnusedTp, double beta, int n_phases);
+  void SetToBretschneiderSpectrum(double Hs, double Tp, double beta);
+  void SetToBretschneiderSpectrum(double Hs, double Tp, double beta, int n_phases);
+  void SetToCustomSpectrum(std::vector<double> omega, std::vector<double> S, double beta);
+  void SetToCustomSpectrum(std::vector<double> omega, std::vector<double> S, double beta, int n_phases);
+  friend std::ostream & operator<<(std::ostream & out, const LinearIncidentWave & IncWave);
   double eta(double x, double y, double t);
-  // Eigen::VectorXd eta(double x, double y, Eigen::VectorXd t);
   double etadot(double x, double y, double t);
   std::string Version();
   int MajorVersionNumber();

@@ -53,6 +53,7 @@ public:
   void SetToCustomSpectrum(std::vector<double> omega, std::vector<double> S, double beta, int n_phases);
   friend std::ostream & operator<<(std::ostream & out, const LinearIncidentWave & IncWave);
   double eta(double x, double y, double t);
+  double eta(double x, double y, double t, double *deta_dx, double *deta_dy);
   double etadot(double x, double y, double t);
   std::string Version();
   int MajorVersionNumber();

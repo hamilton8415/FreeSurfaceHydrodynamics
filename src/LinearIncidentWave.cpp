@@ -240,6 +240,26 @@ double LinearIncidentWave::eta(double x, double y, double t)
 // return -m_A.dot(temp);  //With -03, these two approaches are equally fast/slow
 }
 
+double LinearIncidentWave::eta(double x, double y, double t, double *deta_dx, double *deta_dy)
+{
+  double xx = x * cos(m_beta) + y * sin(m_beta);
+
+  double eta = 0;
+  for (int i = 0; i < m_A.size(); i++) {
+    eta = eta + m_A(i) * cos(m_k(i) * xx - m_omega(i) * t + m_phases(i));
+  }
+
+  double deta_dxx = 0;
+  for (int i = 0; i < m_A.size(); i++) {
+    deta_dxx = deta_dxx + -m_k(i) * m_A(i) * sin(m_k(i) * xx - m_omega(i) * t + m_phases(i));
+  }
+
+  *deta_dx = deta_dxx*cos(m_beta);  // deta/dx
+  *deta_dy = deta_dxx*sin(m_beta);  // deta/dy
+   
+  return eta;
+}
+
 double LinearIncidentWave::etadot(double x, double y, double t)
 {
   double xx = x * cos(m_beta) + y * sin(m_beta);

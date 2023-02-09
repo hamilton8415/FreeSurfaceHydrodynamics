@@ -152,9 +152,17 @@ switch (SpectrumType) {
   for (double t = 0; t <= 3 * dt; t += dt) {
     std::vector<double> pts_x;
     std::vector<double> pts_eta, pts_eta_true;
+    std::vector<double> pts_deta_dx, pts_deta_dy;
     for (double x = -1.5 * 2 * M_PI / k; x < 1.5 * 2 * M_PI / k; x += 2.0) {
+      double eta;
+      double detadx;
+      double detady;
+      eta = Inc.eta(x,y,t,&detadx,&detady);
       pts_x.push_back(x);
-      pts_eta.push_back(Inc.eta(x, y, t));
+      pts_eta.push_back(eta);
+      pts_deta_dx.push_back(detadx);
+      pts_deta_dy.push_back(detady);
+
       double xx = x * cos(beta) + y * sin(beta);
       pts_eta_true.push_back(A * cos(k * xx - 2 * M_PI * t / T + phase));
     }
@@ -167,9 +175,11 @@ switch (SpectrumType) {
     gp << "set xlabel '(m))'\n";
     gp << "set ylabel '(m)'\n";
     gp << "plot '-' w l title 'eta'"
-       << ",'-' w l title 'eta\\_true'\n";
+       << ",'-' w l title 'eta\\_true'"
+       << ",'-' w l title 'deta/dx'\n";
     gp.send1d(boost::make_tuple(pts_x, pts_eta));
     gp.send1d(boost::make_tuple(pts_x, pts_eta_true));
+    gp.send1d(boost::make_tuple(pts_x, pts_deta_dx));
   }
   std::cout << "Enter Ctrl-C to quit.  (Enter 'pkill gnuplot_qt' to clear "
                "plots if necessary)"

@@ -70,24 +70,15 @@ $(function() {
 <div class="title">FS_HydroDynamics Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="dynheader">
-Collaboration diagram for FS_HydroDynamics:</div>
-<div class="dyncontent">
-<div class="center"><img src="classFS__HydroDynamics__coll__graph.png" border="0" usemap="#aFS__HydroDynamics_coll__map" alt="Collaboration graph"/></div>
-<map name="aFS__HydroDynamics_coll__map" id="aFS__HydroDynamics_coll__map">
-<area shape="rect" title=" " alt="" coords="5,95,153,121"/>
-<area shape="rect" href="classIncidentWave.html" title="The IncidentWave class is a base class for Incident Wave implementations, which must at least provide..." alt="" coords="24,5,135,32"/>
-</map>
-<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0dc88c45899f6e881f80c82102a8f723"><td class="memItemLeft" align="right" valign="top"><a id="a0dc88c45899f6e881f80c82102a8f723"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>FS_HydroDynamics</b> (<a class="el" href="classIncidentWave.html">IncidentWave</a> &amp;IncWave)</td></tr>
-<tr class="separator:a0dc88c45899f6e881f80c82102a8f723"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26c1e7289b86c69dfb0462652d853053"><td class="memItemLeft" align="right" valign="top"><a id="a26c1e7289b86c69dfb0462652d853053"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>FS_HydroDynamics</b> (<a class="el" href="classIncidentWave.html">IncidentWave</a> &amp;IncWave, double L, double g, double rho)</td></tr>
-<tr class="separator:a26c1e7289b86c69dfb0462652d853053"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae16e068749f4c6a0869f5740f353b8a2"><td class="memItemLeft" align="right" valign="top"><a id="ae16e068749f4c6a0869f5740f353b8a2"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>FS_HydroDynamics</b> (double L, double g, double rho)</td></tr>
+<tr class="separator:ae16e068749f4c6a0869f5740f353b8a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4e7dc3813ff6c24326ecca76bec9b63"><td class="memItemLeft" align="right" valign="top"><a id="ab4e7dc3813ff6c24326ecca76bec9b63"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>AssignIncidentWave</b> (std::shared_ptr&lt; <a class="el" href="classIncidentWave.html">IncidentWave</a> &gt; I)</td></tr>
+<tr class="separator:ab4e7dc3813ff6c24326ecca76bec9b63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8b2c141c2da01da430c82560f18084a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFS__HydroDynamics.html#ae8b2c141c2da01da430c82560f18084a">ReadWAMITData_FD</a> (std::string filenm)</td></tr>
 <tr class="memdesc:ae8b2c141c2da01da430c82560f18084a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read frequency domain coefficients from WAMIT.  <a href="classFS__HydroDynamics.html#ae8b2c141c2da01da430c82560f18084a">More...</a><br /></td></tr>
 <tr class="separator:ae8b2c141c2da01da430c82560f18084a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -211,9 +202,9 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>m_fd_filename<
 <tr class="memitem:af7254e9e3b95791cd4157c7665764f73"><td class="memItemLeft" align="right" valign="top"><a id="af7254e9e3b95791cd4157c7665764f73"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><b>m_td_filename</b></td></tr>
 <tr class="separator:af7254e9e3b95791cd4157c7665764f73"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a160c3246e7c215d72a54e857b703bdf5"><td class="memItemLeft" align="right" valign="top"><a id="a160c3246e7c215d72a54e857b703bdf5"></a>
-<a class="el" href="classIncidentWave.html">IncidentWave</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>_IncWave</b></td></tr>
-<tr class="separator:a160c3246e7c215d72a54e857b703bdf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab27a62bc512e6cf3d9b96f0ce27fed14"><td class="memItemLeft" align="right" valign="top"><a id="ab27a62bc512e6cf3d9b96f0ce27fed14"></a>
+std::shared_ptr&lt; <a class="el" href="classIncidentWave.html">IncidentWave</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_IncWave</b></td></tr>
+<tr class="separator:ab27a62bc512e6cf3d9b96f0ce27fed14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7fb9180591d7cdaabe8d5c3e73314f8"><td class="memItemLeft" align="right" valign="top"><a id="ad7fb9180591d7cdaabe8d5c3e73314f8"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><b>m_L</b> = 1</td></tr>
 <tr class="separator:ad7fb9180591d7cdaabe8d5c3e73314f8"><td class="memSeparator" colspan="2">&#160;</td></tr>

@@ -139,18 +139,22 @@ int main(int argc, char **argv) {
   }
 
   const char *modes[6] = {"Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"};
-  LinearIncidentWave Inc;
-  LinearIncidentWave &IncRef = Inc;
+
+  std::shared_ptr<LinearIncidentWave> Inc = std::make_shared<LinearIncidentWave> ();
+
   double rho = 1025;
   double g = 9.81;
   double buoy_mass = 1400; // kg
-  FS_HydroDynamics BuoyA5(IncRef, 1.0, g, rho);
+  FS_HydroDynamics BuoyA5;
 
   double omega = 2 * M_PI / Tp;
   double tf = 2.0 * Tp;
   double dt = 0.005;
 
-  Inc.SetToMonoChromatic(A, Tp, phase, beta);
+  Inc->SetToMonoChromatic(A, Tp, phase, beta);
+
+  BuoyA5.AssignIncidentWave(Inc);
+
   BuoyA5.SetWaterplane(5.47, 1.37,
                        1.37); // Set area and 2nd moments of area for waterplane
   BuoyA5.SetCOB(0, 0,
@@ -247,7 +251,7 @@ int main(int argc, char **argv) {
       std::vector<double> pts_eta;
       for (size_t i = 0; i <= steps; i++) {
         pts_t.push_back(times[i]);
-        pts_eta.push_back(Inc.eta(0.0, 0.0, times[i]));
+        pts_eta.push_back(Inc->eta(0.0, 0.0, times[i]));
         pts_x0.push_back(x_vec[i][0]);
         pts_x1.push_back(x_vec[i][1]);
         pts_x.push_back(A * std::abs(Xi) *

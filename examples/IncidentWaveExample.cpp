@@ -89,7 +89,11 @@ int main(int argc, char **argv) {
     }
   }
 
-LinearIncidentWave Inc(seed);
+LinearIncidentWave Inc;
+
+if(seed > 0)
+  Inc.SetSeed(seed);
+
 switch (SpectrumType) {
   case WaveSpectrumType::MonoChromatic :
       Inc.SetToMonoChromatic(A, T, phase, beta);

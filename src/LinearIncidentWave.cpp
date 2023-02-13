@@ -31,8 +31,14 @@ LinearIncidentWave::LinearIncidentWave() : m_grav(9.81), m_rho(1025)
     std::srand(time(0));
 }
 
-/// \brief Constructor, defaults to monotchromatic wave and default gravity and density
+/// \brief Constructor, sets seed and defaults to monotchromatic wave and default gravity and density
 LinearIncidentWave::LinearIncidentWave(unsigned int seed) : m_grav(9.81), m_rho(1025)
+{
+  SetSeed(seed);
+}
+
+/// \brief Sets seed to specified value
+void LinearIncidentWave::SetSeed(unsigned int seed) 
 {
   if(seed == 0)
     std::srand(time(0));

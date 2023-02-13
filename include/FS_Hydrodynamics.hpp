@@ -17,6 +17,7 @@
 #include <Eigen/Dense>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "IncidentWave.hpp"
 
@@ -28,9 +29,11 @@ class FS_HydroDynamics
 {
 public:
   double m_gam = 0.15;
-  // FS_HydroDynamics();
-  explicit FS_HydroDynamics(IncidentWave & IncWave);
-  FS_HydroDynamics(IncidentWave & IncWave, double L, double g, double rho);
+  FS_HydroDynamics();
+  FS_HydroDynamics(double L, double g, double rho);
+
+  void AssignIncidentWave(std::shared_ptr<IncidentWave> I);
+
   void ReadWAMITData_FD(std::string filenm);
   void ReadWAMITData_TD(std::string filenm);
   void Plot_FD_Coeffs();
@@ -80,7 +83,7 @@ public:
   operator<<(std::ostream & out, const FS_HydroDynamics & f);
   std::string m_fd_filename;
   std::string m_td_filename;
-  IncidentWave & _IncWave;
+  std::shared_ptr<IncidentWave> _IncWave;
   double m_L = 1;
   double m_grav = 9.81;
   double m_rho = 1025;

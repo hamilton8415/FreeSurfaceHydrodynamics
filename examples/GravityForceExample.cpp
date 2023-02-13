@@ -27,7 +27,6 @@
 
 #include "config.h"
 #include "FS_Hydrodynamics.hpp"
-#include "LinearIncidentWave.hpp"
 
 void signal_callback_handler(int signum) {
   std::string s = "pkill gnuplot_qt";
@@ -43,12 +42,9 @@ int main(int argc, char **argv) {
   signal(SIGINT, signal_callback_handler);
 
   const char *modes[6] = {"Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"};
-  LinearIncidentWave Inc;
-  LinearIncidentWave &IncRef = Inc;
   double rho = 1025;
   double g = 9.81;
   double buoy_mass = 1400; // kg
-  FS_HydroDynamics BuoyA5(IncRef, 1.0, g, rho);
 
   // Defaults
   double A = 1;  // .5 + ((float)(std::rand() % 20) / 10);
@@ -74,6 +70,8 @@ int c;
 
   double tf = 2.0 * Tp;
   double dt = 0.01;
+
+  FS_HydroDynamics BuoyA5;
 
   BuoyA5.SetCOG(0, 0,
                 -.24); // Set COG relative to waterplane coordinate system.

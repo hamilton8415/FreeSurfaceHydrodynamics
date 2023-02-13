@@ -42,6 +42,7 @@ class LinearIncidentWave : public IncidentWave
 public:
   LinearIncidentWave();
   LinearIncidentWave(unsigned int seed);
+  void SetSeed(unsigned int seed);
   void SetToMonoChromatic(double A, double T, double phase, double beta);
   void SetToPiersonMoskowitzSpectrum(double Hs, double beta);
   void SetToPiersonMoskowitzSpectrum(double Hs, double beta, int n_phases);

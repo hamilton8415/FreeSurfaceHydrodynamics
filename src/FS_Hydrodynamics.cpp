@@ -21,6 +21,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "config.h"
 #include "IncidentWave.hpp"
@@ -49,8 +50,8 @@ int CountLines(std::string filenm)
 	return count;
 }
 
-FS_HydroDynamics::FS_HydroDynamics(IncidentWave & IncWave)
-	: _IncWave(IncWave), m_L{1.0}, m_grav{9.81}, m_rho{1025}
+FS_HydroDynamics::FS_HydroDynamics()
+	: m_L{1.0}, m_grav{9.81}, m_rho{1025}
 {
 	this->M.setZero();
 	this->c.setZero();
@@ -59,10 +60,10 @@ FS_HydroDynamics::FS_HydroDynamics(IncidentWave & IncWave)
   this->m_Area.setZero();
 }
 
+
 FS_HydroDynamics::FS_HydroDynamics(
-	IncidentWave & IncWave, double L, double g,
-	double rho)
-	: _IncWave(IncWave), m_L{L}, m_grav{g}, m_rho{rho}
+	double L, double g, double rho)
+	: m_L{L}, m_grav{g}, m_rho{rho}
 {
 	this->M.setZero();
 	this->c.setZero();
@@ -70,6 +71,11 @@ FS_HydroDynamics::FS_HydroDynamics(
   this->m_Cd.setZero();
   this->m_Area.setZero();
 }
+
+  void FS_HydroDynamics::AssignIncidentWave(std::shared_ptr<IncidentWave> I)
+  {
+  _IncWave = I;
+  }
 
 ///  \brief  Read frequency domain coefficients from WAMIT.
 ///
@@ -724,6 +730,12 @@ Eigen::VectorXd FS_HydroDynamics::ExcitingForce()
 {
 	Eigen::VectorXd ExctForces(6);
 
+	if(!_IncWave) //If _IncWave is null, no incident wave has been defined so no forces result.
+	{
+     ExctForces(0) = 0; ExctForces(1) = 0; ExctForces(2) = 0; ExctForces(3) = 0; ExctForces(4) = 0; ExctForces(5) = 0; 
+     return ExctForces;
+	}
+
 	if (_exc_tstep_index ==
 	    STORAGE_MULTIPLIER * _n_exc_intpts -
 	    1) // Fill in initial values of eta the first time.
@@ -733,13 +745,13 @@ Eigen::VectorXd FS_HydroDynamics::ExcitingForce()
 		     STORAGE_MULTIPLIER * _n_exc_intpts - _n_exc_intpts;
 		     _exc_tstep_index--)
 		{
-			_eta0(_exc_tstep_index) = _IncWave.eta(0, 0, _t_eta);
+			_eta0(_exc_tstep_index) = _IncWave->eta(0, 0, _t_eta);
 			_t_eta += m_dt;
 		}
 	}
 
 	// Compute next needed wave-elevation, note this is a bit in the future..
-	_eta0(_exc_tstep_index) = _IncWave.eta(0, 0, _t_eta);
+	_eta0(_exc_tstep_index) = _IncWave->eta(0, 0, _t_eta);
 	_t_eta += m_dt;
 
 	// Compute convolution integrals, no need to adjust ends in trap rule since

@@ -24,6 +24,7 @@
 #include <string>
 #include <unistd.h>
 #include <vector>
+#include <memory>
 
 #include "config.h"
 #include "FS_Hydrodynamics.hpp"
@@ -78,18 +79,21 @@ int main(int argc, char **argv) {
   }
 
   const char *modes[6] = {"Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"};
-  LinearIncidentWave Inc;
-  LinearIncidentWave &IncRef = Inc;
+  std::shared_ptr<LinearIncidentWave> Inc = std::make_shared<LinearIncidentWave> ();
   double rho = 1025;
   double g = 9.81;
   double buoy_mass = 1400; // kg
-  FS_HydroDynamics BuoyA5(IncRef, 1.0, g, rho);
+  FS_HydroDynamics BuoyA5;
+
 
   double tf = 3.0 * Tp;
   double omega = 2.0 * M_PI / Tp;
   double dt = 0.015;
 
-  Inc.SetToMonoChromatic(A, Tp, phase, beta);
+  Inc->SetToMonoChromatic(A, Tp, phase, beta);
+
+  BuoyA5.AssignIncidentWave(Inc);
+
   BuoyA5.SetWaterplane(5.47, 1.37,
                        1.37); // Set area and 2nd moments of area for waterplane
   BuoyA5.SetCOB(0, 0,
@@ -120,16 +124,16 @@ int main(int argc, char **argv) {
 
   for (int j = 0; j < 6; j++) { // j denotes direction of resulting force
     std::complex<double> Chi =
-        BuoyA5.WaveExcitingForceComponents(Inc.m_omega[0], j);
+        BuoyA5.WaveExcitingForceComponents(Inc->m_omega[0], j);
     std::vector<double> pts_F_TD, pts_F_FD, pts_eta;
     BuoyA5.SetTimestepSize(dt);
     for (int k = 0; k < pts_t.size(); k++) {
       pts_F_FD.push_back(
-          Inc.m_A[0] * Chi.real() *
+          Inc->m_A[0] * Chi.real() *
               cos(omega * pts_t[k] + phase * cos(180 * M_PI / 180)) -
-          Inc.m_A[0] * Chi.imag() *
+          Inc->m_A[0] * Chi.imag() *
               sin(omega * pts_t[k] + phase * cos(180 * M_PI / 180)));
-      pts_eta.push_back(Inc.eta(0, 0, pts_t[k]));
+      pts_eta.push_back(Inc->eta(0, 0, pts_t[k]));
       Eigen::VectorXd ExtForce(6);
       ExtForce = BuoyA5.ExcitingForce();
       pts_F_TD.push_back(ExtForce(j));

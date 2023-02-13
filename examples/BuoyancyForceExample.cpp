@@ -27,7 +27,6 @@
 
 #include "config.h"
 #include "FS_Hydrodynamics.hpp"
-#include "LinearIncidentWave.hpp"
 
 void signal_callback_handler(int signum) {
   std::string s = "pkill gnuplot_qt";
@@ -67,15 +66,14 @@ int main(int argc, char **argv) {
   }
 
   const char *modes[6] = {"Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"};
-  LinearIncidentWave Inc;
-  LinearIncidentWave &IncRef = Inc;
   double rho = 1025;
   double g = 9.81;
   double buoy_mass = 1400; // kg
-  FS_HydroDynamics BuoyA5(IncRef, 1.0, g, rho);
 
   double tf = 2.0 * Tp;
   double dt = 0.1;
+
+  FS_HydroDynamics BuoyA5;
 
   BuoyA5.SetWaterplane(5.47, 1.37,
                        1.37); // Set area and 2nd moments of area for waterplane

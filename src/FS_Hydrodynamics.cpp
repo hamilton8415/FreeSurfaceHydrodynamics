@@ -51,7 +51,7 @@ int CountLines(std::string filenm)
 }
 
 FS_HydroDynamics::FS_HydroDynamics()
-	: m_L{1.0}, m_grav{9.81}, m_rho{1025}
+	: m_L{1.0}, m_grav{9.80665}, m_rho{1025}
 {
 	this->M.setZero();
 	this->c.setZero();
@@ -70,6 +70,17 @@ FS_HydroDynamics::FS_HydroDynamics(
   this->m_b.setZero();
   this->m_Cd.setZero();
   this->m_Area.setZero();
+}
+
+
+void FS_HydroDynamics::SetGravity(double g)
+{
+  m_grav = g;
+}
+
+void FS_HydroDynamics::SetDensity(double rho)
+{
+  m_rho = rho;
 }
 
   void FS_HydroDynamics::AssignIncidentWave(std::shared_ptr<IncidentWave> I)

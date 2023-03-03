@@ -32,6 +32,9 @@ public:
   FS_HydroDynamics();
   FS_HydroDynamics(double L, double g, double rho);
 
+  void SetGravity(double g);
+  void SetDensity(double rho);
+
   void AssignIncidentWave(std::shared_ptr<IncidentWave> I);
 
   void ReadWAMITData_FD(std::string filenm);

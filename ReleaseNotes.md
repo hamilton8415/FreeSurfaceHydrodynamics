@@ -14,3 +14,6 @@
 
 1.2.0 - March 1, 2023.
 - Changed specification of Incident wave to a shared_ptr, instead of a reference.  API Change.
+
+1.2.1 - March 3, 2023.
+- Changed location of installed include files, removed "FreeSurfaceHydrodynamics" prefix directory

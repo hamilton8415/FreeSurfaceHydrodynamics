@@ -17,3 +17,6 @@
 
 1.2.1 - March 3, 2023.
 - Changed location of installed include files, removed "FreeSurfaceHydrodynamics" prefix directory
+
+1.2.2 - March 5, 2023.
+- Fixed missing dependence on pitch/roll for force due to gravity computation

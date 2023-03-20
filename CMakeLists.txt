@@ -56,7 +56,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1)
 
-if(CMAKE_CURRENT_SOURCE_DIR STRLESS CMAKE_SOURCE_DIR)  # In Root, inlcude targets for developers
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)  # In Root, inlcude targets for developers
   add_executable(IncidentWaveExample examples/IncidentWaveExample.cpp)
   target_link_libraries(IncidentWaveExample FreeSurfaceHydrodynamics)
   target_include_directories(IncidentWaveExample PRIVATE ${PROJECT_BINARY_DIR}/include ${gnuplot-iostream_INCLUDE_DIRS})

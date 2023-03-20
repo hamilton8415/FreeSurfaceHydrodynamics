@@ -56,54 +56,55 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1)
 
-add_executable(IncidentWaveExample examples/IncidentWaveExample.cpp)
-target_link_libraries(IncidentWaveExample FreeSurfaceHydrodynamics)
-target_include_directories(IncidentWaveExample PRIVATE ${PROJECT_BINARY_DIR}/include ${gnuplot-iostream_INCLUDE_DIRS})
+if(CMAKE_CURRENT_SOURCE_DIR STRLESS CMAKE_SOURCE_DIR)  # In Root, inlcude targets for developers
+  add_executable(IncidentWaveExample examples/IncidentWaveExample.cpp)
+  target_link_libraries(IncidentWaveExample FreeSurfaceHydrodynamics)
+  target_include_directories(IncidentWaveExample PRIVATE ${PROJECT_BINARY_DIR}/include ${gnuplot-iostream_INCLUDE_DIRS})
 
-add_executable(PlotCoeffsExample examples/PlotCoeffsExample.cpp)
-target_link_libraries(PlotCoeffsExample FreeSurfaceHydrodynamics)
-target_include_directories(PlotCoeffsExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
+  add_executable(PlotCoeffsExample examples/PlotCoeffsExample.cpp)
+  target_link_libraries(PlotCoeffsExample FreeSurfaceHydrodynamics)
+  target_include_directories(PlotCoeffsExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
 
-add_executable(BuoyancyForceExample examples/BuoyancyForceExample.cpp)
-target_link_libraries(BuoyancyForceExample FreeSurfaceHydrodynamics)
-target_include_directories(BuoyancyForceExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
+  add_executable(BuoyancyForceExample examples/BuoyancyForceExample.cpp)
+  target_link_libraries(BuoyancyForceExample FreeSurfaceHydrodynamics)
+  target_include_directories(BuoyancyForceExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
 
-add_executable(GravityForceExample examples/GravityForceExample.cpp)
-target_link_libraries(GravityForceExample FreeSurfaceHydrodynamics)
-target_include_directories(GravityForceExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
+  add_executable(GravityForceExample examples/GravityForceExample.cpp)
+  target_link_libraries(GravityForceExample FreeSurfaceHydrodynamics)
+  target_include_directories(GravityForceExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
 
-add_executable(RadiationForceExample examples/RadiationForceExample.cpp)
-target_link_libraries(RadiationForceExample FreeSurfaceHydrodynamics)
-target_include_directories(RadiationForceExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
+  add_executable(RadiationForceExample examples/RadiationForceExample.cpp)
+  target_link_libraries(RadiationForceExample FreeSurfaceHydrodynamics)
+  target_include_directories(RadiationForceExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
 
-add_executable(ExcitingForceExample examples/ExcitingForceExample.cpp)
-target_link_libraries(ExcitingForceExample FreeSurfaceHydrodynamics)
-target_include_directories(ExcitingForceExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
+  add_executable(ExcitingForceExample examples/ExcitingForceExample.cpp)
+  target_link_libraries(ExcitingForceExample FreeSurfaceHydrodynamics)
+  target_include_directories(ExcitingForceExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
 
-add_executable(MotionExample examples/MotionExample.cpp)
-target_link_libraries(MotionExample FreeSurfaceHydrodynamics)
-target_include_directories(MotionExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
+  add_executable(MotionExample examples/MotionExample.cpp)
+  target_link_libraries(MotionExample FreeSurfaceHydrodynamics)
+  target_include_directories(MotionExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})
 
-file(COPY examples/example_hydrodynamic_coeffs DESTINATION .)
+  file(COPY examples/example_hydrodynamic_coeffs DESTINATION .)
 
-install(TARGETS ${PROJECT_NAME} EXPORT FreeSurfaceHydrodynamicsConfig
+  install(TARGETS ${PROJECT_NAME} EXPORT FreeSurfaceHydrodynamicsConfig
     ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     FILES_MATCHING PATTERN "*.hpp")
 
-install(DIRECTORY ${PROJECT_BINARY_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  install(DIRECTORY ${PROJECT_BINARY_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-install(EXPORT FreeSurfaceHydrodynamicsConfig DESTINATION share/FreeSurfaceHydrodynamics/cmake)
+  install(EXPORT FreeSurfaceHydrodynamicsConfig DESTINATION share/FreeSurfaceHydrodynamics/cmake)
 
-install(FILES cmake/etc/ld.so.conf.d/${PROJECT_NAME}.conf DESTINATION /etc/ld.so.conf.d/) 
+  install(FILES cmake/etc/ld.so.conf.d/${PROJECT_NAME}.conf DESTINATION /etc/ld.so.conf.d/) 
 
-export(TARGETS ${PROJECT_NAME} FILE FreeSurfaceHydrodynamicsConfig.cmake)
+  export(TARGETS ${PROJECT_NAME} FILE FreeSurfaceHydrodynamicsConfig.cmake)
 
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+  set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-include(Packing)
-
+  include(Packing)
+endif()

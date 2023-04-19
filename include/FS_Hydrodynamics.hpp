@@ -87,9 +87,9 @@ public:
   std::string m_fd_filename;
   std::string m_td_filename;
   std::shared_ptr<IncidentWave> _IncWave;
-  double m_L = 1;
-  double m_grav = 9.81;
-  double m_rho = 1025;
+  double m_L{1.0};
+  double m_grav{9.81};
+  double m_rho{1025};
 
   //Linear and Viscous Damping coefficients
   Eigen::VectorXd m_b;

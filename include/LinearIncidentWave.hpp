@@ -63,16 +63,16 @@ public:
 
 public:
   WaveSpectrumType m_SpectrumType = WaveSpectrumType::MonoChromatic;
-  double m_grav = 9.81;
-  double m_rho = 1025;
+  double m_grav{9.81};
+  double m_rho{1025.};
   Eigen::VectorXd m_Spectrum;
   Eigen::VectorXd m_A;
   Eigen::VectorXd m_omega;
   Eigen::VectorXd m_k;
   Eigen::VectorXd m_phases;
-  double m_beta = 0;
-  double m_Hs = 1;
-  double m_Tp = 10;
+  double m_beta{0.};
+  double m_Hs{1.};
+  double m_Tp{10.};
   std::vector<Eigen::Matrix<double, Eigen::Dynamic, 1>> fd_Pha_Xi;
 };
 

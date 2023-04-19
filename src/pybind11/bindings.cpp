@@ -25,6 +25,7 @@ PYBIND11_MODULE(fshd, m) {
                std::shared_ptr<LinearIncidentWave> >(m, "LinearIncidentWave")
         .def(py::init<unsigned int>(),
              py::arg("seed")=0)
+
         .def("SetToMonoChromatic", &LinearIncidentWave::SetToMonoChromatic,
              py::arg("A"), py::arg("T"), py::arg("phase"), py::arg("beta"))
         .def("SetToBretschneiderSpectrum",
@@ -37,6 +38,7 @@ PYBIND11_MODULE(fshd, m) {
                      double, double, int
                  >(&LinearIncidentWave::SetToPiersonMoskowitzSpectrum),
              py::arg("Hs"), py::arg("beta"), py::arg("n_phases")=DEFAULT_N_PHASES)
+
         .def("eta",
              py::overload_cast<
                      double, double, double
@@ -53,10 +55,12 @@ PYBIND11_MODULE(fshd, m) {
                      double, double, double
                  >(&LinearIncidentWave::etadot),
              py::arg("x"), py::arg("y"), py::arg("t"))
+
         .def("Version", &LinearIncidentWave::Version)
         .def("MajorVersionNumber", &LinearIncidentWave::MajorVersionNumber)
         .def("MinorVersionNumber", &LinearIncidentWave::MinorVersionNumber)
         .def("PatchVersionNumber", &LinearIncidentWave::PatchVersionNumber)
+
         .def("__str__",
              [](const LinearIncidentWave & liw) {
                  std::stringstream ss;
@@ -153,8 +157,30 @@ PYBIND11_MODULE(fshd, m) {
              py::arg("x"))
         .def("RadiationForce", &FS_HydroDynamics::RadiationForce,
              py::arg("last_xddot"))
-        .def("ExcitingForce", &FS_HydroDynamics::ExcitingForce);
+        .def("ExcitingForce", &FS_HydroDynamics::ExcitingForce)
 
+        .def("ComplexAmplitude",
+             py::overload_cast<
+                     double
+                 >(&FS_HydroDynamics::ComplexAmplitude),
+             py::arg("omega"))
+        .def("ComplexAmplitude",
+             py::overload_cast<
+                     double, int
+                 >(&FS_HydroDynamics::ComplexAmplitude),
+             py::arg("omega"), py::arg("mode"))
+
+        .def("Version", &FS_HydroDynamics::Version)
+        .def("MajorVersionNumber", &FS_HydroDynamics::MajorVersionNumber)
+        .def("MinorVersionNumber", &FS_HydroDynamics::MinorVersionNumber)
+        .def("PatchVersionNumber", &FS_HydroDynamics::PatchVersionNumber)
+
+        .def("__str__",
+             [](const FS_HydroDynamics & self) {
+                 std::stringstream ss;
+                 ss << self;
+                 return ss.str();
+             });
 
 }
 

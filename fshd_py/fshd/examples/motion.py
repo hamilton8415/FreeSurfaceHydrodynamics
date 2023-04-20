@@ -1,6 +1,11 @@
 #!/usr/bin/python3
 
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 import numpy as np
+import scipy.integrate as spinteg
 
 from fshd import LinearIncidentWave, FS_HydroDynamics
 
@@ -8,8 +13,44 @@ from fshd import LinearIncidentWave, FS_HydroDynamics
 M_PI = 3.141592653589793238462643383
 
 
+# The rhs of x' = f(x) defined as a class
+class SingleModeMotionRHS(object):
+    def __init__(self, body):
+        self.FloatingBody = body
+        self.last_accel = 0
+        self.mode = 0
+
+    # x[0] = position
+    # x[1] = velocity
+    def __call__(self, t, x):
+        dxdt = np.zeros_like(x, dtype=np.float64)
+        pos = np.zeros((6, 1), dtype=np.float64)
+        pos[self.mode] = x[0]
+        vel = np.zeros((6, 1), dtype=np.float64)
+        vel[self.mode] = x[1]
+        F_LinDamping = self.FloatingBody.LinearDampingForce(vel)
+        F_B = self.FloatingBody.BuoyancyForce(pos)
+        F_G = self.FloatingBody.GravityForce(pos)
+        accel = np.zeros((6, 1), dtype=np.float64)
+        accel[self.mode] = self.last_accel
+        F_R = -self.FloatingBody.RadiationForce(accel)
+        F_E = self.FloatingBody.ExcitingForce()
+        dxdt[0] = x[1]
+        b = 0.1
+        dxdt[1] = \
+            (F_LinDamping[self.mode] + F_B[self.mode] + F_G[self.mode] + F_R[self.mode] + F_E[self.mode]) \
+            / (self.FloatingBody.M[self.mode, self.mode] \
+            + self.FloatingBody.AddedMass(10000.0, self.mode, self.mode))
+        self.last_accel = dxdt[1]
+
+        return dxdt
+
+
 def main():
     import argparse
+    import importlib.resources as ilr
+    import os
+
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', nargs=1, type=float, default=None,
                         help='(meters) sets the incident wave amplitude')
@@ -31,7 +72,7 @@ def main():
         A = args.a
     if args.t:
         Tp = args.t
-    if arg.p:
+    if args.p:
         phase = args.p * M_PI / 180.0
     if args.b:
         beta = args.b * M_PI / 180.0
@@ -62,9 +103,10 @@ def main():
     BuoyA5.SetVolume(buoy_mass / rho)
     BuoyA5.SetMass(buoy_mass)
 
-    # TODO(andermi) use importlib.resource
-    HydrodynamicsBaseFilename =
-      './example_hydrodynamic_coeffs/BuoyA5'
+    HydrodynamicsBaseFilename = \
+        ilr.files('fshd.examples').joinpath('example_hydrodynamic_coeffs',
+                                            'BuoyA5')
+    HydrodynamicsBaseFilename = str(HydrodynamicsBaseFilename)
     BuoyA5.ReadWAMITData_FD(HydrodynamicsBaseFilename)
     BuoyA5.ReadWAMITData_TD(HydrodynamicsBaseFilename)
     BuoyA5.SetTimestepSize(dt)
@@ -78,107 +120,93 @@ def main():
         tt = dt * k
         k += 1
         pts_t.append(tt)
-        pts_pos.append(A * cos(omega * tt + phase))
-        pts_vel.append(-A * omega * sin(omega * tt + phase))
-        pts_accel.append(-A * pow(omega, 2) * cos(omega * tt + phase))
+        pts_pos.append(A * np.cos(omega * tt + phase))
+        pts_vel.append(-A * omega * np.sin(omega * tt + phase))
+        pts_accel.append(-A * omega**2. * np.cos(omega * tt + phase))
 
-    I = np.diag([1500., 1500., 650.], dtype=np.float64)
+    I = np.diag([1500., 1500., 650.]).astype(np.float64)
     BuoyA5.SetI(I)
 
     b = np.array([300., 300., 900., 400., 400., 100.], dtype=np.float64)
-    BuoyA5.SetDampingCoeffs(b);
+    BuoyA5.SetDampingCoeffs(b)
 
-    """ # TODO(andermi) plotting
+    pts_T = []
+    pts_XiMod = [[] for _ in range(6)]
+    pts_XiPh = [[] for _ in range(6)]
 
-        std::vector<double> pts_T;
-        Eigen::Matrix<std::vector<double>, 6, 1> pts_XiMod, pts_XiPh;
+    dT = .01
+    for T in np.arange(dT, 24, dT):
+        pts_T.append(T)
+        w = 2. * M_PI / T
+        Xi = BuoyA5.ComplexAmplitude(w)
+        for jdx in range(6):
+            pts_XiMod[jdx].append(np.abs(Xi[jdx]))
+            pts_XiPh[jdx].append(np.angle(Xi[jdx]) * 180. / M_PI)
 
-        double dT = .01;
-        for (double T = dT; T < 24; T += dT) {
-          pts_T.push_back(T);
-          double w = 2 * M_PI / T;
-          auto Xi = BuoyA5.ComplexAmplitude(w);
-          for (int j = 0; j < 6; j++) {
-            pts_XiMod(j).push_back(std::abs(Xi(j)));
-            pts_XiPh(j).push_back(std::arg(Xi(j)) * 180 / M_PI);
-          }
-        }
+    fig_amp, ax_amp = plt.subplots(2, 3)
+    fig_amp.suptitle(f'RAO Amplitude')
+    fig_ang, ax_ang = plt.subplots(2, 3)
+    fig_ang.suptitle(f'RAO Phase Angle (deg)')
+    for jdx in range(6):
+        ax_amp_jdx = ax_amp[jdx // 3][jdx % 3]
+        ax_amp_jdx.plot(pts_T, pts_XiMod[jdx])
+        ax_amp_jdx.set_xlabel('Wave Period (s)')
+        ax_amp_jdx.set_ylabel(f'{modes[jdx]}')
 
-        for (int j = 0; j < 6; j++) {
-          Gnuplot gp1;
-          gp1 << "set term qt title  '" << modes[j] << " RAO Amplitude'\n";
-          gp1 << "set grid\n";
-          gp1 << "set xlabel 'Wave Period (s)'\n";
-          gp1 << "plot '-' w l \n";
-          gp1.send1d(boost::make_tuple(pts_T, pts_XiMod(j)));
+        ax_ang_jdx = ax_ang[jdx // 3][jdx % 3]
+        ax_ang_jdx.plot(pts_T, pts_XiPh[jdx])
+        ax_ang_jdx.set_xlabel('Wave Period (s)')
+        ax_ang_jdx.set_ylabel(f'{modes[jdx]}')
 
-          Gnuplot gp2;
-          gp2 << "set term qt title  '" << modes[j] << " RAO Phase Angle (deg)'\n";
-          gp2 << "set grid\n";
-          gp2 << "set xlabel 'Wave Period (s)'\n";
-          gp2 << "plot '-' w l \n";
-          gp2.send1d(boost::make_tuple(pts_T, pts_XiPh(j)));
-        }
+    fig_amp.tight_layout()
+    fig_amp.savefig('motion_rao_amp.png')  # , bbox_inches='tight')
+    fig_ang.tight_layout()
+    fig_ang.savefig('motion_rao_ang.png')  # , bbox_inches='tight')
 
-    """
-
-    BuoyA5.SetTimestepSize(dt);
+    BuoyA5.SetTimestepSize(dt)
 
     for mode in range(len(modes)):
         Xi = BuoyA5.ComplexAmplitude(2. * M_PI / Tp, mode)
 
-      std::vector<double> x(2);
-      x[0] = 0.0;  # initial position
-      x[1] = 0.0;  # initial velocity
+        x0 = np.array([0.,  # initial position
+                       0.],  # initial velocity
+                      dtype=np.float64)
 
-      double t_final = 10 * Tp;
-      # integrate_observ
-      std::vector<std::vector<double>> x_vec;
-      std::vector<double> times;
-      boost::numeric::odeint::euler<std::vector<double>> stepper;
-      SingleModeMotionRHS RHS(&BuoyA5);
-      RHS.mode = mode;
-      int steps = boost::numeric::odeint::integrate_const(
-          stepper, RHS, x, 0.0, t_final, dt,
-          push_back_state_and_time(x_vec, times));
+        t_final = 10 * Tp
+        t_span = (0.0, t_final)
+        t_eval = np.arange(0.0, t_final, dt)
 
-      # Output
-      std::vector<double> pts_t, pts_x0, pts_x1;
-      std::vector<double> pts_x;
-      std::vector<double> pts_eta;
-      for (size_t i = 0; i <= steps; i++) {
-        pts_t.push_back(times[i]);
-        pts_eta.push_back(Inc->eta(0.0, 0.0, times[i]));
-        pts_x0.push_back(x_vec[i][0]);
-        pts_x1.push_back(x_vec[i][1]);
-        pts_x.push_back(A * std::abs(Xi) *
-                        cos(2 * M_PI * times[i] / Tp - phase + std::arg(Xi)));
-      }
+        # integrate
+        RHS = SingleModeMotionRHS(BuoyA5)
+        RHS.mode = mode
+        soln = spinteg.solve_ivp(RHS, t_span=t_span, y0=x0, t_eval=t_eval)
+        steps = range(soln.t.shape[0])
 
-      Gnuplot gp;
-      gp << "set term qt title  '" << modes[mode] << " Motion Output'\n";
-      gp << "set grid\n";
-      gp << "set xlabel 't (s)'\n";
-      gp << "plot '-' w l title 'eta'"
-         << ",'-' w l title 'pos (td)'"
-         << ",'-' w l title 'pos (fd)'\n";
-      gp.send1d(boost::make_tuple(pts_t, pts_eta));
-      gp.send1d(boost::make_tuple(pts_t, pts_x0));
-      gp.send1d(boost::make_tuple(pts_t, pts_x));
-    }
+        # Output
+        pts_t = soln.t
+        pts_x0, pts_x1 = np.split(soln.y, 2)
+        pts_eta = np.array([Inc.eta(0.0, 0.0, t) for t in pts_t])
+        pts_x = A * np.abs(Xi) * np.cos(2. * M_PI * pts_t / Tp - phase + np.angle(Xi))
 
+        fig, ax = plt.subplots(3)
+        # fig.set_tight_layout(True)
+
+        ax[0].plot(pts_t, pts_eta)
+        ax[0].set_ylabel('eta')
+        ax[0].set_xlabel('t (s)')
+
+        ax[1].plot(pts_t, pts_x0.T)
+        ax[1].set_ylabel('pos (td)')
+        ax[1].set_xlabel('t (s)')
+
+        ax[2].plot(pts_t, pts_x)
+        ax[2].set_ylabel('pos (fd)')
+        ax[2].set_xlabel('t (s)')
+
+        fig.suptitle(f'{modes[mode]} Motion Output')
+        fig.tight_layout()
+        plt.savefig(f'motion_solution_{modes[mode]}.png')  # , bbox_inches='tight')
 
 
-
-def __name__=='__main__':
+if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-
-

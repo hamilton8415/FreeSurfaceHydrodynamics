@@ -180,7 +180,9 @@ PYBIND11_MODULE(fshd, m) {
                  std::stringstream ss;
                  ss << self;
                  return ss.str();
-             });
+             })
+
+        .def_readonly("M", &FS_HydroDynamics::M);
 
 }
 

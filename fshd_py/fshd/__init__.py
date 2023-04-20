@@ -1,1 +1,1 @@
-from fshd import LinearIncidentWave, FS_HydroDynamics
+from .fshd import LinearIncidentWave, FS_HydroDynamics

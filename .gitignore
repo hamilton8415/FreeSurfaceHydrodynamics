@@ -1,3 +1,8 @@
 build
 dist
 *.swp
+*.egg-info
+*.so
+*.png
+__pycache__
+*.pyc

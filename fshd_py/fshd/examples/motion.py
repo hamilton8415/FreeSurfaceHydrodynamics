@@ -52,13 +52,13 @@ def main():
     import os
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-a', nargs=1, type=float, default=None,
+    parser.add_argument('-a', type=float, default=None,
                         help='(meters) sets the incident wave amplitude')
-    parser.add_argument('-t', nargs=1, type=float, default=None,
+    parser.add_argument('-t', type=float, default=None,
                         help='(seconds) sets the incident wave period')
-    parser.add_argument('-p', nargs=1, type=float, default=None,
+    parser.add_argument('-p', type=float, default=None,
                         help='(degrees) sets the incident wave phase angle')
-    parser.add_argument('-b', nargs=1, type=float, default=None,
+    parser.add_argument('-b', type=float, default=None,
                         help='(degrees) sets the incident wave direction')
     args = parser.parse_args()
 

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import matplotlib
-matplotlib.use('Agg')
+# matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 import numpy as np
@@ -159,9 +159,9 @@ def main():
         ax_ang_jdx.set_ylabel(f'{modes[jdx]}')
 
     fig_amp.tight_layout()
-    fig_amp.savefig('motion_rao_amp.png')  # , bbox_inches='tight')
+    # fig_amp.savefig('motion_rao_amp.png')  # , bbox_inches='tight')
     fig_ang.tight_layout()
-    fig_ang.savefig('motion_rao_ang.png')  # , bbox_inches='tight')
+    # fig_ang.savefig('motion_rao_ang.png')  # , bbox_inches='tight')
 
     BuoyA5.SetTimestepSize(dt)
 
@@ -189,7 +189,6 @@ def main():
         pts_x = A * np.abs(Xi) * np.cos(2. * M_PI * pts_t / Tp - phase + np.angle(Xi))
 
         fig, ax = plt.subplots(3)
-        # fig.set_tight_layout(True)
 
         ax[0].plot(pts_t, pts_eta)
         ax[0].set_ylabel('eta')
@@ -205,7 +204,8 @@ def main():
 
         fig.suptitle(f'{modes[mode]} Motion Output')
         fig.tight_layout()
-        plt.savefig(f'motion_solution_{modes[mode]}.png')  # , bbox_inches='tight')
+        # plt.savefig(f'motion_solution_{modes[mode]}.png')  # , bbox_inches='tight')
+    plt.show()
 
 
 if __name__ == '__main__':

@@ -56,6 +56,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1)
 
+option(BUILD_PYTHON_BINDINGS "build python module" OFF)
 
 find_package(Python REQUIRED COMPONENTS Interpreter Development)
 find_package(pybind11 CONFIG)

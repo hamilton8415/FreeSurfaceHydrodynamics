@@ -16,6 +16,13 @@ namespace py = pybind11;
 PYBIND11_MODULE(fshd, m) {
     m.attr("version") = PROJECT_VER;
 
+    py::enum_<WaveSpectrumType>(m, "WaveSpectrumType")
+        .value("MonoChromatic", WaveSpectrumType::MonoChromatic)
+        .value("Bretschneider", WaveSpectrumType::Bretschneider)
+        .value("PiersonMoskowitz", WaveSpectrumType::PiersonMoskowitz)
+        .value("Custom", WaveSpectrumType::Custom)
+        .export_values();
+
     /* IncidentWave Base*/
     py::class_<IncidentWave, std::shared_ptr<IncidentWave> >(m, "IncidentWave");
 
@@ -38,18 +45,21 @@ PYBIND11_MODULE(fshd, m) {
                      double, double, int
                  >(&LinearIncidentWave::SetToPiersonMoskowitzSpectrum),
              py::arg("Hs"), py::arg("beta"), py::arg("n_phases")=DEFAULT_N_PHASES)
+        .def("eta",
+             [](LinearIncidentWave & self,
+                const double & x, const double & y,
+                const double & t, bool compute_deta=false) {
+                 if (compute_deta) {
+                     double deta_dx = 0.0;
+                     double deta_dy = 0.0;
+                     double eta = self.eta(x, y, t, &deta_dx, &deta_dy);
+                     return std::vector<double>{eta, deta_dx, deta_dy};
+                 } else {
+                     return std::vector<double>{self.eta(x, y, t)};
+                 }
 
-        .def("eta",
-             py::overload_cast<
-                     double, double, double
-                 >(&LinearIncidentWave::eta),
-             py::arg("x"), py::arg("y"), py::arg("t"))
-        .def("eta",
-             py::overload_cast<
-                     double, double, double, double *, double *
-                 >(&LinearIncidentWave::eta),
-             py::arg("x"), py::arg("y"), py::arg("t"),
-             py::arg("deta_dx"), py::arg("deta_dy"))
+             },
+             py::arg("x"), py::arg("y"), py::arg("t"), py::arg("compute_deta"))
         .def("etadot",
              py::overload_cast<
                      double, double, double
@@ -66,7 +76,10 @@ PYBIND11_MODULE(fshd, m) {
                  std::stringstream ss;
                  ss << liw;
                  return ss.str();
-             });
+             })
+
+        .def_readonly("m_Tp", &LinearIncidentWave::m_Tp);
+
 
     /* FS_HydroDynamics */
     py::class_<FS_HydroDynamics>(m, "FS_HydroDynamics")

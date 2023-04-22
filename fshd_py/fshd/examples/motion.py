@@ -10,9 +10,6 @@ import scipy.integrate as spinteg
 from fshd import LinearIncidentWave, FS_HydroDynamics
 
 
-M_PI = 3.141592653589793238462643383
-
-
 # The rhs of x' = f(x) defined as a class
 class SingleModeMotionRHS(object):
     def __init__(self, body):
@@ -52,30 +49,20 @@ def main():
     import os
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-a', type=float, default=None,
+    parser.add_argument('-a', type=float, default=1.0,
                         help='(meters) sets the incident wave amplitude')
-    parser.add_argument('-t', type=float, default=None,
+    parser.add_argument('-t', type=float, default=5.0,
                         help='(seconds) sets the incident wave period')
-    parser.add_argument('-p', type=float, default=None,
+    parser.add_argument('-p', type=float, default=40.0,
                         help='(degrees) sets the incident wave phase angle')
-    parser.add_argument('-b', type=float, default=None,
+    parser.add_argument('-b', type=float, default=20.0,
                         help='(degrees) sets the incident wave direction')
     args = parser.parse_args()
 
-    # Defaults
-    A = 1.0
-    Tp = 5.0
-    phase = 40.0 * M_PI / 180.0
-    beta = 20.0 * M_PI / 180.0
-
-    if args.a:
-        A = args.a
-    if args.t:
-        Tp = args.t
-    if args.p:
-        phase = args.p * M_PI / 180.0
-    if args.b:
-        beta = args.b * M_PI / 180.0
+    A = args.a
+    Tp = args.t
+    phase = args.p * np.pi / 180.0
+    beta = args.b * np.pi / 180.0
 
     modes = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
@@ -86,7 +73,7 @@ def main():
     buoy_mass = 1400.  # kg
     BuoyA5 = FS_HydroDynamics()
 
-    omega = 2 * M_PI / Tp
+    omega = 2 * np.pi / Tp
     tf = 2.0 * Tp
     dt = 0.005
 
@@ -137,11 +124,11 @@ def main():
     dT = .01
     for T in np.arange(dT, 24, dT):
         pts_T.append(T)
-        w = 2. * M_PI / T
+        w = 2. * np.pi / T
         Xi = BuoyA5.ComplexAmplitude(w)
         for jdx in range(6):
             pts_XiMod[jdx].append(np.abs(Xi[jdx]))
-            pts_XiPh[jdx].append(np.angle(Xi[jdx]) * 180. / M_PI)
+            pts_XiPh[jdx].append(np.angle(Xi[jdx]) * 180. / np.pi)
 
     fig_amp, ax_amp = plt.subplots(2, 3)
     fig_amp.suptitle(f'RAO Amplitude')
@@ -166,7 +153,7 @@ def main():
     BuoyA5.SetTimestepSize(dt)
 
     for mode in range(len(modes)):
-        Xi = BuoyA5.ComplexAmplitude(2. * M_PI / Tp, mode)
+        Xi = BuoyA5.ComplexAmplitude(2. * np.pi / Tp, mode)
 
         x0 = np.array([0.,  # initial position
                        0.],  # initial velocity
@@ -186,7 +173,7 @@ def main():
         pts_t = soln.t
         pts_x0, pts_x1 = np.split(soln.y, 2)
         pts_eta = np.array([Inc.eta(0.0, 0.0, t) for t in pts_t])
-        pts_x = A * np.abs(Xi) * np.cos(2. * M_PI * pts_t / Tp - phase + np.angle(Xi))
+        pts_x = A * np.abs(Xi) * np.cos(2. * np.pi * pts_t / Tp - phase + np.angle(Xi))
 
         fig, ax = plt.subplots(3)
 

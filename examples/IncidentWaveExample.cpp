@@ -117,7 +117,7 @@ switch (SpectrumType) {
     double d_omega = MAX_FREQ * 2 * M_PI / n_spectrum;
 
     for (int i = 0; i < n_spectrum; i++) {
-      double w = d_omega* (i + 1); 
+      double w = d_omega* (i + 1);
       omega.push_back(w);
       S.push_back((a * grav * grav / pow(w, 5)) * exp(-b * pow(w0 / w, 4)));
       }

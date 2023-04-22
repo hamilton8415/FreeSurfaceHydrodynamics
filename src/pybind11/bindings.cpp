@@ -48,18 +48,18 @@ PYBIND11_MODULE(fshd, m) {
         .def("eta",
              [](LinearIncidentWave & self,
                 const double & x, const double & y,
-                const double & t, bool compute_deta=false) {
+                const double & t, bool compute_deta) {
                  if (compute_deta) {
                      double deta_dx = 0.0;
                      double deta_dy = 0.0;
                      double eta = self.eta(x, y, t, &deta_dx, &deta_dy);
-                     return std::vector<double>{eta, deta_dx, deta_dy};
+                     return std::variant<std::vector<double>, double>(std::vector<double>{eta, deta_dx, deta_dy});
                  } else {
-                     return std::vector<double>{self.eta(x, y, t)};
+                     return std::variant<std::vector<double>, double>(self.eta(x, y, t));
                  }
 
              },
-             py::arg("x"), py::arg("y"), py::arg("t"), py::arg("compute_deta"))
+             py::arg("x"), py::arg("y"), py::arg("t"), py::arg("compute_deta")=false)
         .def("etadot",
              py::overload_cast<
                      double, double, double
@@ -78,7 +78,9 @@ PYBIND11_MODULE(fshd, m) {
                  return ss.str();
              })
 
-        .def_readonly("m_Tp", &LinearIncidentWave::m_Tp);
+        .def_readonly("m_Tp", &LinearIncidentWave::m_Tp)
+        .def_readonly("m_omega", &LinearIncidentWave::m_omega)
+        .def_readonly("m_A", &LinearIncidentWave::m_A);
 
 
     /* FS_HydroDynamics */

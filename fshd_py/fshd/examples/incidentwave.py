@@ -85,10 +85,10 @@ def main():
     y = 0.
     xx = x * np.cos(beta) + y * np.sin(beta)
     for t in np.arange(0., 10.*T, 0.1):
-      pts_t.append(t)
-      eta, = Inc.eta(x, y, t, compute_deta=False)
-      pts_eta.append(eta)
-      pts_eta_true.append(A * np.cos(k * xx - 2. * np.pi * t / T + phase))
+        pts_t.append(t)
+        eta = Inc.eta(x, y, t)
+        pts_eta.append(eta)
+        pts_eta_true.append(A * np.cos(k * xx - 2. * np.pi * t / T + phase))
 
 
     fig, ax = plt.subplots(2)
@@ -106,7 +106,7 @@ def main():
 
     dt = 0.05 * T
     y = 0.
-    for t in np.arange(0., 3.*dt, dt):
+    for t in np.arange(0., 3.0*dt, dt):
         pts_x = []
         pts_eta = []
         pts_eta_true = []

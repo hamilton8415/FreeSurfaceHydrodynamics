@@ -85,32 +85,34 @@ def main():
             ExtForce = BuoyA5.ExcitingForce()
             pts_F_TD.append(ExtForce[j])
 
-        """
         # plot
-        Gnuplot gp;
-        gp << "set term qt title  '" << modes[j] << " Exciting Forces'\n";
-        gp < "set grid\n";
-        gp << "set xlabel 'time (s)'\n";
-        if (j < 3) {
-            gp << "set ylabel 'F (N)'\n";
-        } else {
-            gp << "set  ylabel 'M (N-m)'\n";
-        }
-        gp << "plot '-' w l title 'Time-Domain'"
-           << ",'-' w l title 'Freq-Domain'"
-           << ",'-' w l title 'eta(t)'\n";
-        gp.send1d(boost::make_tuple(pts_t, pts_F_TD));
-        gp.send1d(boost::make_tuple(pts_t, pts_F_FD));
-        gp.send1d(boost::make_tuple(pts_t, pts_eta));
-        gp << "set xlabel 'time (s)'\n";
-        if (j < 3) {
-            gp << "set ylabel 'F (N)'\n";
-        } else {
-            gp << "set  ylabel 'M (N-m)'\n";
-        }
-        gp << "replot\n";
-    }
-    """
+        fig, ax = plt.subplots(3)
+
+        if j < 3:
+            ylabel = 'F (N)'
+        else:
+            ylabel = 'M (N-m)'
+
+        ax[0].plot(pts_t, pts_F_TD)
+        ax[0].set_ylabel(ylabel)
+        ax[0].set_xlabel('time (s)')
+        ax[0].set_title('Time-Domain')
+
+        ax[1].plot(pts_t, pts_F_FD)
+        ax[1].set_ylabel(ylabel)
+        ax[1].set_xlabel('time (s)')
+        ax[1].set_title('Freq-Domain')
+
+        ax[2].plot(pts_t, pts_eta)
+        ax[2].set_ylabel(ylabel)
+        ax[2].set_xlabel('time (s)')
+        ax[2].set_title('eta(t)')
+
+        fig.suptitle(f'{modes[j]} Exciting Forces')
+        fig.tight_layout()
+
+    plt.show()
+
 
 if __name__ == '__main__':
     main()

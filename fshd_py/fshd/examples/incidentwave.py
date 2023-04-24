@@ -18,9 +18,6 @@ _wave_spectrum_type = dict(
 
 def main():
     import argparse
-    import importlib.resources as ilr
-    import os
-
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', type=float, default=1.0,
                         help='(meters) sets the incident wave amplitude')

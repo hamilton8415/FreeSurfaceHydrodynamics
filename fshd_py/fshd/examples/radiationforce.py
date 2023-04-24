@@ -5,7 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-from fshd import FS_HydroDynamics, LinearIncidentWave
+from fshd import FS_HydroDynamics
 
 
 def main():

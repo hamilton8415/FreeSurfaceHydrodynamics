@@ -31,7 +31,7 @@ def main():
                         help='sets the random seed')
     parser.add_argument('-S', type=str, default='M',
                         choices=['M', 'P', 'B', 'C'],
-                        help="Sets Spectrum:" \
+                        help='Sets Spectrum:' \
                                  + " 'M'onoChromatic" \
                                  + ", 'P'iersonMoskowitz" \
                                  + ", 'B'retschneider" \

@@ -75,7 +75,7 @@ def main():
     buoy_mass = 1400.  # kg
     BuoyA5 = FS_HydroDynamics()
 
-    omega = 2 * np.pi / Tp
+    omega = 2. * np.pi / Tp
     tf = 2.0 * Tp
     dt = 0.005
 
@@ -160,7 +160,7 @@ def main():
                        0.],  # initial velocity
                       dtype=np.float64)
 
-        t_final = 10 * Tp
+        t_final = 10. * Tp
         t_span = (0.0, t_final)
 
         # integrate

@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 import scipy.integrate as spinteg
+import ode
 
 from fshd import LinearIncidentWave, FS_HydroDynamics
 
@@ -35,9 +36,10 @@ class SingleModeMotionRHS(object):
         dxdt[0] = x[1]
         b = 0.1
         dxdt[1] = \
-            (F_LinDamping[self.mode] + F_B[self.mode] + F_G[self.mode] + F_R[self.mode] + F_E[self.mode]) \
+            (F_LinDamping[self.mode] + F_B[self.mode] + F_G[self.mode] \
+             + F_R[self.mode] + F_E[self.mode]) \
             / (self.FloatingBody.M[self.mode, self.mode] \
-            + self.FloatingBody.AddedMass(10000.0, self.mode, self.mode))
+               + self.FloatingBody.AddedMass(10000.0, self.mode, self.mode))
         self.last_accel = dxdt[1]
 
         return dxdt
@@ -113,7 +115,7 @@ def main():
     pts_XiMod = [[] for _ in range(6)]
     pts_XiPh = [[] for _ in range(6)]
 
-    dT = .01
+    dT = 0.01
     for T in np.arange(dT, 24, dT):
         pts_T.append(T)
         w = 2. * np.pi / T
@@ -130,12 +132,19 @@ def main():
         ax_amp_jdx = ax_amp[jdx // 3][jdx % 3]
         ax_amp_jdx.plot(pts_T, pts_XiMod[jdx])
         ax_amp_jdx.set_xlabel('Wave Period (s)')
-        ax_amp_jdx.set_ylabel(f'{modes[jdx]}')
+        ax_amp_jdx.set_title(f'{modes[jdx]}')
 
         ax_ang_jdx = ax_ang[jdx // 3][jdx % 3]
         ax_ang_jdx.plot(pts_T, pts_XiPh[jdx])
         ax_ang_jdx.set_xlabel('Wave Period (s)')
-        ax_ang_jdx.set_ylabel(f'{modes[jdx]}')
+        ax_ang_jdx.set_title(f'{modes[jdx]}')
+
+        if jdx < 6:
+            ax_amp_jdx.set_ylabel('meters')
+            ax_ang_jdx.set_ylabel('meters')
+        else:
+            ax_amp_jdx.set_ylabel('degrees')
+            ax_ang_jdx.set_ylabel('degrees')
 
     fig_amp.tight_layout()
     # fig_amp.savefig('motion_rao_amp.png')  # , bbox_inches='tight')
@@ -153,37 +162,53 @@ def main():
 
         t_final = 10 * Tp
         t_span = (0.0, t_final)
-        t_eval = np.arange(0.0, t_final, dt)
 
         # integrate
         RHS = SingleModeMotionRHS(BuoyA5)
         RHS.mode = mode
-        soln = spinteg.solve_ivp(RHS, t_span=t_span, y0=x0, t_eval=t_eval)
-        steps = range(soln.t.shape[0])
+
+        use_scipy = False
+        if use_scipy:
+            t_eval = np.arange(0.0, t_final, dt)
+            soln = spinteg.solve_ivp(RHS, t_span=t_span, y0=x0, t_eval=t_eval,
+                                     method='RK45', rtol=1e-6, atol=1e-6)
+            pts_t = soln.t
+            pts_x0, pts_x1 = soln.y[0, :], soln.y[1, :]
+
+        else:
+            tx = ode.Euler(RHS, x0, t_span, dt)
+            t, x = list(zip(*tx))
+            x = np.vstack(x)
+            pts_t = np.array(t)
+            pts_x0, pts_x1 = x[:, 0], x[:, 1]
 
         # Output
-        pts_t = soln.t
-        pts_x0, pts_x1 = np.split(soln.y, 2)
         pts_eta = np.array([Inc.eta(0.0, 0.0, t) for t in pts_t])
         pts_x = A * np.abs(Xi) * np.cos(2. * np.pi * pts_t / Tp - phase + np.angle(Xi))
 
-        fig, ax = plt.subplots(3)
+        fig, ax = plt.subplots(1)
 
-        ax[0].plot(pts_t, pts_eta)
-        ax[0].set_ylabel('eta')
-        ax[0].set_xlabel('t (s)')
+        color = 'tab:red'
+        ln1 = ax.plot(pts_t, pts_x0, 'r', label='pos (td)')
+        ln2 = ax.plot(pts_t, pts_x, '--g', label='pos (fd)')
+        ax.set_ylabel('meters', color=color)
+        ax.set_xlabel('t (s)')
+        ax.tick_params(axis='y', labelcolor=color)
 
-        ax[1].plot(pts_t, pts_x0.T)
-        ax[1].set_ylabel('pos (td)')
-        ax[1].set_xlabel('t (s)')
+        color = 'tab:blue'
+        ax2 = ax.twinx()
+        ln3 = ax2.plot(pts_t, pts_eta, ':b', label='eta')
+        ax2.set_ylabel('meters', color=color)
+        ax2.set_xlabel('t (s)')
+        ax2.tick_params(axis='y', labelcolor=color)
 
-        ax[2].plot(pts_t, pts_x)
-        ax[2].set_ylabel('pos (fd)')
-        ax[2].set_xlabel('t (s)')
+        lns = ln1 + ln2 + ln3
+        labs = [l.get_label() for l in lns]
+        ax.legend(lns, labs, bbox_to_anchor=(1.12, 1), loc='upper left', borderaxespad=0)
 
         fig.suptitle(f'{modes[mode]} Motion Output')
         fig.tight_layout()
-        # plt.savefig(f'motion_solution_{modes[mode]}.png')  # , bbox_inches='tight')
+
     plt.show()
 
 

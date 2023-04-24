@@ -86,27 +86,38 @@ def main():
             pts_F_TD.append(ExtForce[j])
 
         # plot
-        fig, ax = plt.subplots(3)
+        fig, ax = plt.subplots(2)
 
         if j < 3:
             ylabel = 'F (N)'
         else:
             ylabel = 'M (N-m)'
 
-        ax[0].plot(pts_t, pts_F_TD)
-        ax[0].set_ylabel(ylabel)
+        color = 'tab:red'
+        ax[0].plot(pts_t, pts_F_TD, color=color)
+        ax[0].set_ylabel(ylabel, color=color)
         ax[0].set_xlabel('time (s)')
+        ax[0].tick_params(axis='y', labelcolor=color)
         ax[0].set_title('Time-Domain')
 
-        ax[1].plot(pts_t, pts_F_FD)
-        ax[1].set_ylabel(ylabel)
+        color = 'tab:blue'
+        ax02 = ax[0].twinx()
+        ax02.plot(pts_t, pts_eta, ':', color=color)
+        ax02.set_ylabel('eta(t)', color=color)
+        ax02.tick_params(axis='y', labelcolor=color)
+
+        color = 'tab:red'
+        ax[1].plot(pts_t, pts_F_FD, color=color)
+        ax[1].set_ylabel(ylabel, color=color)
         ax[1].set_xlabel('time (s)')
+        ax[1].tick_params(axis='y', labelcolor=color)
         ax[1].set_title('Freq-Domain')
 
-        ax[2].plot(pts_t, pts_eta)
-        ax[2].set_ylabel(ylabel)
-        ax[2].set_xlabel('time (s)')
-        ax[2].set_title('eta(t)')
+        color = 'tab:blue'
+        ax12 = ax[1].twinx()
+        ax12.plot(pts_t, pts_eta, ':', color=color)
+        ax12.set_ylabel('eta(t) meters', color=color)
+        ax12.tick_params(axis='y', labelcolor=color)
 
         fig.suptitle(f'{modes[j]} Exciting Forces')
         fig.tight_layout()

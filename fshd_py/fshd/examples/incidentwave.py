@@ -91,22 +91,20 @@ def main():
         pts_eta_true.append(A * np.cos(k * xx - 2. * np.pi * t / T + phase))
 
 
-    fig, ax = plt.subplots(2)
+    fig, ax = plt.subplots(1)
 
-    ax[0].plot(pts_t, pts_eta)
-    ax[0].set_ylabel('eta (m)')
-    ax[0].set_xlabel('time (s)')
-
-    ax[1].plot(pts_t, pts_eta_true)
-    ax[1].set_ylabel('eta true (m)')
-    ax[1].set_xlabel('time (s)')
+    ax.plot(pts_t, pts_eta, 'r', label='eta(t)')
+    ax.plot(pts_t, pts_eta_true, '--g', label='eta_true(t)')
+    ax.set_ylabel('meters')
+    ax.set_xlabel('time (s)')
+    ax.legend()
 
     fig.suptitle(f'Incident Wave Elevation at Origin')
     fig.tight_layout()
 
     dt = 0.05 * T
     y = 0.
-    for t in np.arange(0., 3.0*dt, dt):
+    for t in np.arange(0., 4.0*dt, dt):
         pts_x = []
         pts_eta = []
         pts_eta_true = []
@@ -124,19 +122,25 @@ def main():
             xx = x * np.cos(beta) + y * np.sin(beta)
             pts_eta_true.append(A * np.cos(k * xx - 2. * np.pi * t / T + phase))
 
-        fig, ax = plt.subplots(3)
+        fig, ax = plt.subplots(1)
 
-        ax[0].plot(pts_x, pts_eta)
-        ax[0].set_ylabel('eta (m)')
-        ax[0].set_xlabel('meters')
+        color = 'tab:red'
+        ln1 = ax.plot(pts_x, pts_eta, 'r', label='eta (m)')
+        ax.set_ylabel('meters', color=color)
+        ax.tick_params(axis='y', labelcolor=color)
+        ax.set_xlabel('meters')
 
-        ax[1].plot(pts_x, pts_eta_true)
-        ax[1].set_ylabel('eta true (m)')
-        ax[1].set_xlabel('meters')
+        ln2 = ax.plot(pts_x, pts_eta_true, '--g', label='eta true (m)')
 
-        ax[2].plot(pts_x, pts_deta_dx)
-        ax[2].set_ylabel('deta/dx (m)')
-        ax[2].set_xlabel('meters')
+        color = 'tab:blue'
+        ax2 = ax.twinx()
+        ln3 = ax2.plot(pts_x, pts_deta_dx, 'b', label='deta/dx (m)')
+        ax2.set_ylabel('meters', color=color)
+        ax2.tick_params(axis='y', labelcolor=color)
+
+        lns = ln1 + ln2 + ln3
+        labs = [l.get_label() for l in lns]
+        ax.legend(lns, labs, loc=1)
 
         fig.suptitle(f'Incident Wave Elevation at {t = :.2f} (s)')
         fig.tight_layout()

@@ -98,18 +98,10 @@ def main():
     BuoyA5.ReadWAMITData_TD(HydrodynamicsBaseFilename)
     BuoyA5.SetTimestepSize(dt)
 
-    pts_t = []
-    pts_pos = []
-    pts_vel = []
-    pts_accel = []
-    k = 0
-    while k < tf / dt:
-        tt = dt * k
-        k += 1
-        pts_t.append(tt)
-        pts_pos.append(A * np.cos(omega * tt + phase))
-        pts_vel.append(-A * omega * np.sin(omega * tt + phase))
-        pts_accel.append(-A * omega**2. * np.cos(omega * tt + phase))
+    pts_t = dt * np.arange(0., tf / dt)
+    pts_pos = A * np.cos(omega * pts_t + phase)
+    pts_vel = -A * omega * np.sin(omega * pts_t + phase)
+    pts_accel = -A * omega**2. * np.cos(omega * pts_t + phase)
 
     I = np.diag([1500., 1500., 650.]).astype(np.float64)
     BuoyA5.SetI(I)

@@ -44,23 +44,6 @@ $ python3 -m fshd.examples.motion
 ```
 
 ## Examples
-
-Check command line options for examples with `-h`:
-```
-$ fshd_motion_example -h
-  -- OR --
-$ python3 -m fshd.examples.motion -h
-
-usage: fshd_motion_example [-h] [-a A] [-t T] [-p P] [-b B]
-
-options:
-  -h, --help  show this help message and exit
-  -a A        (meters) sets the incident wave amplitude
-  -t T        (seconds) sets the incident wave period
-  -p P        (degrees) sets the incident wave phase angle
-  -b B        (degrees) sets the incident wave direction
-```
-
 All available examples:
 ```
 $ python3 -m fshd.examples.buoyancyforce
@@ -81,4 +64,20 @@ fshd_incidentwave_example
 fshd_motion_example
 fshd_plotcoeffs_example
 fshd_radiationforce_example
+```
+
+Check command line options for examples with `-h`:
+```
+$ fshd_motion_example -h
+  -- OR --
+$ python3 -m fshd.examples.motion -h
+
+usage: fshd_motion_example [-h] [-a A] [-t T] [-p P] [-b B]
+
+options:
+  -h, --help  show this help message and exit
+  -a A        (meters) sets the incident wave amplitude
+  -t T        (seconds) sets the incident wave period
+  -p P        (degrees) sets the incident wave phase angle
+  -b B        (degrees) sets the incident wave direction
 ```

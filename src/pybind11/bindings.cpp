@@ -200,18 +200,3 @@ PYBIND11_MODULE(fshd, m) {
         .def_readonly("M", &FS_HydroDynamics::M)
         .def_readonly("fd_A_inf_freq", &FS_HydroDynamics::fd_A_inf_freq);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

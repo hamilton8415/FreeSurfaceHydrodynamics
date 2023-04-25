@@ -109,3 +109,7 @@ Currently, this library has a number of limitations that may be addressed in fut
 
 ## Source Code Documentation
 Doxygen generated documentation can be viewed here: https://hamilton8415.github.io/FreeSurfaceHydrodynamics/
+
+
+## Python Bindings
+Please refer to fshd_py/README.md for instructions/examples.

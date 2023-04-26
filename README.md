@@ -11,6 +11,9 @@ To build the library and examples from source, in the top-level directory of the
    $ make
    ```
 
+By default, python bindings are built, but they can be turned on/off with the cmake flag
+`-DBUILD_PYTHON_BINDINGS=<ON,OFF>`.
+
 ## Examples
 There are a number of example programs that exercise various portions of the library in an interactive way.  The source for these is in the examples directory and can be run from the build directory as indicated below.  Looking at the source code for these examples is a good way to understand the use of the library:
 
@@ -112,4 +115,7 @@ Doxygen generated documentation can be viewed here: https://hamilton8415.github.
 
 
 ## Python Bindings
+By default, the python bindings are built, but they can be turned on/off with the cmake flag
+`-DBUILD_PYTHON_BINDINGS=<ON,OFF>`.
+
 Please refer to fshd_py/README.md for instructions/examples.

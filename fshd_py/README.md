@@ -1,23 +1,23 @@
 # FreeSurfaceHydrodynamics Python Module (fshd)
 
+## C++ Libs Prerequisite
+Please ensure the C++ library has already been built by following the main `README.md`. By default,
+the python bindings are built, but they can be turned on/off with the cmake flag
+`-DBUILD_PYTHON_BINDINGS=<ON,OFF>`.
+
+Once the C++ library `libFreeSurfaceHydrodynamics.so` and bindings `fshd*.so` are built, the python package,
+`fshd_py` can be built.
+
 ## Build / Install
-Need to grab a few things for python build:
+Need to grab a few things for python `build --wheel`:
 ```
 $ sudo apt update
 $ sudo apt install python3-build python3-wheel python3-venv python3-virtualenv python3-pybind11
 ```
 
-Build C++ library from source with python binding flag:
-```
-$ mkdir build
-$ cd build
-$ cmake -DBUILD_PYTHON_BINDINGS=ON ..
-$ make
-```
-
 Navigate to the `fshd_py` python project:
 ```
-$ cd ../fshd_py
+$ cd <git_clone_root_dir>/fshd_py
 $ python3 -m build --wheel
 ```
 
@@ -26,11 +26,11 @@ Then, you can either install and use it:
 $ pip3 install dist/*.whl
 $ fshd_motion_example
   -- OR --
-import fshd
+import fshd  # in another project
 ```
 
 Or, you can try it out before installing (this method will also work after installing).
-If not installing, you will need to install python prerequisites:
+If not installing, you will need to install python prerequisites manually:
 
 ```
 $ sudo apt update

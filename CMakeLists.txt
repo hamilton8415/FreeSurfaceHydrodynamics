@@ -56,7 +56,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1)
 
-option(BUILD_PYTHON_BINDINGS "build FreeSurfaceHydrodynamics (fshd) python module" OFF)
+option(BUILD_PYTHON_BINDINGS "build FreeSurfaceHydrodynamics (fshd) python module" ON)
 if(BUILD_PYTHON_BINDINGS)
   find_package(Python REQUIRED COMPONENTS Interpreter Development)
   find_package(pybind11 CONFIG)

@@ -3,7 +3,7 @@ This is a library for computing the forces on a body in the presence of waves, a
 
 
 ## How to build
-This library requires `Boost`, `Eigen3`, and `pybind11`. Please ensure those are installed first.
+This library requires `Boost`, `Eigen3`, `gnuplot-iostream` and `pybind11`. Please ensure those are installed first.
 
 To build the library and examples from source, in the top-level directory of the repository do the following:
    ```

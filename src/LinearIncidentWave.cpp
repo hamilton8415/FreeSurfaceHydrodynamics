@@ -91,10 +91,13 @@ void LinearIncidentWave::SetToBretschneiderSpectrum(
   double d_omega = MAX_FREQ * 2 * M_PI / n_phases;
 
   for (int i = 0; i < m_k.size(); i++) {
-    m_omega(i) = d_omega * (i + 1);
+    m_omega(i) = d_omega * (i + 1) + (0.25*d_omega*(std::rand()-RAND_MAX/2))/(RAND_MAX/2);
     m_k(i) = m_omega(i) * m_omega(i) / m_grav;
     m_Spectrum(i) = 5.0*Hs*Hs*pow(wp,4) * exp(-1.25*pow(wp/m_omega(i),4)) / (16.0*pow(m_omega(i),5));
-    m_A(i) = sqrt(d_omega * 2 * m_Spectrum(i));  // Precompute components once here.
+    if(i == 0)
+      m_A(i) = sqrt(m_omega(0) * m_Spectrum(i));  // Precompute components once here.
+    else
+      m_A(i) = sqrt((m_omega(i)-m_omega(i-1)) * m_Spectrum(i));  // Precompute components once here.
     m_phases(i) = (2 * M_PI * std::rand()) / RAND_MAX;
   }
 }
@@ -144,10 +147,13 @@ void LinearIncidentWave::SetToPiersonMoskowitzSpectrum(
   double d_omega = MAX_FREQ * 2 * M_PI / n_phases;
 
   for (int i = 0; i < m_k.size(); i++) {
-    m_omega(i) = d_omega * (i + 1);
+    m_omega(i) = d_omega * (i + 1) + (0.25*d_omega*(std::rand()-RAND_MAX/2))/(RAND_MAX/2);
     m_k(i) = m_omega(i) * m_omega(i) / m_grav;
     m_Spectrum(i) = (a * m_grav * m_grav / pow(m_omega(i), 5)) * exp(-b * pow(w0 / m_omega(i), 4));
-    m_A(i) = sqrt(d_omega * 2 * m_Spectrum(i));  // Precompute components once here.
+    if(i == 0)
+      m_A(i) = sqrt(m_omega(0) * m_Spectrum(i));  // Precompute components once here.
+    else
+      m_A(i) = sqrt((m_omega(i)-m_omega(i-1)) * m_Spectrum(i));  // Precompute components once here.
     m_phases(i) = (2 * M_PI * std::rand()) / RAND_MAX;
   }
 }
@@ -174,10 +180,13 @@ void LinearIncidentWave::SetToCustomSpectrum(std::vector<double> omega, std::vec
   double d_omega = MAX_FREQ * 2 * M_PI / n_phases;
 
   for (int i = 0; i < m_k.size(); i++) {
-    m_omega(i) = d_omega * (i + 1);
+    m_omega(i) = d_omega * (i + 1) + (0.25*d_omega*(std::rand()-RAND_MAX/2))/(RAND_MAX/2);
     m_k(i) = m_omega(i) * m_omega(i) / m_grav;
     m_Spectrum(i) = CustomSpectrum(m_omega(i)); //Interpolate from supplied spectrum
-    m_A(i) = sqrt(d_omega * 2 * m_Spectrum(i));  // Precompute components once here.
+    if(i == 0)
+      m_A(i) = sqrt(m_omega(0) * m_Spectrum(i));  // Precompute components once here.
+    else
+      m_A(i) = sqrt((m_omega(i)-m_omega(i-1)) * m_Spectrum(i));  // Precompute components once here.
     m_phases(i) = (2 * M_PI * std::rand()) / RAND_MAX;
   }
 }

@@ -56,6 +56,27 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1)
 
+option(BUILD_PYTHON_BINDINGS "build FreeSurfaceHydrodynamics (fshd) python module" ON)
+if(BUILD_PYTHON_BINDINGS)
+  find_package(Python REQUIRED COMPONENTS Interpreter Development)
+  find_package(pybind11 CONFIG)
+
+  if(Python_FOUND AND pybind11_FOUND)
+    # generate python bindings
+    pybind11_add_module(fshd src/pybind11/bindings.cpp)
+    target_link_libraries(fshd PUBLIC FreeSurfaceHydrodynamics)
+    target_include_directories(fshd
+        PUBLIC
+          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+          $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+    )
+
+    add_custom_command(TARGET fshd POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:fshd> ${PROJECT_SOURCE_DIR}/fshd_py/fshd
+    )
+  ENDIF()
+ENDIF()
+
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)  # In Root, inlcude targets for developers
   add_executable(IncidentWaveExample examples/IncidentWaveExample.cpp)
   target_link_libraries(IncidentWaveExample FreeSurfaceHydrodynamics)
@@ -99,7 +120,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)  # In Root, inlcude targe
 
   install(EXPORT FreeSurfaceHydrodynamicsConfig DESTINATION share/FreeSurfaceHydrodynamics/cmake)
 
-  install(FILES cmake/etc/ld.so.conf.d/${PROJECT_NAME}.conf DESTINATION /etc/ld.so.conf.d/) 
+  install(FILES cmake/etc/ld.so.conf.d/${PROJECT_NAME}.conf DESTINATION /etc/ld.so.conf.d/)
 
   export(TARGETS ${PROJECT_NAME} FILE FreeSurfaceHydrodynamicsConfig.cmake)
 

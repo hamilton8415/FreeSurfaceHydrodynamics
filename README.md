@@ -3,6 +3,8 @@ This is a library for computing the forces on a body in the presence of waves, a
 
 
 ## How to build
+This library requires `Boost`, `Eigen3`, `gnuplot-iostream` and (if python bindings are desired) `pybind11`. Please ensure those are installed first.
+
 To build the library and examples from source, in the top-level directory of the repository do the following:
    ```
    $ mkdir build
@@ -10,6 +12,9 @@ To build the library and examples from source, in the top-level directory of the
    $ cmake ..
    $ make
    ```
+
+By default, python bindings are built, but they can be turned on/off with the cmake flag
+`-DBUILD_PYTHON_BINDINGS=<ON,OFF>`. If `pybind11` is missing, the bindings will not be built.
 
 ## Examples
 There are a number of example programs that exercise various portions of the library in an interactive way.  The source for these is in the examples directory and can be run from the build directory as indicated below.  Looking at the source code for these examples is a good way to understand the use of the library:
@@ -109,3 +114,10 @@ Currently, this library has a number of limitations that may be addressed in fut
 
 ## Source Code Documentation
 Doxygen generated documentation can be viewed here: https://hamilton8415.github.io/FreeSurfaceHydrodynamics/
+
+
+## Python Bindings
+By default, the python bindings are built, but they can be turned on/off with the cmake flag
+`-DBUILD_PYTHON_BINDINGS=<ON,OFF>`.
+
+Please refer to fshd_py/README.md for instructions/examples.

@@ -68,11 +68,13 @@ $(function() {
 <div class="textblock"><p><a class="anchor" id="md_README"></a> This is a library for computing the forces on a body in the presence of waves, and the resulting motions if desired. The theory is based upon linearied free-surface wave-body interactions and relies on hydrodynamic coefficients computed by other methods, usually a boundary element method solution performed by a program such as WAMIT.</p>
 <h2><a class="anchor" id="autotoc_md0"></a>
 How to build</h2>
+<p>This library requires <code>Boost</code>, <code>Eigen3</code>, <code>gnuplot-iostream</code> and (if python bindings are desired) <code>pybind11</code>. Please ensure those are installed first.</p>
 <p>To build the library and examples from source, in the top-level directory of the repository do the following: </p><div class="fragment"><div class="line">$ mkdir build</div>
 <div class="line">$ cd build</div>
 <div class="line">$ cmake ..</div>
 <div class="line">$ make</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md1"></a>
+</div><!-- fragment --><p>By default, python bindings are built, but they can be turned on/off with the cmake flag <code>-DBUILD_PYTHON_BINDINGS=&lt;ON,OFF&gt;</code>. If <code>pybind11</code> is missing, the bindings will not be built.</p>
+<h2><a class="anchor" id="autotoc_md1"></a>
 Examples</h2>
 <p>There are a number of example programs that exercise various portions of the library in an interactive way. The source for these is in the examples directory and can be run from the build directory as indicated below. Looking at the source code for these examples is a good way to understand the use of the library:</p>
 <h4><a class="anchor" id="autotoc_md2"></a>
@@ -126,7 +128,11 @@ Current limitations</h2>
 </ul>
 <h2><a class="anchor" id="autotoc_md12"></a>
 Source Code Documentation</h2>
-<p>Doxygen generated documentation can be viewed here: <a href="https://hamilton8415.github.io/FreeSurfaceHydrodynamics/">https://hamilton8415.github.io/FreeSurfaceHydrodynamics/</a> </p>
+<p>Doxygen generated documentation can be viewed here: <a href="https://hamilton8415.github.io/FreeSurfaceHydrodynamics/">https://hamilton8415.github.io/FreeSurfaceHydrodynamics/</a></p>
+<h2><a class="anchor" id="autotoc_md13"></a>
+Python Bindings</h2>
+<p>By default, the python bindings are built, but they can be turned on/off with the cmake flag <code>-DBUILD_PYTHON_BINDINGS=&lt;ON,OFF&gt;</code>.</p>
+<p>Please refer to fshd_py/README.md for instructions/examples. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->

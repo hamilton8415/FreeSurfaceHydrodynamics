@@ -122,16 +122,16 @@ $(function() {
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  WaveSpectrumType m_SpectrumType = WaveSpectrumType::MonoChromatic;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keywordtype">double</span> m_grav = 9.81;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <span class="keywordtype">double</span> m_rho = 1025;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keywordtype">double</span> m_grav{9.81};</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <span class="keywordtype">double</span> m_rho{1025.};</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  Eigen::VectorXd m_Spectrum;</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  Eigen::VectorXd m_A;</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  Eigen::VectorXd m_omega;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  Eigen::VectorXd m_k;</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  Eigen::VectorXd m_phases;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <span class="keywordtype">double</span> m_beta = 0;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <span class="keywordtype">double</span> m_Hs = 1;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <span class="keywordtype">double</span> m_Tp = 10;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <span class="keywordtype">double</span> m_beta{0.};</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <span class="keywordtype">double</span> m_Hs{1.};</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <span class="keywordtype">double</span> m_Tp{10.};</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  std::vector&lt;Eigen::Matrix&lt;double, Eigen::Dynamic, 1&gt;&gt; fd_Pha_Xi;</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;};</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>

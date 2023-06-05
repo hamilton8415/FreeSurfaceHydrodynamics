@@ -20,8 +20,8 @@
 #include <vector>
 #include "IncidentWave.hpp"
 
-#define DEFAULT_N_PHASES 300
-#define MAX_FREQ .3  // Hz
+#define DEFAULT_N_PHASES 750
+#define MAX_FREQ .75  // Hz
 
 enum class WaveSpectrumType {MonoChromatic, Bretschneider, PiersonMoskowitz, Custom};
 

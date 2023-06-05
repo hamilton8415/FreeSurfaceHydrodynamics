@@ -179,7 +179,7 @@ void LinearIncidentWave::SetToCustomSpectrum(std::vector<double> freq, std::vect
   m_Spectrum.resize(n_phases);
   m_A.resize(n_phases);
 
-  double d_freq = MAX_FREQ * 2 / n_phases;
+  double d_freq = MAX_FREQ / n_phases;
   Eigen::VectorXd f;
   f.resize(n_phases);
 

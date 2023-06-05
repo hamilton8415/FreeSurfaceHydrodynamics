@@ -107,22 +107,26 @@ switch (SpectrumType) {
 
     break;
   case WaveSpectrumType::Custom :
-    std::vector<double> omega;
+/*
+    std::vector<double> freq;
     std::vector<double> S;
     double grav = 9.81;
     double w0 = sqrt(.21 * grav / (2*A));
     double a = 0.0081;
     double b = 0.74;
-    int n_spectrum = 100;
+    int n_spectrum = 10;
     double d_omega = MAX_FREQ * 2 * M_PI / n_spectrum;
 
     for (int i = 0; i < n_spectrum; i++) {
       double w = d_omega* (i + 1);
-      omega.push_back(w);
-      S.push_back((a * grav * grav / pow(w, 5)) * exp(-b * pow(w0 / w, 4)));
+      S.push_back(2*M_PI*(a * grav * grav / pow(w, 5)) * exp(-b * pow(w0 / w, 4)));
+      freq.push_back(w/(2*M_PI));
       }
-    Inc.SetToCustomSpectrum(omega,S,beta);
-    T = 2*M_PI*sqrt((2*A)/grav)/0.4019;
+ */
+    std::vector<double> freq{0.0, 0.2/(2*M_PI), 0.4/(2*M_PI), 0.6/(2*M_PI), 2.0/(2*M_PI)};
+    std::vector<double> S{0.0, 0.4*2*M_PI, 1.0*2*M_PI, 1.0*2*M_PI, 0.0}; 
+    Inc.SetToCustomSpectrum(freq,S,beta);
+    //T = 2*M_PI*sqrt((2*A)/grav)/0.4019;
     break;
 }
 
@@ -157,7 +161,7 @@ switch (SpectrumType) {
     std::vector<double> pts_x;
     std::vector<double> pts_eta, pts_eta_true;
     std::vector<double> pts_deta_dx, pts_deta_dy;
-    for (double x = -1.5 * 2 * M_PI / k; x < 1.5 * 2 * M_PI / k; x += 2.0) {
+    for (double x = -1.5 * 2 * M_PI / k; x < 1.5 * 2 * M_PI / k; x += 0.5) {
       double eta;
       double detadx;
       double detady;

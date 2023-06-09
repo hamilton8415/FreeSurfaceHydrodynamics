@@ -139,7 +139,7 @@ switch (SpectrumType) {
     double x = 0;
     double y = 0;
     double xx = x * cos(beta) + y * sin(beta);
-    for (double t = 0; t < 10 * T; t += .1) {
+    for (double t = 0; t < 20 * T; t += .1) {
       pts_t.push_back(t);
       pts_eta.push_back(Inc.eta(x, y, t));
       pts_eta_true.push_back(A * cos(k * xx - 2 * M_PI * t / T + phase));
@@ -161,7 +161,7 @@ switch (SpectrumType) {
     std::vector<double> pts_x;
     std::vector<double> pts_eta, pts_eta_true;
     std::vector<double> pts_deta_dx, pts_deta_dy;
-    for (double x = -1.5 * 2 * M_PI / k; x < 1.5 * 2 * M_PI / k; x += 0.5) {
+    for (double x = -0.5 * 2 * M_PI / k; x < 0.5 * 2 * M_PI / k; x += 0.5) {
       double eta;
       double detadx;
       double detady;

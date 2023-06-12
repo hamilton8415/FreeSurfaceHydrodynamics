@@ -95,9 +95,9 @@ void LinearIncidentWave::SetToBretschneiderSpectrum(
     m_k(i) = m_omega(i) * m_omega(i) / m_grav;
     m_Spectrum(i) = 5.0*Hs*Hs*pow(wp,4) * exp(-1.25*pow(wp/m_omega(i),4)) / (16.0*pow(m_omega(i),5));
     if(i == 0)
-      m_A(i) = sqrt(m_omega(0) * m_Spectrum(i));  // Precompute components once here.
+      m_A(i) = sqrt(2.0*m_omega(0) * m_Spectrum(i));  // Precompute components once here.
     else
-      m_A(i) = sqrt((m_omega(i)-m_omega(i-1)) * m_Spectrum(i));  // Precompute components once here.
+      m_A(i) = sqrt(2.0*(m_omega(i)-m_omega(i-1)) * m_Spectrum(i));  // Precompute components once here.
     m_phases(i) = (2 * M_PI * std::rand()) / RAND_MAX;
   }
 }
@@ -151,9 +151,9 @@ void LinearIncidentWave::SetToPiersonMoskowitzSpectrum(
     m_k(i) = m_omega(i) * m_omega(i) / m_grav;
     m_Spectrum(i) = (a * m_grav * m_grav / pow(m_omega(i), 5)) * exp(-b * pow(w0 / m_omega(i), 4));
     if(i == 0)
-      m_A(i) = sqrt(m_omega(0) * m_Spectrum(i));  // Precompute components once here.
+      m_A(i) = sqrt(2.0*m_omega(0) * m_Spectrum(i));  // Precompute components once here.
     else
-      m_A(i) = sqrt((m_omega(i)-m_omega(i-1)) * m_Spectrum(i));  // Precompute components once here.
+      m_A(i) = sqrt(2.0*(m_omega(i)-m_omega(i-1)) * m_Spectrum(i));  // Precompute components once here.
     m_phases(i) = (2 * M_PI * std::rand()) / RAND_MAX;
   }
 }

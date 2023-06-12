@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <numeric>
 
 
 #include "config.h"
@@ -139,20 +140,28 @@ switch (SpectrumType) {
     double x = 0;
     double y = 0;
     double xx = x * cos(beta) + y * sin(beta);
-    for (double t = 0; t < 20 * T; t += .1) {
+    for (double t = 0; t < 100 * T; t += .1) {
       pts_t.push_back(t);
       pts_eta.push_back(Inc.eta(x, y, t));
       pts_eta_true.push_back(A * cos(k * xx - 2 * M_PI * t / T + phase));
     }
+
+double sum = std::accumulate(pts_eta.begin(), pts_eta.end(), 0.0);
+double mean = sum / pts_eta.size();
+
+double sq_sum = std::inner_product(pts_eta.begin(), pts_eta.end(), pts_eta.begin(), 0.0);
+double stdev = std::sqrt(sq_sum / pts_eta.size() - mean * mean);
     Gnuplot gp;
     gp << "set term qt title  'Incident Wave Elevation at Origin'\n";
     gp << "set grid\n";
     gp << "set xlabel 'time (s)'\n";
     gp << "set ylabel '(m)'\n";
-    gp << "plot '-' w l title 'eta'"
-       << ",'-' w l title 'eta\\_true'\n";
+    gp << "plot '-' w l title 'eta, 4*std_dev = "
+       << 4*stdev  << "'"
+  //     << ",'-' w l title 'eta\\_true'"
+    << "\n";
     gp.send1d(boost::make_tuple(pts_t, pts_eta));
-    gp.send1d(boost::make_tuple(pts_t, pts_eta_true));
+  //  gp.send1d(boost::make_tuple(pts_t, pts_eta_true));
   }
 
   double dt = .05 * T;

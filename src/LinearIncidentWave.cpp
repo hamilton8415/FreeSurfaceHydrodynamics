@@ -79,8 +79,8 @@ void LinearIncidentWave::SetToBretschneiderSpectrum(
   m_SpectrumType = WaveSpectrumType::Bretschneider;
   m_beta = beta;
   m_Hs = Hs;
-  m_Tp = Tp;
-  double wp = 2.0*M_PI/Tp;
+  
+  double wp = 2.0*M_PI/(1.2957*Tp);
 
   m_omega.resize(n_phases);
   m_k.resize(n_phases);

@@ -71,7 +71,7 @@ void LinearIncidentWave::SetToBretschneiderSpectrum(double Hs, double Tp, double
   SetToBretschneiderSpectrum(Hs, Tp, beta, DEFAULT_N_PHASES);
 }
 
-/// \brief Select PM-Spectrum (set num of phases)
+/// \brief Select Bretschneider Spectrum (set num of phases)
 void LinearIncidentWave::SetToBretschneiderSpectrum(
   double Hs, double Tp, double beta,
   int n_phases)
@@ -189,9 +189,9 @@ void LinearIncidentWave::SetToCustomSpectrum(std::vector<double> freq, std::vect
     m_k(i) = m_omega(i) * m_omega(i) / m_grav;
     m_Spectrum(i) = CustomSpectrum(f(i)); //Interpolate from supplied spectrum
     if(i == 0)
-      m_A(i) = sqrt(f(0) * m_Spectrum(i));  // Precompute components once here.
+      m_A(i) = sqrt(2.0 * f(0) * m_Spectrum(i));  // Precompute components once here.
     else
-      m_A(i) = sqrt((f(i)-f(i-1)) * m_Spectrum(i));  // Precompute components once here.
+      m_A(i) = sqrt(2.0 * (f(i)-f(i-1)) * m_Spectrum(i));  // Precompute components once here.
     m_phases(i) = (2 * M_PI * std::rand()) / RAND_MAX;
   }
 }

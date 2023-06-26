@@ -20,8 +20,8 @@
 #include <vector>
 #include "IncidentWave.hpp"
 
-#define DEFAULT_N_PHASES 300
-#define MAX_FREQ .3  // Hz
+#define DEFAULT_N_PHASES 750
+#define MAX_FREQ .5  // Hz
 
 enum class WaveSpectrumType {MonoChromatic, Bretschneider, PiersonMoskowitz, Custom};
 
@@ -50,8 +50,8 @@ public:
   void SetToPiersonMoskowitzSpectrum(double Hs, double UnusedTp, double beta, int n_phases);
   void SetToBretschneiderSpectrum(double Hs, double Tp, double beta);
   void SetToBretschneiderSpectrum(double Hs, double Tp, double beta, int n_phases);
-  void SetToCustomSpectrum(std::vector<double> omega, std::vector<double> S, double beta);
-  void SetToCustomSpectrum(std::vector<double> omega, std::vector<double> S, double beta, int n_phases);
+  void SetToCustomSpectrum(std::vector<double> freq, std::vector<double> S, double beta);
+  void SetToCustomSpectrum(std::vector<double> freq, std::vector<double> S, double beta, int n_phases);
   friend std::ostream & operator<<(std::ostream & out, const LinearIncidentWave & IncWave);
   double eta(double x, double y, double t);
   double eta(double x, double y, double t, double *deta_dx, double *deta_dy);

@@ -21,7 +21,7 @@
 1.2.2 - March 5, 2023.
 - Fixed missing dependence on pitch/roll for force due to gravity computation
 
-1.3.0 - May 14, 2023.
+1.3.0 - June 26, 2023.
 - Includes python bindings authored by Michael Anderson
 - Included randomness in incident wave frequencies to promote longer repeat times
-- Modified custom wave-spectra definition to be a one-sided spectrum
+- Changed specification of custom wave-spectrum to be in term of Hz instead of rad/s.

@@ -24,7 +24,7 @@
 class IncidentWave
 {
 public:
-  virtual double eta(double x, double y, double t) = 0;
+  virtual double eta(double x, double y, double t) const = 0;
 };
 
 #endif  // FREESURFACEHYDRODYNAMICS__LIB__INCIDENTWAVE_HPP_

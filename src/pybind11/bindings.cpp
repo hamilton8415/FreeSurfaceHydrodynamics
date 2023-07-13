@@ -53,7 +53,8 @@ PYBIND11_MODULE(fshd, m) {
                      double deta_dx = 0.0;
                      double deta_dy = 0.0;
                      double eta = self.eta(x, y, t, &deta_dx, &deta_dy);
-                     return std::variant<std::vector<double>, double>(std::vector<double>{eta, deta_dx, deta_dy});
+                     return std::variant<std::vector<double>, double>(
+                       std::vector<double>{eta, deta_dx, deta_dy});
                  } else {
                      return std::variant<std::vector<double>, double>(self.eta(x, y, t));
                  }
@@ -63,7 +64,7 @@ PYBIND11_MODULE(fshd, m) {
         .def("etadot",
              py::overload_cast<
                      double, double, double
-                 >(&LinearIncidentWave::etadot),
+                 >(&LinearIncidentWave::etadot, py::const_),
              py::arg("x"), py::arg("y"), py::arg("t"))
 
         .def("Version", &LinearIncidentWave::Version)

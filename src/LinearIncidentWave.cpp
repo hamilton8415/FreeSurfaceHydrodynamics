@@ -172,6 +172,7 @@ void LinearIncidentWave::SetToCustomSpectrum(std::vector<double> freq, std::vect
   simple_interp::Interp1d CustomSpectrum(freq,S);  // Subsequent calculations are done in ang freq
 
   m_SpectrumType = WaveSpectrumType::Custom;
+  m_beta = beta;
 
   m_omega.resize(n_phases);
   m_k.resize(n_phases);

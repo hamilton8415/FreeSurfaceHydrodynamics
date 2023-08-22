@@ -45,6 +45,12 @@ PYBIND11_MODULE(fshd, m) {
                      double, double, int
                  >(&LinearIncidentWave::SetToPiersonMoskowitzSpectrum),
              py::arg("Hs"), py::arg("beta"), py::arg("n_phases")=DEFAULT_N_PHASES)
+        .def("SetToCustomSpectrum",
+             py::overload_cast<
+                     std::vector<double>, std::vector<double>, double, int
+                 >(&LinearIncidentWave::SetToCustomSpectrum),
+             py::arg("freq"), py::arg("S"), py::arg("beta"), py::arg("n_phases")=DEFAULT_N_PHASES)
+
         .def("eta",
              [](LinearIncidentWave & self,
                 const double & x, const double & y,

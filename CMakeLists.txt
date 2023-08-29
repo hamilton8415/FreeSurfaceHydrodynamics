@@ -4,6 +4,9 @@ project(FreeSurfaceHydrodynamics VERSION 1.3.0 LANGUAGES CXX)
 configure_file(${PROJECT_SOURCE_DIR}/include/config.h.in
                ${PROJECT_BINARY_DIR}/include/config.h)
 
+configure_file(${PROJECT_SOURCE_DIR}/fshd_py/setup.cfg.in
+               ${PROJECT_SOURCE_DIR}/fshd_py/setup.cfg)
+
 #------------------------------------------------------------------------
 # Compile as C++17
 
@@ -77,7 +80,7 @@ if(BUILD_PYTHON_BINDINGS)
   ENDIF()
 ENDIF()
 
-if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)  # In Root, inlcude targets for developers
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)  # In Root, include targets for developers
   add_executable(IncidentWaveExample examples/IncidentWaveExample.cpp)
   target_link_libraries(IncidentWaveExample FreeSurfaceHydrodynamics)
   target_include_directories(IncidentWaveExample PRIVATE ${PROJECT_BINARY_DIR}/include ${gnuplot-iostream_INCLUDE_DIRS})

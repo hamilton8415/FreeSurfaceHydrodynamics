@@ -7,6 +7,14 @@ configure_file(${PROJECT_SOURCE_DIR}/include/config.h.in
 configure_file(${PROJECT_SOURCE_DIR}/fshd_py/setup.cfg.in
                ${PROJECT_SOURCE_DIR}/fshd_py/setup.cfg)
 
+configure_file(${PROJECT_SOURCE_DIR}/fshd_py/cycle.sh.in
+               ${PROJECT_BINARY_DIR}/cycle.sh)
+file(COPY ${PROJECT_BINARY_DIR}/cycle.sh
+  DESTINATION ${PROJECT_SOURCE_DIR}/fshd_py/
+  FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+                   GROUP_READ GROUP_EXECUTE
+                   WORLD_READ WORLD_EXECUTE)
+
 #------------------------------------------------------------------------
 # Compile as C++17
 

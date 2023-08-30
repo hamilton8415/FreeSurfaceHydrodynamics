@@ -6,3 +6,6 @@ dist
 *.png
 __pycache__
 *.pyc
+
+cycle.sh
+setup.cfg

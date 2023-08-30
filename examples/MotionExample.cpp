@@ -23,11 +23,12 @@
 #include <string>
 #include <unistd.h>
 #include <vector>
-#include <signal.h>
+#include <csignal>
 
-#include "config.h"
-#include "FS_Hydrodynamics.hpp"
-#include "LinearIncidentWave.hpp"
+#include <FreeSurfaceHydrodynamics/config.h>
+#include <FreeSurfaceHydrodynamics/FS_Hydrodynamics.hpp>
+#include <FreeSurfaceHydrodynamics/LinearIncidentWave.hpp>
+
 
 void signal_callback_handler(int signum) {
    std::string s = "pkill gnuplot_qt";

@@ -19,9 +19,9 @@
 #include <vector>
 #include <cstdlib>
 
-#include "config.h"
-#include "interp1d.hpp"
-#include "LinearIncidentWave.hpp"
+#include <FreeSurfaceHydrodynamics/config.h>
+#include <FreeSurfaceHydrodynamics/interp1d.hpp>
+#include <FreeSurfaceHydrodynamics/LinearIncidentWave.hpp>
 
 
 

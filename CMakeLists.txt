@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(FreeSurfaceHydrodynamics VERSION 1.3.0 LANGUAGES CXX)
 
-configure_file(${PROJECT_SOURCE_DIR}/include/config.h.in
-               ${PROJECT_BINARY_DIR}/include/config.h)
+configure_file(${PROJECT_SOURCE_DIR}/include/FreeSurfaceHydrodynamics/config.h.in
+               ${PROJECT_BINARY_DIR}/include/FreeSurfaceHydrodynamics/config.h)
 
 #------------------------------------------------------------------------
 # Compile as C++17
@@ -113,7 +113,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)  # In Root, inlcude targe
     LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-  install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/FreeSurfaceHydrodynamics
+  install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     FILES_MATCHING PATTERN "*.hpp")
 
   #install(DIRECTORY ${PROJECT_BINARY_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

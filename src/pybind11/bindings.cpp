@@ -1,13 +1,13 @@
 
-#include "config.h"
-#include "FS_Hydrodynamics.hpp"
-#include "LinearIncidentWave.hpp"
-
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
 
 #include <sstream>
+
+#include <FreeSurfaceHydrodynamics/config.h>
+#include <FreeSurfaceHydrodynamics/FS_Hydrodynamics.hpp>
+#include <FreeSurfaceHydrodynamics/LinearIncidentWave.hpp>
 
 
 namespace py = pybind11;

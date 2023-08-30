@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "interp1d.hpp"
-
 #include <algorithm>
 #include <cassert>
 #include <iostream>
 #include <vector>
 #include <utility>
+
+#include <FreeSurfaceHydrodynamics/interp1d.hpp>
 
 
 namespace simple_interp

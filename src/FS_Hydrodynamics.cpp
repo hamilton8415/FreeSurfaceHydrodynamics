@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "FS_Hydrodynamics.hpp"
 #include <gnuplot-iostream.h>
 #include <Eigen/Dense>
 
@@ -23,10 +22,11 @@
 #include <string>
 #include <memory>
 
-#include "config.h"
-#include "IncidentWave.hpp"
-#include "interp1d.hpp"
-#include "mlinterp.hpp"
+#include <FreeSurfaceHydrodynamics/FS_Hydrodynamics.hpp>
+#include <FreeSurfaceHydrodynamics/config.h>
+#include <FreeSurfaceHydrodynamics/IncidentWave.hpp>
+#include <FreeSurfaceHydrodynamics/interp1d.hpp>
+#include <FreeSurfaceHydrodynamics/mlinterp.hpp>
 
 
 const char * modes[6] = {"Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"};

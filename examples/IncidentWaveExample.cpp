@@ -18,14 +18,13 @@
 #include <gnuplot-iostream.h>
 #include <iostream>
 #include <vector>
-#include <stdio.h>
-#include <stdlib.h>
-#include <signal.h>
+#include <cstdio>
+#include <cstdlib>
+#include <csignal>
 #include <numeric>
 
-
-#include "config.h"
-#include "LinearIncidentWave.hpp"
+#include <FreeSurfaceHydrodynamics/config.h>
+#include <FreeSurfaceHydrodynamics/LinearIncidentWave.hpp>
 
 
 void signal_callback_handler(int signum) {

@@ -19,9 +19,9 @@
 #include <vector>
 #include <cstdlib>
 
-#include "config.h"
-#include "interp1d.hpp"
-#include "LinearIncidentWave.hpp"
+#include <FreeSurfaceHydrodynamics/config.h>
+#include <FreeSurfaceHydrodynamics/interp1d.hpp>
+#include <FreeSurfaceHydrodynamics/LinearIncidentWave.hpp>
 
 
 
@@ -246,7 +246,7 @@ std::ostream & operator<<(std::ostream & out, const LinearIncidentWave & IncWave
   return out;  // return std::ostream so we can chain calls to operator<<
 }
 
-double LinearIncidentWave::eta(double x, double y, double t)
+double LinearIncidentWave::eta(double x, double y, double t) const
 {
   double xx = x * cos(m_beta) + y * sin(m_beta);
 
@@ -261,7 +261,7 @@ double LinearIncidentWave::eta(double x, double y, double t)
 // return -m_A.dot(temp);  //With -03, these two approaches are equally fast/slow
 }
 
-double LinearIncidentWave::eta(double x, double y, double t, double *deta_dx, double *deta_dy)
+double LinearIncidentWave::eta(double x, double y, double t, double *deta_dx, double *deta_dy) const
 {
   double xx = x * cos(m_beta) + y * sin(m_beta);
 
@@ -281,7 +281,7 @@ double LinearIncidentWave::eta(double x, double y, double t, double *deta_dx, do
   return eta;
 }
 
-double LinearIncidentWave::etadot(double x, double y, double t)
+double LinearIncidentWave::etadot(double x, double y, double t) const
 {
   double xx = x * cos(m_beta) + y * sin(m_beta);
 

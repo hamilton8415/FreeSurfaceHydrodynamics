@@ -1,13 +1,13 @@
 
-#include "config.h"
-#include "FS_Hydrodynamics.hpp"
-#include "LinearIncidentWave.hpp"
-
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
 
 #include <sstream>
+
+#include <FreeSurfaceHydrodynamics/config.h>
+#include <FreeSurfaceHydrodynamics/FS_Hydrodynamics.hpp>
+#include <FreeSurfaceHydrodynamics/LinearIncidentWave.hpp>
 
 
 namespace py = pybind11;
@@ -59,7 +59,8 @@ PYBIND11_MODULE(fshd, m) {
                      double deta_dx = 0.0;
                      double deta_dy = 0.0;
                      double eta = self.eta(x, y, t, &deta_dx, &deta_dy);
-                     return std::variant<std::vector<double>, double>(std::vector<double>{eta, deta_dx, deta_dy});
+                     return std::variant<std::vector<double>, double>(
+                       std::vector<double>{eta, deta_dx, deta_dy});
                  } else {
                      return std::variant<std::vector<double>, double>(self.eta(x, y, t));
                  }
@@ -69,7 +70,7 @@ PYBIND11_MODULE(fshd, m) {
         .def("etadot",
              py::overload_cast<
                      double, double, double
-                 >(&LinearIncidentWave::etadot),
+                 >(&LinearIncidentWave::etadot, py::const_),
              py::arg("x"), py::arg("y"), py::arg("t"))
 
         .def("Version", &LinearIncidentWave::Version)

@@ -1,4 +1,0 @@
-<map id="LinearIncidentWave" name="LinearIncidentWave">
-<area shape="rect" id="node1" title="The IncidentWave class generates wave heights and fluid velocities at specified points and times...." alt="" coords="5,80,156,107"/>
-<area shape="rect" id="node2" href="$classIncidentWave.html" title="The IncidentWave class is a base class for Incident Wave implementations, which must at least provide..." alt="" coords="25,5,136,32"/>
-</map>

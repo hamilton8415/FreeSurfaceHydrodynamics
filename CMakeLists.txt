@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.5)
-project(FreeSurfaceHydrodynamics VERSION 1.3.1 LANGUAGES CXX)
+cmake_minimum_required(VERSION 4.0)
+project(FreeSurfaceHydrodynamics VERSION 1.4.0 LANGUAGES CXX)
 
 configure_file(${PROJECT_SOURCE_DIR}/include/FreeSurfaceHydrodynamics/config.h.in
                ${PROJECT_BINARY_DIR}/include/FreeSurfaceHydrodynamics/config.h)
@@ -37,6 +37,11 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 #--------------------------------------
 # Fetch gnuplot-iostream
+
+# Set policy CMP0167 so we avoid warnings about deprecated FindBoost
+if(POLICY CMP0167)
+  cmake_policy(SET CMP0167 OLD)
+endif()
 include(Add_gnuplot-iostream)
 
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
@@ -44,7 +49,7 @@ find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 set(BOOST_USE_STATIC_LIBS OFF)
 set(BOOST_USE_MULTITHREADED ON)
 set(BOOST_USE_STATIC_RUNTIME OFF)
-find_package(Boost 1.71.0 COMPONENTS system iostreams filesystem)
+find_package(Boost 1.83.0 REQUIRED CONFIG COMPONENTS system iostreams filesystem)
 
 set(CMAKE_INSTALL_PREFIX  /opt/${PROJECT_NAME}/)
 include(GNUInstallDirs)

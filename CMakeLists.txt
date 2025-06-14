@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.28)
 project(FreeSurfaceHydrodynamics VERSION 1.4.0 LANGUAGES CXX)
 
 configure_file(${PROJECT_SOURCE_DIR}/include/FreeSurfaceHydrodynamics/config.h.in
@@ -44,7 +44,7 @@ if(POLICY CMP0167)
 endif()
 include(Add_gnuplot-iostream)
 
-find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 
 set(BOOST_USE_STATIC_LIBS OFF)
 set(BOOST_USE_MULTITHREADED ON)

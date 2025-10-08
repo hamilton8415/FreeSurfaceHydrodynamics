@@ -263,21 +263,64 @@ double LinearIncidentWave::eta(double x, double y, double t) const
 
 double LinearIncidentWave::eta(double x, double y, double t, double *deta_dx, double *deta_dy) const
 {
+  return eta(x, y, t, deta_dx, deta_dy, nullptr, nullptr, nullptr, nullptr);
+}
+
+double LinearIncidentWave::eta(double x, double y, double t,
+                               double *deta_dx, double *deta_dy,
+                               double *u_east, double *v_north,
+                               double *u_lagr_east, double *v_lagr_north) const
+{
   double xx = x * cos(m_beta) + y * sin(m_beta);
 
-  double eta = 0;
+  double eta = 0.0;
+  double deta_dxx = 0.0;
+
+  // Eulerian along-wave contribution
+  double u_along = 0.0;
+  // Stokes along-wave contribution
+  double u_stokes_along = 0.0;
+
   for (int i = 0; i < m_A.size(); i++) {
-    eta = eta + m_A(i) * cos(m_k(i) * xx - m_omega(i) * t + m_phases(i));
+    double k = m_k(i);
+    double omega = m_omega(i);
+    double a = m_A(i);
+    double phase = m_phases(i);
+
+    double arg = k * xx - omega * t + phase;
+    double cosarg = cos(arg);
+    double sinarg = sin(arg);
+
+    // freesurface heave
+    eta += a * cosarg;
+
+
+    // Eulerian along-wave surface velocity (assume deep water)
+    double dispersion_relation = 0.0;
+    if (omega > 1e-12) {
+      // could just use omega directly since deep water dispersion w^2 = gk?
+      dispersion_relation = (m_grav * k) / omega;
+    }
+    u_along += a * dispersion_relation * cosarg;
+
+    // Stokes surface drift (assume deep water)
+    u_stokes_along += 0.5 * a * a * k * omega;
   }
 
-  double deta_dxx = 0;
-  for (int i = 0; i < m_A.size(); i++) {
-    deta_dxx = deta_dxx + -m_k(i) * m_A(i) * sin(m_k(i) * xx - m_omega(i) * t + m_phases(i));
-  }
+  // water plane slope
+  deta_dxx -= k * a * sinarg;
+  if (deta_dx) *deta_dx = deta_dxx*cos(m_beta);  // deta/dx
+  if (deta_dy) *deta_dy = deta_dxx*sin(m_beta);  // deta/dy
 
-  *deta_dx = deta_dxx*cos(m_beta);  // deta/dx
-  *deta_dy = deta_dxx*sin(m_beta);  // deta/dy
-   
+  // u/v Eulerian surface velocities
+  if (u_east) *u_east = u_along * cos(m_beta);
+  if (v_north) *v_north = u_along * sin(m_beta);
+
+  // u/v Lagrangian surface velocities
+  double u_lagr_along = u_along + u_stokes_along;
+  if (u_lagr_east) *u_lagr_east = u_lagr_along * cos(m_beta);
+  if (v_lagr_north) *v_lagr_north = u_lagr_along * sin(m_beta);
+
   return eta;
 }
 

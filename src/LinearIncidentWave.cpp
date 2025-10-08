@@ -294,6 +294,8 @@ double LinearIncidentWave::eta(double x, double y, double t,
     // freesurface heave
     eta += a * cosarg;
 
+    // water plane slope
+    deta_dxx -= k * a * sinarg;
 
     // Eulerian along-wave surface velocity (assume deep water)
     double dispersion_relation = 0.0;
@@ -308,7 +310,6 @@ double LinearIncidentWave::eta(double x, double y, double t,
   }
 
   // water plane slope
-  deta_dxx -= k * a * sinarg;
   if (deta_dx) *deta_dx = deta_dxx*cos(m_beta);  // deta/dx
   if (deta_dy) *deta_dy = deta_dxx*sin(m_beta);  // deta/dy
 

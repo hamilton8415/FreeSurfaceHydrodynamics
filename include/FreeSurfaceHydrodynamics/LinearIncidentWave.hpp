@@ -57,8 +57,7 @@ public:
   double eta(double x, double y, double t, double *deta_dx, double *deta_dy) const;
   double eta(double x, double y, double t,
              double *deta_dx, double *deta_dy,
-             double *u_east, double *v_north,
-             double *u_lagr_east, double *v_lagr_north) const;
+             double *u_east, double *v_north) const;  // includes Eulerian surface velocities
   double etadot(double x, double y, double t) const;
   std::string Version();
   int MajorVersionNumber();

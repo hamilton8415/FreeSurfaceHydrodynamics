@@ -263,13 +263,12 @@ double LinearIncidentWave::eta(double x, double y, double t) const
 
 double LinearIncidentWave::eta(double x, double y, double t, double *deta_dx, double *deta_dy) const
 {
-  return eta(x, y, t, deta_dx, deta_dy, nullptr, nullptr, nullptr, nullptr);
+  return eta(x, y, t, deta_dx, deta_dy, nullptr, nullptr);
 }
 
 double LinearIncidentWave::eta(double x, double y, double t,
                                double *deta_dx, double *deta_dy,
-                               double *u_east, double *v_north,
-                               double *u_lagr_east, double *v_lagr_north) const
+                               double *u_east, double *v_north) const
 {
   double xx = x * cos(m_beta) + y * sin(m_beta);
 
@@ -298,15 +297,8 @@ double LinearIncidentWave::eta(double x, double y, double t,
     deta_dxx -= k * a * sinarg;
 
     // Eulerian along-wave surface velocity (assume deep water)
-    double dispersion_relation = 0.0;
-    if (omega > 1e-12) {
-      // could just use omega directly since deep water dispersion w^2 = gk?
-      dispersion_relation = (m_grav * k) / omega;
-    }
-    u_along += a * dispersion_relation * cosarg;
-
-    // Stokes surface drift (assume deep water)
-    u_stokes_along += 0.5 * a * a * k * omega;
+    // can just use omega directly since deep water dispersion w^2 = gk
+    u_along += a * omega * cosarg;
   }
 
   // water plane slope
@@ -316,11 +308,6 @@ double LinearIncidentWave::eta(double x, double y, double t,
   // u/v Eulerian surface velocities
   if (u_east) *u_east = u_along * cos(m_beta);
   if (v_north) *v_north = u_along * sin(m_beta);
-
-  // u/v Lagrangian surface velocities
-  double u_lagr_along = u_along + u_stokes_along;
-  if (u_lagr_east) *u_lagr_east = u_lagr_along * cos(m_beta);
-  if (v_lagr_north) *v_lagr_north = u_lagr_along * sin(m_beta);
 
   return eta;
 }

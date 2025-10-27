@@ -60,15 +60,13 @@ PYBIND11_MODULE(fshd, m) {
                  double deta_dy = 0.0;
                  double u_east = 0.0;
                  double v_north = 0.0;
-                 double u_lagr_east = 0.0;
-                 double v_lagr_north = 0.0;
                  int mask = (compute_deta ? 1 : 0) | (compute_uv ? 2 : 0);
                  switch (mask) {
                    // return eta (default)
                    case 0:  // false, false
                    default:
                      return std::variant<std::vector<double>, double>(self.eta(x, y, t));
-                   // return eta and waterplate slope
+                   // return eta and waterplane slope
                    case 1:  // true, false
                    {
                      double eta = self.eta(x, y, t, &deta_dx, &deta_dy);
@@ -76,15 +74,14 @@ PYBIND11_MODULE(fshd, m) {
                          std::vector<double>{eta, deta_dx, deta_dy}
                      );
                    }
-                   // return eta and both Eulerian and Lagrangian surface velocities
+                   // return eta and Eulerian surface velocities
                    case 2:  // false, true
                    {
                      double eta = self.eta(x, y, t,
                                            nullptr, nullptr,
-                                           &u_east, &v_north,
-                                           &u_lagr_east, &v_lagr_north);
+                                           &u_east, &v_north);
                      return std::variant<std::vector<double>, double>(
-                         std::vector<double>{eta, u_east, v_north, u_lagr_east, v_lagr_north}
+                         std::vector<double>{eta, u_east, v_north}
                      );
                    }
                    // return eta, waterplane slope, and surface velocities
@@ -92,12 +89,10 @@ PYBIND11_MODULE(fshd, m) {
                    {
                      double eta = self.eta(x, y, t,
                                            &deta_dx, &deta_dy,
-                                           &u_east, &v_north,
-                                           &u_lagr_east, &v_lagr_north);
+                                           &u_east, &v_north);
                      return std::variant<std::vector<double>, double>(
                          std::vector<double>{eta, deta_dx, deta_dy,
-                                             u_east, v_north,
-                                             u_lagr_east, v_lagr_north}
+                                             u_east, v_north}
                      );
                    }
                  }

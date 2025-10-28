@@ -277,8 +277,6 @@ double LinearIncidentWave::eta(double x, double y, double t,
 
   // Eulerian along-wave contribution
   double u_along = 0.0;
-  // Stokes along-wave contribution
-  double u_stokes_along = 0.0;
 
   for (int i = 0; i < m_A.size(); i++) {
     double k = m_k(i);

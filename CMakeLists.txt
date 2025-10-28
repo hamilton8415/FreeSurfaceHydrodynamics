@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-project(FreeSurfaceHydrodynamics VERSION 1.4.0 LANGUAGES CXX)
+project(FreeSurfaceHydrodynamics VERSION 1.4.1 LANGUAGES CXX)
 
 configure_file(${PROJECT_SOURCE_DIR}/include/FreeSurfaceHydrodynamics/config.h.in
                ${PROJECT_BINARY_DIR}/include/FreeSurfaceHydrodynamics/config.h)
@@ -124,6 +124,13 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)  # In Root, include targe
 
   file(COPY examples/example_hydrodynamic_coeffs DESTINATION .)
 
+  include(CMakePackageConfigHelpers)
+  write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/FreeSurfaceHydrodynamicsConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+  )
+
   install(TARGETS ${PROJECT_NAME} EXPORT FreeSurfaceHydrodynamicsConfig
     ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -135,6 +142,11 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)  # In Root, include targe
   #install(DIRECTORY ${PROJECT_BINARY_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
   install(EXPORT FreeSurfaceHydrodynamicsConfig DESTINATION share/FreeSurfaceHydrodynamics/cmake)
+  install(
+    FILES
+      "${CMAKE_CURRENT_BINARY_DIR}/FreeSurfaceHydrodynamicsConfigVersion.cmake"
+    DESTINATION share/FreeSurfaceHydrodynamics/cmake
+  )
 
   install(FILES cmake/etc/ld.so.conf.d/${PROJECT_NAME}.conf DESTINATION /etc/ld.so.conf.d/)
 

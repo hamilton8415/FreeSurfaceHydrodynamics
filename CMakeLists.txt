@@ -98,6 +98,10 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)  # In Root, include targe
   target_link_libraries(IncidentWaveExample FreeSurfaceHydrodynamics)
   target_include_directories(IncidentWaveExample PRIVATE ${PROJECT_BINARY_DIR}/include ${gnuplot-iostream_INCLUDE_DIRS})
 
+  add_executable(IncidentWaveDirectionExample examples/IncidentWaveDirectionExample.cpp)
+  target_link_libraries(IncidentWaveDirectionExample FreeSurfaceHydrodynamics)
+  target_include_directories(IncidentWaveDirectionExample PRIVATE ${PROJECT_BINARY_DIR}/include ${gnuplot-iostream_INCLUDE_DIRS})
+
   add_executable(PlotCoeffsExample examples/PlotCoeffsExample.cpp)
   target_link_libraries(PlotCoeffsExample FreeSurfaceHydrodynamics)
   target_include_directories(PlotCoeffsExample PRIVATE ${PROJECT_BINARY_DIR}/include  ${gnuplot-iostream_INCLUDE_DIRS})

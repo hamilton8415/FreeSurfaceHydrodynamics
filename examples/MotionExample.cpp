@@ -166,7 +166,8 @@ int main(int argc, char **argv) {
   BuoyA5.SetMass(buoy_mass);
 
   std::string HydrodynamicsBaseFilename =
-      "./example_hydrodynamic_coeffs/BuoyA5";
+      "./example_hydrodynamic_coeffs/mbari_snl";
+//      "./example_hydrodynamic_coeffs/BuoyA5";
   BuoyA5.ReadWAMITData_FD(HydrodynamicsBaseFilename);
   BuoyA5.ReadWAMITData_TD(HydrodynamicsBaseFilename);
   BuoyA5.SetTimestepSize(dt);

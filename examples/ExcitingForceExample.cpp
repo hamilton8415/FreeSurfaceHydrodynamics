@@ -88,8 +88,10 @@ int main(int argc, char **argv) {
 
 
   double tf = 3.0 * Tp;
+//  double tf = 60; //3.0 * Tp;
   double omega = 2.0 * M_PI / Tp;
   double dt = 0.015;
+//  double dt = 0.01;
 
   Inc->SetToMonoChromatic(A, Tp, phase, beta);
 
@@ -105,7 +107,8 @@ int main(int argc, char **argv) {
   BuoyA5.SetMass(buoy_mass);
 
   std::string HydrodynamicsBaseFilename =
-      "./example_hydrodynamic_coeffs/BuoyA5";
+      "./example_hydrodynamic_coeffs/mbari_snl";
+//      "./example_hydrodynamic_coeffs/BuoyA5";
   BuoyA5.ReadWAMITData_FD(HydrodynamicsBaseFilename);
   BuoyA5.ReadWAMITData_TD(HydrodynamicsBaseFilename);
   BuoyA5.SetTimestepSize(dt);
@@ -162,6 +165,18 @@ int main(int argc, char **argv) {
     }
     gp << "replot\n";
   }
+
+#if 0  // Print numeric values of exciting force if desired
+    BuoyA5.SetTimestepSize(dt);
+    for (int k = 0; k < pts_t.size(); k++) {
+      Eigen::VectorXd ExtForce(6);
+      ExtForce = BuoyA5.ExcitingForce();
+      std::cout << pts_t[k] << "   "  << Inc->eta(0, 0, pts_t[k]) << "   "  
+                << ExtForce(0) << "   "
+                << ExtForce(2) << "   "
+                << ExtForce(4) << std::endl;
+    }
+#endif
 
   std::cout << "Enter Ctrl-C to quit.  (Enter 'pkill gnuplot_qt' to clear "
                "plots if necessary)"

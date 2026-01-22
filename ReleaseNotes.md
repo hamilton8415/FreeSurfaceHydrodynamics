@@ -25,3 +25,7 @@
 - Includes python bindings authored by Michael Anderson
 - Included randomness in incident wave frequencies to promote longer repeat times
 - Changed specification of custom wave-spectrum to be in term of Hz instead of rad/s.
+
+1.3.1 - Sept 32, 2023.
+- Changed location of include files to be namespaced as #include "FreeSurfaceHydrodynamics/___.hpp"
+

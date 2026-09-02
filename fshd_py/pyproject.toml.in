@@ -1,6 +1,6 @@
 [project]
 name = "fshd"
-version = "1.4.2"
+version = @PROJECT_VERSION@
 description = "A Python wrapper for FreeSurfaceHydrodynamics"
 readme = "README.md"
 requires-python = ">=3.12"

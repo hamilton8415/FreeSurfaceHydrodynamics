@@ -1,9 +1,12 @@
 #!/usr/bin/python3
 
+import json
 import matplotlib
 # matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import xarray as xr
 
 from fshd import LinearIncidentWave, WaveSpectrumType
 
@@ -64,7 +67,7 @@ def main():
                                  + ", 'B'retschneider" \
                                  + ", 'C'ustom")
     parser.add_argument('-o', type=str, default=None,
-                        help='output netcdf filename with incident wave data. Skips plotting.')
+                        help='output filename with incident wave data. *.nc for netcdf *.csv for csv. Skips plotting')
     parser.add_argument('-n', type=int, default=10,
                         help='for output, number of wave periods to save')
 
@@ -115,8 +118,6 @@ def main():
         freq = None
         S = None
         if args.E is not None:
-            import json
-            import pandas as pd
             with open(args.E, 'r') as fd:
                 data = json.load(fd)
             dat = pd.DataFrame(data)
@@ -172,7 +173,6 @@ def main():
     # print(Inc)
 
     if args.o is not None:
-        import xarray as xr
         pts_t = []
         pts_eta = []
         pts_deta_dx = []
@@ -188,19 +188,30 @@ def main():
             pts_deta_dy.append(deta_dy)
             pts_u_east.append(u_east)
             pts_v_north.append(v_north)
-        ds = xr.Dataset(
-                data_vars={
-                    'eta': (['time'], pts_eta),
-                    'deta_dx': (['time'], pts_deta_dx),
-                    'deta_dy': (['time'], pts_deta_dy),
-                    'u_east': (['time'], pts_u_east),
-                    'v_north': (['time'], pts_v_north),
-                },
-                coords={
-                    'time': pts_t,
-                },
-            )
-        ds.to_netcdf(args.o)
+        if '.nc' in args.o:
+            ds = xr.Dataset(
+                    data_vars={
+                        'eta': (['time'], pts_eta),
+                        'deta_dx': (['time'], pts_deta_dx),
+                        'deta_dy': (['time'], pts_deta_dy),
+                        'u_east': (['time'], pts_u_east),
+                        'v_north': (['time'], pts_v_north),
+                    },
+                    coords={
+                        'time': pts_t,
+                    },
+                )
+            ds.to_netcdf(args.o)
+        elif '.csv' in args.o:
+            df = pd.DataFrame({
+                'time': pts_t,
+                'eta': pts_eta,
+                'deta_dx': pts_deta_dx,
+                'deta_dy': pts_deta_dy,
+                'u_east': pts_u_east,
+                'v_north': pts_v_north,
+            })
+            df.to_csv(args.o, index=False)
         import sys; sys.exit(0)
 
     # plot

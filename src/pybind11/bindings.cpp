@@ -232,7 +232,12 @@ PYBIND11_MODULE(fshd, m) {
              py::arg("x"))
         .def("RadiationForce", &FS_HydroDynamics::RadiationForce,
              py::arg("last_xddot"))
-        .def("ExcitingForce", &FS_HydroDynamics::ExcitingForce)
+        .def("ExcitingForce", py::overload_cast<>(&FS_HydroDynamics::ExcitingForce))
+        .def("ExcitingForce",
+             py::overload_cast<
+                     int
+                 >(&FS_HydroDynamics::ExcitingForce),
+             py::arg("n"))
 
         .def("ComplexAmplitude",
              py::overload_cast<

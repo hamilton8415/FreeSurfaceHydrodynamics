@@ -4,8 +4,8 @@ project(FreeSurfaceHydrodynamics VERSION 1.4.2 LANGUAGES CXX)
 configure_file(${PROJECT_SOURCE_DIR}/include/FreeSurfaceHydrodynamics/config.h.in
                ${PROJECT_BINARY_DIR}/include/FreeSurfaceHydrodynamics/config.h)
 
-configure_file(${PROJECT_SOURCE_DIR}/fshd_py/setup.cfg.in
-               ${PROJECT_SOURCE_DIR}/fshd_py/setup.cfg)
+configure_file(${PROJECT_SOURCE_DIR}/fshd_py/pyproject.toml.in
+               ${PROJECT_SOURCE_DIR}/fshd_py/pyproject.toml)
 
 configure_file(${PROJECT_SOURCE_DIR}/fshd_py/cycle.sh.in
                ${PROJECT_BINARY_DIR}/cycle.sh)

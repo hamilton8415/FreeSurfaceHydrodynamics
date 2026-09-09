@@ -40,7 +40,7 @@ def main():
 
     omega = 2. * np.pi / Tp
     tf = 3. * Tp
-    dt = 0.015
+    dt = 0.05
 
     Inc.SetToMonoChromatic(A, Tp, phase, beta)
 

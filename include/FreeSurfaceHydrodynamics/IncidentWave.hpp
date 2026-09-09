@@ -24,6 +24,7 @@
 class IncidentWave
 {
 public:
+  virtual double eta(double x, double y, double t, int n) const = 0;
   virtual double eta(double x, double y, double t) const = 0;
 };
 

@@ -24,7 +24,7 @@
 
 #include <FreeSurfaceHydrodynamics/FS_Hydrodynamics.hpp>
 #include <FreeSurfaceHydrodynamics/config.h>
-#include <FreeSurfaceHydrodynamics/IncidentWave.hpp>
+#include <FreeSurfaceHydrodynamics/LinearIncidentWave.hpp>
 #include <FreeSurfaceHydrodynamics/interp1d.hpp>
 #include <FreeSurfaceHydrodynamics/mlinterp.hpp>
 
@@ -711,6 +711,11 @@ FS_HydroDynamics::FS_HydroDynamics()
     _rad_tstep_index = STORAGE_MULTIPLIER * _n_rad_intpts -
             1; // Set to fill from last memory spot backwards
 
+
+
+// Set up for wave-exciting forces
+
+
     _n_exc_intpts = (m_tau_exc(m_tau_exc.size() - 1) - m_tau_exc(0)) / dt + 1;
     std::vector<double> x_exc;
 
@@ -727,18 +732,58 @@ FS_HydroDynamics::FS_HydroDynamics()
           m_tau_exc.data(), &(x_exc[0]));
       }
     }
-    _eta0.resize(
-      STORAGE_MULTIPLIER *
-      _n_exc_intpts); // Create storage for 5 times the length of the
+
+
+    int NumWaveComponents = 0;
+    if (auto derived_ptr = std::dynamic_pointer_cast<LinearIncidentWave>(_IncWave)) 
+      NumWaveComponents = derived_ptr->NumWaveComponents;  // Determine number of WaveComponents.  
+    else 
+    {
+      std::cout << "Pointer does not point to a LinearIncidentWave instance." << std::endl;
+      NumWaveComponents = 0;
+    }
+
+    for(int n = 0 ; n < NumWaveComponents; n++)
+    {
+      // Set to fill from last memory spot backwards
+      _exc_tstep_index.push_back(STORAGE_MULTIPLIER * _n_exc_intpts - 1);
+    
+    Eigen::VectorXd tmp_eta0;
+    tmp_eta0.resize(STORAGE_MULTIPLIER * _n_exc_intpts); // Create storage for 5 times the length of the
                 // Impulse response function,  code will shift
                 // data when this fills.
-
-    // Set to fill from last memory spot backwards
-    _exc_tstep_index = STORAGE_MULTIPLIER * _n_exc_intpts - 1;
+    _eta0.push_back(tmp_eta0);
+    _t_eta.push_back(m_tau_exc(0));
+    }
   }
 
   Eigen::VectorXd FS_HydroDynamics::ExcitingForce()
   {
+    Eigen::VectorXd ExctForces(6);
+    ExctForces(0) = 0; ExctForces(1) = 0; ExctForces(2) = 0; ExctForces(3) = 0; ExctForces(4) = 0; ExctForces(5) = 0; 
+
+    std::cout << "Compute F_E " << std::endl;
+    int NumWaveComponents = 0;
+    if (auto derived_ptr = std::dynamic_pointer_cast<LinearIncidentWave>(_IncWave)) 
+      NumWaveComponents = derived_ptr->NumWaveComponents;  // Determine number of WaveComponents.  
+    else 
+    {
+      std::cout << "Pointer does not point to a LinearIncidentWave instance." << std::endl;
+      NumWaveComponents = 0;
+    }
+
+    std::cout << ExctForces.transpose() << std::endl;
+    for(int n = 0;n<NumWaveComponents;n++)
+      {
+      ExctForces += ExcitingForce(n);
+      std::cout << ExctForces.transpose() << std::endl;
+      }
+    return ExctForces;
+  }
+
+  Eigen::VectorXd FS_HydroDynamics::ExcitingForce(int n)
+  {
+    std::cout << "Compute F_E for component " << n << std::endl;
     Eigen::VectorXd ExctForces(6);
 
     if(!_IncWave) //If _IncWave is null, no incident wave has been defined so no forces result.
@@ -747,35 +792,35 @@ FS_HydroDynamics::FS_HydroDynamics()
     return ExctForces;
     }
 
-    if (_exc_tstep_index ==
-      STORAGE_MULTIPLIER * _n_exc_intpts -
-      1) // Fill in initial values of eta the first time.
+    if (_exc_tstep_index[n] == STORAGE_MULTIPLIER * _n_exc_intpts - 1) // Fill in initial values of eta the first time.
     {
-      _t_eta = m_tau_exc(0);
-      for (; _exc_tstep_index >
-        STORAGE_MULTIPLIER * _n_exc_intpts - _n_exc_intpts;
-        _exc_tstep_index--)
+      _t_eta[n] = m_tau_exc(0);
+      for (; _exc_tstep_index[n] > STORAGE_MULTIPLIER * _n_exc_intpts - _n_exc_intpts; _exc_tstep_index[n]--)
       {
-        _eta0(_exc_tstep_index) = _IncWave->eta(0, 0, _t_eta);
-        _t_eta += m_dt;
+        _eta0[n](_exc_tstep_index[n]) = _IncWave->eta(0, 0, _t_eta[n],n);
+        _t_eta[n] += m_dt;
       }
     }
 
     // Compute next needed wave-elevation, note this is a bit in the future..
-    _eta0(_exc_tstep_index) = _IncWave->eta(0, 0, _t_eta);
-    _t_eta += m_dt;
+    _eta0[n](_exc_tstep_index[n]) = _IncWave->eta(0, 0, _t_eta[n],n);
+    _t_eta[n] += m_dt;
+
+//std::cout << "n = " << n << "  _t_eta[n] = " << _t_eta[n] << std::endl;
+//std::cout << "n = " << n << "  _exc_tstep_index[n] = " << _exc_tstep_index[n] << std::endl;
+std::cout << "n = " << n << "  _eta0[n](_exc_ststep_index[n]) = " << _eta0[n](_exc_tstep_index[n]) << std::endl;
 
     // Compute convolution integrals, no need to adjust ends in trap rule since
     // integrand there is zero.
     for (int i = 0; i < 6; i++) {
-      ExctForces(i) = m_L_exc[i].dot(_eta0.segment(_exc_tstep_index, _n_exc_intpts));
+      ExctForces(i) = m_L_exc[i].dot(_eta0[n].segment(_exc_tstep_index[n], _n_exc_intpts));
     }
 
-    // Increment timestep index and shift stored xddot data if needed.
-    _exc_tstep_index--;
-    if (_exc_tstep_index == 0) { // At end of allocated storage,
-      _eta0.tail(_n_exc_intpts) = _eta0.head(_n_exc_intpts);
-      _exc_tstep_index = STORAGE_MULTIPLIER * _n_exc_intpts - _n_exc_intpts;
+    // Decrement timestep index and shift stored wave elevation data if needed.
+    _exc_tstep_index[n]--;
+    if (_exc_tstep_index[n] == 0) { // At end of allocated storage,
+      _eta0[n].tail(_n_exc_intpts) = _eta0[n].head(_n_exc_intpts);
+      _exc_tstep_index[n] = STORAGE_MULTIPLIER * _n_exc_intpts - _n_exc_intpts;
     }
 
     ExctForces *= m_dt;

@@ -48,16 +48,29 @@ public:
   void SetToPiersonMoskowitzSpectrum(double Hs, double beta, int n_phases);
   void SetToPiersonMoskowitzSpectrum(double Hs, double UnusedTp, double beta);
   void SetToPiersonMoskowitzSpectrum(double Hs, double UnusedTp, double beta, int n_phases);
+  void SetToPiersonMoskowitzSpectrumWithCos2Spreading(double Hs, double beta, int n_phases,int spreading_factor, int n_sectors);
+  void SetToPiersonMoskowitzSpectrumWithCos2Spreading(double Hs, double beta, int spreading_factor, int n_sectors);
   void SetToBretschneiderSpectrum(double Hs, double Tp, double beta);
   void SetToBretschneiderSpectrum(double Hs, double Tp, double beta, int n_phases);
+  void SetToBretschneiderSpectrumWithCos2Spreading(double Hs, double Tp, double beta, int spreading_factor, int n_sectors);
+  void SetToBretschneiderSpectrumWithCos2Spreading(double Hs, double Tp, double beta, int n_phases,int spreading_factor, int n_sectors);
   void SetToCustomSpectrum(std::vector<double> freq, std::vector<double> S, double beta);
   void SetToCustomSpectrum(std::vector<double> freq, std::vector<double> S, double beta, int n_phases);
   friend std::ostream & operator<<(std::ostream & out, const LinearIncidentWave & IncWave);
+  double eta(double x, double y, double t, int n) const;
   double eta(double x, double y, double t) const;
+
+  double eta(double x, double y, double t, double *deta_dx, double *deta_dy, int n) const;
   double eta(double x, double y, double t, double *deta_dx, double *deta_dy) const;
+
+  double eta(double x, double y, double t,
+             double *deta_dx, double *deta_dy,
+             double *u_east, double *v_north, int n) const;  // includes Eulerian surface velocities
   double eta(double x, double y, double t,
              double *deta_dx, double *deta_dy,
              double *u_east, double *v_north) const;  // includes Eulerian surface velocities
+
+             double etadot(double x, double y, double t, int n) const;
   double etadot(double x, double y, double t) const;
   std::string Version();
   int MajorVersionNumber();
@@ -65,18 +78,18 @@ public:
   int PatchVersionNumber();
 
 public:
-  WaveSpectrumType m_SpectrumType = WaveSpectrumType::MonoChromatic;
   double m_grav{9.81};
   double m_rho{1025.};
-  Eigen::VectorXd m_Spectrum;
-  Eigen::VectorXd m_A;
-  Eigen::VectorXd m_omega;
-  Eigen::VectorXd m_k;
-  Eigen::VectorXd m_phases;
-  double m_beta{0.};
-  double m_Hs{1.};
-  double m_Tp{10.};
-  std::vector<Eigen::Matrix<double, Eigen::Dynamic, 1>> fd_Pha_Xi;
+  int NumWaveComponents{0};
+  std::vector<WaveSpectrumType> m_SpectrumType;
+  std::vector<Eigen::VectorXd> m_Spectrum;
+  std::vector<Eigen::VectorXd> m_A;
+  std::vector<Eigen::VectorXd> m_omega;
+  std::vector<Eigen::VectorXd> m_k;
+  std::vector<Eigen::VectorXd> m_phases;
+  std::vector<double> m_beta;
+  std::vector<double> m_Hs;
+  std::vector<double> m_Tp;
 };
 
 #endif  // FREESURFACEHYDRODYNAMICS__LIB__LINEARINCIDENTWAVE_HPP_

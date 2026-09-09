@@ -36,19 +36,21 @@ void signal_callback_handler(int signum) {
 }
 
 int main(int argc, char **argv) {
-  {
-    std::string s = "pkill gnuplot_qt";
-    int ret = system(s.c_str());
-  }
+ // {
+ //   std::string s = "pkill gnuplot_qt";
+ //   int ret = system(s.c_str());
+ // }
   signal(SIGINT, signal_callback_handler);
 
   // Defaults
   double A = 1;
   double Tp = 5;
   double phase = 40 * M_PI / 180;
+  bool make_plots = true;  
+
 
   int c;
-  while ((c = getopt(argc, argv, ":a:t:p:h")) != -1) {
+  while ((c = getopt(argc, argv, ":a:t:p:h:q")) != -1) {
     switch (c) {
     case 'a':
       A = atof(optarg);
@@ -67,6 +69,9 @@ int main(int argc, char **argv) {
       std::cout << "  [-t 6.0] sets the body motion period to 6.0 seconds" <<std::endl;
       std::cout << "  [-p 45.0] sets the body motion phase angle to 45.0 degrees" <<std::endl;
       return 0;
+      break;
+    case 'q':
+      make_plots = false; 
       break;
     }
   }
@@ -108,19 +113,21 @@ int main(int argc, char **argv) {
     pts_accel.push_back(-A * pow(omega, 2) * cos(omega * tt + phase));
   }
 
-  Gnuplot gp;
-  char Amp[10];
-  snprintf(Amp, sizeof(Amp), "%.1f", A);
-  char Per[10];
-  snprintf(Per, sizeof(Per), "%.1f", Tp);
-  gp << "set term qt title  'A = " << Amp << "m  T = " << Per << "s'\n";
-  gp << "set grid\n";
-  gp << "set xlabel 'time (s)'\n";
-  gp << "plot '-' w l title 'Vel'"
-     << ",'-' w l title 'Accel'\n";
-  gp.send1d(boost::make_tuple(pts_t, pts_vel));
-  gp.send1d(boost::make_tuple(pts_t, pts_accel));
-
+  if(make_plots)
+  {
+    Gnuplot gp;
+    char Amp[10];
+    snprintf(Amp, sizeof(Amp), "%.1f", A);
+    char Per[10];
+    snprintf(Per, sizeof(Per), "%.1f", Tp);
+    gp << "set term qt title  'A = " << Amp << "m  T = " << Per << "s'\n";
+    gp << "set grid\n";
+    gp << "set xlabel 'time (s)'\n";
+    gp << "plot '-' w l title 'Vel'"
+       << ",'-' w l title 'Accel'\n";
+    gp.send1d(boost::make_tuple(pts_t, pts_vel));
+    gp.send1d(boost::make_tuple(pts_t, pts_accel));
+  }
   // Test Radiation Forces
   // Note:  This computes the radiation forces for each mode of motion
   // indivdually, so MemRadiation is called 6 times per timestep, once with each
@@ -160,7 +167,7 @@ int main(int argc, char **argv) {
         }
       }
 
-      if ((F_min < -1) && (F_max > 1)) { // Don't plot near-zero forces
+      if (make_plots && (F_min < -1) && (F_max > 1)) { // Don't plot near-zero forces
         Gnuplot gp;
         char Amp[10];
         snprintf(Amp, sizeof(Amp), "%.1f", A);
@@ -193,10 +200,12 @@ int main(int argc, char **argv) {
     }
   }
 
-  std::cout
+  if(make_plots)
+    {
+    std::cout
       << "Enter Ctrl-C to quit.  (Enter 'pkill gnuplot_qt' to clear plots "
          "if necessary)"
       << std::endl;
-  while (1)
-    ;
+    while (1);
+    }
 }

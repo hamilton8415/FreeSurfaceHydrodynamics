@@ -40,11 +40,31 @@ PYBIND11_MODULE(fshd, m) {
                      double, double, double, int
                  >(&LinearIncidentWave::SetToBretschneiderSpectrum),
              py::arg("Hs"), py::arg("Tp"), py::arg("beta"), py::arg("n_phases")=DEFAULT_N_PHASES)
+        .def("SetToBretschneiderSpectrumWithCos2Spreading",
+             [](LinearIncidentWave& self,
+                double Hs, double Tp, double beta,
+                int spreading_factor, int n_sectors, int n_phases) {
+                 return self.SetToBretschneiderSpectrumWithCos2Spreading(
+                     Hs, Tp, beta, n_phases, spreading_factor, n_sectors);
+             },
+             py::arg("Hs"), py::arg("Tp"), py::arg("beta"),
+             py::arg("spreading_factor"), py::arg("n_sectors"),
+             py::arg("n_phases") = DEFAULT_N_PHASES)
         .def("SetToPiersonMoskowitzSpectrum",
              py::overload_cast<
                      double, double, int
                  >(&LinearIncidentWave::SetToPiersonMoskowitzSpectrum),
              py::arg("Hs"), py::arg("beta"), py::arg("n_phases")=DEFAULT_N_PHASES)
+        .def("SetToPiersonMoskowitzSpectrumWithCos2Spreading",
+             [](LinearIncidentWave& self,
+                double Hs, double beta,
+                int spreading_factor, int n_sectors, int n_phases) {
+                 return self.SetToPiersonMoskowitzSpectrumWithCos2Spreading(
+                     Hs, beta, n_phases, spreading_factor, n_sectors);
+             },
+             py::arg("Hs"), py::arg("beta"),
+             py::arg("spreading_factor"), py::arg("n_sectors"),
+             py::arg("n_phases") = DEFAULT_N_PHASES)
         .def("SetToCustomSpectrum",
              py::overload_cast<
                      std::vector<double>, std::vector<double>, double, int
@@ -118,6 +138,7 @@ PYBIND11_MODULE(fshd, m) {
              })
 
         .def_readonly("m_Tp", &LinearIncidentWave::m_Tp)
+        .def_readonly("m_Hs", &LinearIncidentWave::m_Hs)
         .def_readonly("m_omega", &LinearIncidentWave::m_omega)
         .def_readonly("m_A", &LinearIncidentWave::m_A);
 
@@ -211,7 +232,12 @@ PYBIND11_MODULE(fshd, m) {
              py::arg("x"))
         .def("RadiationForce", &FS_HydroDynamics::RadiationForce,
              py::arg("last_xddot"))
-        .def("ExcitingForce", &FS_HydroDynamics::ExcitingForce)
+        .def("ExcitingForce", py::overload_cast<>(&FS_HydroDynamics::ExcitingForce))
+        .def("ExcitingForce",
+             py::overload_cast<
+                     int
+                 >(&FS_HydroDynamics::ExcitingForce),
+             py::arg("n"))
 
         .def("ComplexAmplitude",
              py::overload_cast<

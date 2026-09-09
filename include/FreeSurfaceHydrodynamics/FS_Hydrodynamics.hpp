@@ -73,6 +73,7 @@ public:
   Eigen::VectorXd BuoyancyForce(Eigen::VectorXd x);
   Eigen::VectorXd RadiationForce(Eigen::VectorXd last_xddot);
   Eigen::VectorXd ExcitingForce();
+  Eigen::VectorXd ExcitingForce(int n);
 
   Eigen::Matrix<std::complex<double>, 6, 1> ComplexAmplitude(double omega);
   std::complex<double> ComplexAmplitude(double omega, int mode);
@@ -132,15 +133,15 @@ public:
   std::array<Eigen::VectorXd, 6> m_xddot;
 
   // Storage for wave-elevation at origin;
-  Eigen::VectorXd _eta0;
+  std::vector<Eigen::VectorXd> _eta0;
 
   int _rad_tstep_index = 0;
-  int _exc_tstep_index = 0;
+  std::vector<int> _exc_tstep_index;
   int _n_rad_intpts = 0;
   int _n_exc_intpts = 0;
 
   // wave-elevation evaluation time;
-  double _t_eta;
+  std::vector<double> _t_eta;
 
   /// \brief Buoy WaterPlane Area
   double S;

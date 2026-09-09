@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.28)
-project(FreeSurfaceHydrodynamics VERSION 1.4.1 LANGUAGES CXX)
+project(FreeSurfaceHydrodynamics VERSION 1.4.2 LANGUAGES CXX)
 
 configure_file(${PROJECT_SOURCE_DIR}/include/FreeSurfaceHydrodynamics/config.h.in
                ${PROJECT_BINARY_DIR}/include/FreeSurfaceHydrodynamics/config.h)
 
-configure_file(${PROJECT_SOURCE_DIR}/fshd_py/setup.cfg.in
-               ${PROJECT_SOURCE_DIR}/fshd_py/setup.cfg)
+configure_file(${PROJECT_SOURCE_DIR}/fshd_py/pyproject.toml.in
+               ${PROJECT_SOURCE_DIR}/fshd_py/pyproject.toml)
 
 configure_file(${PROJECT_SOURCE_DIR}/fshd_py/cycle.sh.in
                ${PROJECT_BINARY_DIR}/cycle.sh)
@@ -29,6 +29,9 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   # Set the possible values of build type for cmake-gui
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
+
+add_compile_options(-g)
+add_link_options(-g)
 
 #------------------------------------------------------------------------
 # Include cmake
@@ -72,7 +75,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1)
 
-option(BUILD_PYTHON_BINDINGS "build FreeSurfaceHydrodynamics (fshd) python module" ON)
+#option(BUILD_PYTHON_BINDINGS "build FreeSurfaceHydrodynamics (fshd) python module" ON)
+option(BUILD_PYTHON_BINDINGS "build FreeSurfaceHydrodynamics (fshd) python module" OFF)
 if(BUILD_PYTHON_BINDINGS)
   find_package(Python REQUIRED COMPONENTS Interpreter Development)
   find_package(pybind11 CONFIG)
@@ -97,6 +101,10 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)  # In Root, include targe
   add_executable(IncidentWaveExample examples/IncidentWaveExample.cpp)
   target_link_libraries(IncidentWaveExample FreeSurfaceHydrodynamics)
   target_include_directories(IncidentWaveExample PRIVATE ${PROJECT_BINARY_DIR}/include ${gnuplot-iostream_INCLUDE_DIRS})
+
+  add_executable(IncidentWaveDirectionExample examples/IncidentWaveDirectionExample.cpp)
+  target_link_libraries(IncidentWaveDirectionExample FreeSurfaceHydrodynamics)
+  target_include_directories(IncidentWaveDirectionExample PRIVATE ${PROJECT_BINARY_DIR}/include ${gnuplot-iostream_INCLUDE_DIRS})
 
   add_executable(PlotCoeffsExample examples/PlotCoeffsExample.cpp)
   target_link_libraries(PlotCoeffsExample FreeSurfaceHydrodynamics)

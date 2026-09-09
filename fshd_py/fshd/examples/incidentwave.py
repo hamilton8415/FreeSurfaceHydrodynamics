@@ -70,6 +70,10 @@ def main():
                         help='output filename with incident wave data. *.nc for netcdf *.csv for csv. Skips plotting')
     parser.add_argument('-n', type=int, default=10,
                         help='for output, number of wave periods to save')
+    parser.add_argument('-x', type=float, default=0.0,
+                        help='(meters) sets the x coord for wave measurement location')
+    parser.add_argument('-y', type=float, default=0.0,
+                        help='(meters) sets the y coord for wave measurement location')
 
     args = parser.parse_args()
 
@@ -182,7 +186,7 @@ def main():
         for t in np.arange(0., args.n*T, 0.1):
             pts_t.append(t)
             eta, deta_dx, deta_dy, u_east, v_north = \
-                Inc.eta(0., 0., t, compute_deta=True, compute_uv=True)
+                Inc.eta(args.x, args.y, t, compute_deta=True, compute_uv=True)
             pts_eta.append(eta)
             pts_deta_dx.append(deta_dx)
             pts_deta_dy.append(deta_dy)
@@ -199,12 +203,15 @@ def main():
                     },
                     coords={
                         'time': pts_t,
+                        'loc': (args.x, args.y),
                     },
                 )
             ds.to_netcdf(args.o)
         elif '.csv' in args.o:
             df = pd.DataFrame({
                 'time': pts_t,
+                'x': args.x,
+                'y': args.y,
                 'eta': pts_eta,
                 'deta_dx': pts_deta_dx,
                 'deta_dy': pts_deta_dy,

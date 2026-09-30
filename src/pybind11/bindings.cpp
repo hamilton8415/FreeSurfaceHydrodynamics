@@ -74,56 +74,50 @@ PYBIND11_MODULE(fshd, m) {
         .def("eta",
              [](LinearIncidentWave & self,
                 const double & x, const double & y, const double & t,
+                std::optional<int> n,
                 bool compute_deta, bool compute_uv)
              {
-                 double deta_dx = 0.0;
-                 double deta_dy = 0.0;
-                 double u_east = 0.0;
-                 double v_north = 0.0;
+                 double deta_dx = 0.0, deta_dy = 0.0, u_east = 0.0, v_north = 0.0;
                  int mask = (compute_deta ? 1 : 0) | (compute_uv ? 2 : 0);
                  switch (mask) {
-                   // return eta (default)
-                   case 0:  // false, false
+                   case 0:
                    default:
-                     return std::variant<std::vector<double>, double>(self.eta(x, y, t));
-                   // return eta and waterplane slope
-                   case 1:  // true, false
-                   {
-                     double eta = self.eta(x, y, t, &deta_dx, &deta_dy);
                      return std::variant<std::vector<double>, double>(
-                         std::vector<double>{eta, deta_dx, deta_dy}
-                     );
+                         n ? self.eta(x, y, t, *n) : self.eta(x, y, t));
+                   case 1: {
+                     double eta = n ? self.eta(x, y, t, &deta_dx, &deta_dy, *n)
+                                    : self.eta(x, y, t, &deta_dx, &deta_dy);
+                     return std::variant<std::vector<double>, double>(
+                         std::vector<double>{eta, deta_dx, deta_dy});
                    }
-                   // return eta and Eulerian surface velocities
-                   case 2:  // false, true
-                   {
-                     double eta = self.eta(x, y, t,
-                                           nullptr, nullptr,
-                                           &u_east, &v_north);
+                   case 2: {
+                     double eta = n ? self.eta(x, y, t, nullptr, nullptr, &u_east, &v_north, *n)
+                                    : self.eta(x, y, t, nullptr, nullptr, &u_east, &v_north);
                      return std::variant<std::vector<double>, double>(
-                         std::vector<double>{eta, u_east, v_north}
-                     );
+                         std::vector<double>{eta, u_east, v_north});
                    }
-                   // return eta, waterplane slope, and surface velocities
-                   case 3:  // true, true
-                   {
-                     double eta = self.eta(x, y, t,
-                                           &deta_dx, &deta_dy,
-                                           &u_east, &v_north);
+                   case 3: {
+                     double eta = n ? self.eta(x, y, t, &deta_dx, &deta_dy, &u_east, &v_north, *n)
+                                    : self.eta(x, y, t, &deta_dx, &deta_dy, &u_east, &v_north);
                      return std::variant<std::vector<double>, double>(
-                         std::vector<double>{eta, deta_dx, deta_dy,
-                                             u_east, v_north}
-                     );
+                         std::vector<double>{eta, deta_dx, deta_dy, u_east, v_north});
                    }
                  }
              },
              py::arg("x"), py::arg("y"), py::arg("t"),
-             py::arg("compute_deta")=false, py::arg("compute_uv")=false)
+             py::arg("n") = py::none(),
+             py::arg("compute_deta") = false, py::arg("compute_uv") = false)
         .def("etadot",
-             py::overload_cast<
-                     double, double, double
-                 >(&LinearIncidentWave::etadot, py::const_),
-             py::arg("x"), py::arg("y"), py::arg("t"))
+             [](LinearIncidentWave & self,
+                const double & x, const double & y, const double & t,
+                std::optional<int> n)
+             {
+                 double etadot = n ? self.etadot(x, y, t, *n)
+                                   : self.etadot(x, y, y);
+                 return etadot;
+             },
+             py::arg("x"), py::arg("y"), py::arg("t"),
+             py::arg("n") = py::none())
 
         .def("Version", &LinearIncidentWave::Version)
         .def("MajorVersionNumber", &LinearIncidentWave::MajorVersionNumber)

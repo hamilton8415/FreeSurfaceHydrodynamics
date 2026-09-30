@@ -87,7 +87,7 @@ for(int n = 1; n < n_sectors; n++) // start with n = 1 b/c the reciprocal headin
   double beta = beta_0-(n*d_beta-M_PI);
   double D = std::pow(cos((beta-beta_0)/2),2*spreading_factor)*std::tgamma(1.0+spreading_factor)/(2*sqrt(M_PI)*std::tgamma(0.5+spreading_factor));
   //std::cout << "n = "  << n << "  beta = " << beta*180/M_PI << "  beta-beta_0 = " << beta-beta_0 << "  D " << D << std::endl;
-  SetToBretschneiderSpectrum(Hs*sqrt(D), Tp, beta, n_phases); // Spectrum energy scales as the square of Hs, so sqrt(D) introduces a factor of D into the Spectrum
+  SetToBretschneiderSpectrum(Hs*sqrt(D * d_beta), Tp, beta, n_phases); // Spectrum energy scales as the square of Hs, so sqrt(D) introduces a factor of D into the Spectrum
   }
 }
 
@@ -137,7 +137,7 @@ for(int n = 1; n < n_sectors; n++) // start with n = 1 b/c the reciprocal headin
   {
   double beta = beta_0-(n*d_beta-M_PI);
   double D = std::pow(cos((beta-beta_0)/2),2*spreading_factor)*std::tgamma(1.0+spreading_factor)/(2*sqrt(M_PI)*std::tgamma(0.5+spreading_factor));
-  SetToPiersonMoskowitzSpectrum(Hs*sqrt(D), beta, n_phases); // Spectrum energy scales as the square of Hs, so sqrt(D) introduces a factor of D into the Spectrum
+  SetToPiersonMoskowitzSpectrum(Hs*sqrt(D * d_beta), beta, n_phases); // Spectrum energy scales as the square of Hs, so sqrt(D) introduces a factor of D into the Spectrum
   }
 }
 
@@ -350,7 +350,8 @@ double LinearIncidentWave::eta(double x, double y, double t,
   return eta;
 }
 
-double LinearIncidentWave::eta(double x, double y, double t, double *deta_dx, double *deta_dy, int n) const
+double LinearIncidentWave::eta(double x, double y, double t,
+                               double *deta_dx, double *deta_dy, int n) const
 {
   return eta(x, y, t, deta_dx, deta_dy, nullptr, nullptr, n);
 }
@@ -366,18 +367,32 @@ double LinearIncidentWave::eta(double x, double y, double t,
                                double *u_east, double *v_north) const
 {
   double eta_sum = 0;
-  double *loc_deta_dx = deta_dx;  // Propogate Null Pointers if any
-  double *loc_deta_dy = deta_dy;
-  double *loc_u_east = u_east;
-  double *loc_v_north = v_north;
   
-  for(int n = 0; n< NumWaveComponents;n++)
-    {
-    eta_sum += eta(x,y,t,loc_deta_dx,loc_deta_dy,loc_u_east,loc_v_north,n);
-    if (loc_deta_dx) *deta_dx += *loc_deta_dx;  
-    if (loc_deta_dy) *deta_dy += *loc_deta_dx;
-    if (loc_u_east) *u_east += *loc_u_east;
-    if (loc_v_north) *v_north = *loc_v_north;
+  // zero out the variables passed in
+  if (deta_dx) *deta_dx = 0;
+  if (deta_dy) *deta_dy = 0;
+  if (u_east) *u_east = 0;
+  if (v_north) *v_north = 0;
+
+  // local copies for individual components
+  double deta_dx_n = 0;
+  double deta_dy_n = 0;
+  double u_east_n = 0;
+  double v_north_n = 0;
+
+  // init or null if input is null
+  double *loc_deta_dx = deta_dx ? &deta_dx_n : nullptr;
+  double *loc_deta_dy = deta_dy ? &deta_dy_n : nullptr;
+  double *loc_u_east = u_east ? &u_east_n : nullptr;
+  double *loc_v_north = v_north ? &v_north_n : nullptr;
+
+  for(int n = 0; n< NumWaveComponents; n++)
+  {
+    eta_sum += eta(x, y, t, loc_deta_dx, loc_deta_dy, loc_u_east, loc_v_north, n);
+    if (deta_dx) *deta_dx += *loc_deta_dx;
+    if (deta_dy) *deta_dy += *loc_deta_dy;
+    if (u_east) *u_east += *loc_u_east;
+    if (v_north) *v_north += *loc_v_north;
   }
   return eta_sum;
 }
@@ -391,9 +406,6 @@ double LinearIncidentWave::eta(double x, double y, double t) const
 {
   return eta(x, y, t, nullptr, nullptr, nullptr, nullptr);
 }
-
-
-
 
 double LinearIncidentWave::etadot(double x, double y, double t, int n) const
 {

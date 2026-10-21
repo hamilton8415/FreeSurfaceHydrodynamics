@@ -1,6 +1,7 @@
 close all
 clear all
 
+setenv('DYLD_LIBRARY_PATH', '/System/Volumes/Data/opt/FreeSurfaceHydrodynamics/lib');
 
 addpath('../../matlab');
 A = 1;

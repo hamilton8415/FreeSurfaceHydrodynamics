@@ -96,6 +96,8 @@ int main(int argc, char **argv) {
 
 LinearIncidentWave Inc;
 
+std::cout << Inc.MajorVersionNumber() << "  " << Inc.MinorVersionNumber() << "  "  << Inc.PatchVersionNumber() << std::endl;
+
 if(seed > 0)
   Inc.SetSeed(seed);
 

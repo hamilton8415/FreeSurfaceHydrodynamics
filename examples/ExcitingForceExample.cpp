@@ -96,8 +96,8 @@ int main(int argc, char **argv) {
   double dt = 0.05;
 
   Inc->SetToMonoChromatic(A, Tp, phase, beta);
-  Inc->SetToMonoChromatic(A, Tp, phase + M_PI, beta);
-  Inc->SetToMonoChromatic(A, Tp, phase, beta);
+//  Inc->SetToMonoChromatic(A, Tp, phase + M_PI, beta);
+//  Inc->SetToMonoChromatic(A, Tp, phase, beta);
 
   BuoyA5.AssignIncidentWave(Inc);
 

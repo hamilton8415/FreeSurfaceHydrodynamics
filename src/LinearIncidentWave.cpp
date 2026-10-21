@@ -375,7 +375,7 @@ double LinearIncidentWave::eta(double x, double y, double t,
     {
     eta_sum += eta(x,y,t,loc_deta_dx,loc_deta_dy,loc_u_east,loc_v_north,n);
     if (loc_deta_dx) *deta_dx += *loc_deta_dx;  
-    if (loc_deta_dy) *deta_dy += *loc_deta_dx;
+    if (loc_deta_dy) *deta_dy += *loc_deta_dy;
     if (loc_u_east) *u_east += *loc_u_east;
     if (loc_v_north) *v_north = *loc_v_north;
   }

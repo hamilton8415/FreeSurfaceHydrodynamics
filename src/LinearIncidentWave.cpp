@@ -49,7 +49,7 @@ void LinearIncidentWave::SetSeed(unsigned int seed)
 /// \brief Select single frequency wave
 void LinearIncidentWave::SetToMonoChromatic(double A, double T, double phase, double beta)
 {
-  std::cout << "Mono A = " << A << std::endl;
+  std::cout << "Mono AAA = " << A << std::endl;
 
   m_SpectrumType.push_back(WaveSpectrumType::MonoChromatic);
   m_Hs.push_back(2 * A);
@@ -160,6 +160,8 @@ void LinearIncidentWave::SetToPiersonMoskowitzSpectrum(
 /// \brief Select PM-Spectrum (default num of phases)
 void LinearIncidentWave::SetToPiersonMoskowitzSpectrum(double Hs, double beta)
 {
+  std::cout << "Hs = " << Hs << std::endl;
+  std::cout << "beta = " << beta << std::endl;
   SetToPiersonMoskowitzSpectrum(Hs, beta, DEFAULT_N_PHASES);
 }
 

@@ -20,20 +20,49 @@ classdef LinearIncidentWave < handle
             LinearIncidentWave_mex('SetToMonoChromatic', obj.ObjectHandle, A, T, phase, beta);
         end
 
+        %SetToPiersonMoskowitzSpectrum method
+        function SetToPiersonMoskowitzSpectrum(obj, Hs, beta)
+            LinearIncidentWave_mex('SetToPiersonMoskowitzSpectrum', obj.ObjectHandle, Hs, beta);
+        end
 
         % eta method
         function varargout = eta(obj,varargin)
-          if(nargin == 4)
              if(nargout == 1)
-               varargout{1} = LinearIncidentWave_mex('eta', obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3});
+               if(nargin == 4)
+                 varargout{1} = LinearIncidentWave_mex('eta', obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3});
+               end
+               if(nargin == 5)
+                 varargout{1} = LinearIncidentWave_mex('eta', obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3}, varargin{4});
+               end
              end
              if(nargout == 3)
-               [varargout{1} varargout{2} varargout{3}] = LinearIncidentWave_mex('eta', obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3});
+               if(nargin == 4)
+                 [varargout{1} varargout{2} varargout{3}] = LinearIncidentWave_mex('eta', obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3});
+               end
+               if(nargin == 5)
+                 [varargout{1}  varargout{2} varargout{3}] = LinearIncidentWave_mex('eta', obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3}, varargin{4});
+               end
              end
-          end
-          if(nargin == 5)
-             val = LinearIncidentWave_mex('eta', obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3},varargin{4});
-          end
+             if(nargout == 6)
+               if(nargin == 4)
+                 [varargout{1} varargout{2} varargout{3} varargout{4} varargout{5}] = LinearIncidentWave_mex('eta', obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3});
+               end
+               if(nargin == 5)
+                 [varargout{1}  varargout{2} varargout{3} varargout{4} varargout{5}] = LinearIncidentWave_mex('eta', obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3}, varargin{4});
+               end
+             end
+        end
+
+        % etadot method
+        function varargout = etadot(obj,varargin)
+             %if(nargout == 1)
+               if(nargin == 4)
+                 [varargout{1}] = LinearIncidentWave_mex('etadot', obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3});
+               end
+               if(nargin == 5)
+                 [varargout{1}] = LinearIncidentWave_mex('etadot', obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3}, varargin{4});
+               end
+             %end
         end
 
         % MajorVersionNumber method

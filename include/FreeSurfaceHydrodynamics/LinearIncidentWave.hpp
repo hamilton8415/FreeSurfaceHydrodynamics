@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #ifndef FREESURFACEHYDRODYNAMICS__LIB__LINEARINCIDENTWAVE_HPP_
 #define FREESURFACEHYDRODYNAMICS__LIB__LINEARINCIDENTWAVE_HPP_
 
@@ -21,9 +20,15 @@
 #include "IncidentWave.hpp"
 
 #define DEFAULT_N_PHASES 750
-#define MAX_FREQ .5  // Hz
+#define MAX_FREQ .5 // Hz
 
-enum class WaveSpectrumType {MonoChromatic, Bretschneider, PiersonMoskowitz, Custom};
+enum class WaveSpectrumType
+{
+  MonoChromatic,
+  Bretschneider,
+  PiersonMoskowitz,
+  Custom
+};
 
 /**
 \brief The IncidentWave class generates wave heights and fluid velocities at specified points and times.
@@ -48,15 +53,15 @@ public:
   void SetToPiersonMoskowitzSpectrum(double Hs, double beta, int n_phases);
   void SetToPiersonMoskowitzSpectrum(double Hs, double UnusedTp, double beta);
   void SetToPiersonMoskowitzSpectrum(double Hs, double UnusedTp, double beta, int n_phases);
-  void SetToPiersonMoskowitzSpectrumWithCos2Spreading(double Hs, double beta, int n_phases,int spreading_factor, int n_sectors);
+  void SetToPiersonMoskowitzSpectrumWithCos2Spreading(double Hs, double beta, int n_phases, int spreading_factor, int n_sectors);
   void SetToPiersonMoskowitzSpectrumWithCos2Spreading(double Hs, double beta, int spreading_factor, int n_sectors);
   void SetToBretschneiderSpectrum(double Hs, double Tp, double beta);
   void SetToBretschneiderSpectrum(double Hs, double Tp, double beta, int n_phases);
   void SetToBretschneiderSpectrumWithCos2Spreading(double Hs, double Tp, double beta, int spreading_factor, int n_sectors);
-  void SetToBretschneiderSpectrumWithCos2Spreading(double Hs, double Tp, double beta, int n_phases,int spreading_factor, int n_sectors);
+  void SetToBretschneiderSpectrumWithCos2Spreading(double Hs, double Tp, double beta, int n_phases, int spreading_factor, int n_sectors);
   void SetToCustomSpectrum(std::vector<double> freq, std::vector<double> S, double beta);
   void SetToCustomSpectrum(std::vector<double> freq, std::vector<double> S, double beta, int n_phases);
-  friend std::ostream & operator<<(std::ostream & out, const LinearIncidentWave & IncWave);
+  friend std::ostream &operator<<(std::ostream &out, const LinearIncidentWave &IncWave);
   double eta(double x, double y, double t, int n) const;
   double eta(double x, double y, double t) const;
 
@@ -65,12 +70,12 @@ public:
 
   double eta(double x, double y, double t,
              double *deta_dx, double *deta_dy,
-             double *u_east, double *v_north, int n) const;  // includes Eulerian surface velocities
+             double *u_east, double *v_north, int n) const; // includes Eulerian surface velocities
   double eta(double x, double y, double t,
              double *deta_dx, double *deta_dy,
-             double *u_east, double *v_north) const;  // includes Eulerian surface velocities
+             double *u_east, double *v_north) const; // includes Eulerian surface velocities
 
-             double etadot(double x, double y, double t, int n) const;
+  double etadot(double x, double y, double t, int n) const;
   double etadot(double x, double y, double t) const;
   std::string Version();
   int MajorVersionNumber();
@@ -92,4 +97,4 @@ public:
   std::vector<double> m_Tp;
 };
 
-#endif  // FREESURFACEHYDRODYNAMICS__LIB__LINEARINCIDENTWAVE_HPP_
+#endif // FREESURFACEHYDRODYNAMICS__LIB__LINEARINCIDENTWAVE_HPP_

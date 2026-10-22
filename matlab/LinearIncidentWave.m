@@ -27,6 +27,7 @@ classdef LinearIncidentWave < handle
 
         % eta method
         function varargout = eta(obj,varargin)
+        disp(['eta:  nargin = ' num2str(nargin) '  nargout = ' num2str(nargout)]);
              if(nargout == 1)
                if(nargin == 4)
                  varargout{1} = LinearIncidentWave_mex('eta', obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3});

@@ -89,17 +89,15 @@ public:
     {
       uint64_t handle = inputs[1][0];
       LinearIncidentWave *obj = reinterpret_cast<LinearIncidentWave *>(handle);
-      int n_inputs = inputs.size();
-      int n_outputs = outputs.size();
       double x, y, t;
       int n;
-      if (n_inputs >= 4)
+      if (inputs.size() >= 5)
       {
         x = inputs[2][0];
         y = inputs[3][0];
         t = inputs[4][0];
       }
-      if (n_inputs == 5)
+      if (inputs.size() == 6)
         n = inputs[5][0];
 
       double eta;
@@ -108,20 +106,20 @@ public:
       double u_east;
       double v_north;
 
-      switch (n_outputs)
+      switch (outputs.size())
       {
       case 1:
-        if (n_inputs == 4)
+        if (inputs.size() == 5)
           eta = obj->eta(x, y, t);
-        if (n_inputs == 5)
+        if (inputs.size() == 6)
           eta = obj->eta(x, y, t, n);
-        break;
         outputs[0] = factory.createScalar<double>(eta);
+        break;
 
       case 3:
-        if (n_inputs == 4)
+        if (inputs.size() == 5)
           eta = obj->eta(x, y, t, &deta_dx, &deta_dy);
-        if (n_inputs == 5)
+        if (inputs.size() == 6)
           eta = obj->eta(x, y, t, &deta_dx, &deta_dy, n);
 
         outputs[0] = factory.createScalar<double>(eta);
@@ -130,9 +128,9 @@ public:
         break;
 
       case 5:
-        if (n_inputs == 4)
+        if (inputs.size() == 5)
           eta = obj->eta(x, y, t, &deta_dx, &deta_dy, &u_east, &v_north);
-        if (n_inputs == 5)
+        if (inputs.size() == 6)
           eta = obj->eta(x, y, t, &deta_dx, &deta_dy, &u_east, &v_north, n);
         outputs[0] = factory.createScalar<double>(eta);
         outputs[1] = factory.createScalar<double>(deta_dx);
@@ -148,25 +146,23 @@ public:
     {
       uint64_t handle = inputs[1][0];
       LinearIncidentWave *obj = reinterpret_cast<LinearIncidentWave *>(handle);
-      int n_inputs = inputs.size();
-      int n_outputs = outputs.size();
-      std::cout << "n_outputs = " << n_outputs << std::endl;
+      std::cout << "outputs.size() = " << outputs.size() << std::endl;
       double x, y, t;
       int n;
-      if (n_inputs >= 4)
+      if (inputs.size() >= 5)
       {
         x = inputs[2][0];
         y = inputs[3][0];
         t = inputs[4][0];
       }
-      if (n_inputs == 5)
+      if (inputs.size() == 6)
         n = inputs[5][0];
 
       double etadot;
 
-      if (n_inputs == 4)
+      if (inputs.size() == 5)
         etadot = obj->etadot(x, y, t);
-      if (n_inputs == 5)
+      if (inputs.size() == 6)
         etadot = obj->etadot(x, y, t, n);
 
       outputs[0] = factory.createScalar<double>(etadot);

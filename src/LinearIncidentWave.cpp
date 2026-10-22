@@ -391,6 +391,7 @@ double LinearIncidentWave::eta(double x, double y, double t, double *deta_dx, do
 
 double LinearIncidentWave::eta(double x, double y, double t) const
 {
+  std::cout << "x, y, t = " << x << "  " << y << "  " << t << std::endl;
   return eta(x, y, t, nullptr, nullptr, nullptr, nullptr);
 }
 

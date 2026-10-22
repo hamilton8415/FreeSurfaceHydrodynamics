@@ -3,9 +3,6 @@ clear all
 
 %setenv('DYLD_LIBRARY_PATH', '/System/Volumes/Data/opt/FreeSurfaceHydrodynamics/lib');
 
-addpath('../../matlab');
-addpath('../../build');
-
 A = 1;
 T = 12;
 phase = 0 * pi / 180.0;
@@ -17,7 +14,7 @@ Inc = LinearIncidentWave();
 Inc.SetSeed(seed);
 Inc.SetToMonoChromatic(A,T,phase,beta);
 Inc.SetToMonoChromatic(A,.3*T,phase,beta);
-Inc.SetToPiersonMoskowitzSpectrum(2*A,beta);
+%Inc.SetToPiersonMoskowitzSpectrum(2*A,beta);
 
 x = 0; y = 0;
 

@@ -80,10 +80,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1)
 
-matlab_add_mex(
-    NAME LinearIncidentWaves              # The command name you will call inside MATLAB
-    SRC matlab/LinearIncidentWave_mex.cpp       # The gateway source file
-    LINK_TO ${PROJECT_NAME})              # Links your custom C++ library and relevant dependencies
+#matlab_add_mex(
+#    NAME LinearIncidentWave              # The command name you will call inside MATLAB
+#    SRC matlab/LinearIncidentWave_mex.cpp       # The gateway source file
+#    LINK_TO ${PROJECT_NAME})              # Links your custom C++ library and relevant dependencies
 
 
 #option(BUILD_PYTHON_BINDINGS "build FreeSurfaceHydrodynamics (fshd) python module" ON)

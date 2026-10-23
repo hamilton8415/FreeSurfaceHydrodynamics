@@ -20,10 +20,53 @@ classdef LinearIncidentWave < handle
             LinearIncidentWave_mex('SetToMonoChromatic', obj.ObjectHandle, A, T, phase, beta);
         end
 
+
         %SetToPiersonMoskowitzSpectrum method
-        function SetToPiersonMoskowitzSpectrum(obj, Hs, beta)
-            LinearIncidentWave_mex('SetToPiersonMoskowitzSpectrum', obj.ObjectHandle, Hs, beta);
-        end
+        function SetToPiersonMoskowitzSpectrum(obj, varargin)
+            if(nargin == 3)    % (double Hs, double beta)
+              LinearIncidentWave_mex('SetToPiersonMoskowitzSpectrum', obj.ObjectHandle, ...
+                                     varargin{1}, varargin{2});
+            end
+            if(nargin == 4)    % (double Hs, double beta, int n_phases)
+              LinearIncidentWave_mex('SetToPiersonMoskowitzSpectrum', obj.ObjectHandle, ...
+                                     varargin{1}, varargin{2}, varargin{3});
+             end
+         end
+
+        %SetToPiersonMoskowitzSpectrumWithCos2Spreading method
+        function SetToPiersonMoskowitzSpectrumWithCos2Spreading(obj, varargin)
+            if(nargin == 5)    % (double Hs, double beta,  int spreading_factor, int n_sectors)
+              LinearIncidentWave_mex('SetToPiersonMoskowitzSpectrumWithCos2Spreading', obj.ObjectHandle, ...
+                                      varargin{1}, varargin{2}, varargin{3}, varargin{4});
+            end
+            if(nargin == 6)    % (double Hs, double beta, int n_phases  int spreading_factor, int n_sectors)
+              LinearIncidentWave_mex('SetToPiersonMoskowitzSpectrumWithCos2Spreading', obj.ObjectHandle, ...
+                                      varargin{1}, varargin{2}, varargin{3}, varargin{4}, varargin{5});
+             end
+         end
+
+        %SetToBretschneiderSpectrum method
+        function SetToBretschneiderSpectrum(obj, varargin)
+            if(nargin == 4)    % (double Hs, double beta)
+              LinearIncidentWave_mex('SetToBretschneiderSpectrum', obj.ObjectHandle, ...
+                                     varargin{1}, varargin{2}, varargin{3});
+            end
+            if(nargin == 5)    % (double Hs, double beta, int n_phases)
+              LinearIncidentWave_mex('SetToBretschneiderSpectrum', obj.ObjectHandle, ...
+                                     varargin{1}, varargin{2}, varargin{3}, varargin{4});
+             end
+         end
+
+        %SetToBretschneiderSpectrumWithCos2Spreading method
+        function SetToPiersonMoskowitzSpectrumWithCos2Spreading(obj, varargin)
+            if(nargin == 6)    % (double Hs, double beta,  int spreading_factor, int n_sectors)
+              LinearIncidentWave_mex('SetToBretschneiderSpectrumWithCos2Spreading', obj.ObjectHandle, ...
+                                      varargin{1}, varargin{2}, varargin{3}, varargin{4}), varargin{5},;
+            end
+            if(nargin == 7)    % (double Hs, double beta, int n_phases  int spreading_factor, int n_sectors)
+              LinearIncidentWave_mex('SetToBretschneiderSpectrumWithCos2Spreading', obj.ObjectHandle, ...
+                                      varargin{1}, varargin{2}, varargin{3}, varargin{4}, varargin{5}, varargin{6},);
+             end
 
         % eta method
         function varargout = eta(obj,varargin)

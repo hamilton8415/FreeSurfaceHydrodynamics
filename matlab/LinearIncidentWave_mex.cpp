@@ -146,7 +146,6 @@ public:
     {
       uint64_t handle = inputs[1][0];
       LinearIncidentWave *obj = reinterpret_cast<LinearIncidentWave *>(handle);
-      std::cout << "outputs.size() = " << outputs.size() << std::endl;
       double x, y, t;
       int n;
       if (inputs.size() >= 5)

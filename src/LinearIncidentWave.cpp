@@ -49,8 +49,6 @@ void LinearIncidentWave::SetSeed(unsigned int seed)
 /// \brief Select single frequency wave
 void LinearIncidentWave::SetToMonoChromatic(double A, double T, double phase, double beta)
 {
-  std::cout << "Mono AAA = " << A << std::endl;
-
   m_SpectrumType.push_back(WaveSpectrumType::MonoChromatic);
   m_Hs.push_back(2 * A);
   m_Tp.push_back(T);
@@ -86,7 +84,6 @@ for(int n = 1; n < n_sectors; n++) // start with n = 1 b/c the reciprocal headin
   {
   double beta = beta_0-(n*d_beta-M_PI);
   double D = std::pow(cos((beta-beta_0)/2),2*spreading_factor)*std::tgamma(1.0+spreading_factor)/(2*sqrt(M_PI)*std::tgamma(0.5+spreading_factor));
-  //std::cout << "n = "  << n << "  beta = " << beta*180/M_PI << "  beta-beta_0 = " << beta-beta_0 << "  D " << D << std::endl;
   SetToBretschneiderSpectrum(Hs*sqrt(D), Tp, beta, n_phases); // Spectrum energy scales as the square of Hs, so sqrt(D) introduces a factor of D into the Spectrum
   }
 }
@@ -160,8 +157,6 @@ void LinearIncidentWave::SetToPiersonMoskowitzSpectrum(
 /// \brief Select PM-Spectrum (default num of phases)
 void LinearIncidentWave::SetToPiersonMoskowitzSpectrum(double Hs, double beta)
 {
-  std::cout << "Hs = " << Hs << std::endl;
-  std::cout << "beta = " << beta << std::endl;
   SetToPiersonMoskowitzSpectrum(Hs, beta, DEFAULT_N_PHASES);
 }
 
@@ -306,6 +301,11 @@ double LinearIncidentWave::eta(double x, double y, double t,
   if (u_east) *u_east = 0.0;
   if (v_north) *v_north = 0.0;
 
+  if((n < 0) || (n >= NumWaveComponents))  // Test to be sure wave component argument is valid, return zero otherwise
+    return eta;
+
+
+
     double xx = x * cos(m_beta[n]) + y * sin(m_beta[n]);
 
     // Per-direction-component slope / along-wave velocity contributions.
@@ -391,7 +391,6 @@ double LinearIncidentWave::eta(double x, double y, double t, double *deta_dx, do
 
 double LinearIncidentWave::eta(double x, double y, double t) const
 {
-  std::cout << "x, y, t = " << x << "  " << y << "  " << t << std::endl;
   return eta(x, y, t, nullptr, nullptr, nullptr, nullptr);
 }
 
@@ -401,7 +400,8 @@ double LinearIncidentWave::eta(double x, double y, double t) const
 double LinearIncidentWave::etadot(double x, double y, double t, int n) const
 {
   double etadot = 0;
-  if((n<0) || (n > NumWaveComponents))  // Return zero if invalid wave-component number.
+
+  if((n < 0) || (n >= NumWaveComponents))  // Test to be sure wave component argument is valid, return zero otherwise
     return etadot;
 
   double xx = x * cos(m_beta[n]) + y * sin(m_beta[n]);

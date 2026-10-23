@@ -1,7 +1,10 @@
 close all
 clear all
+clear mex
 
 %setenv('DYLD_LIBRARY_PATH', '/System/Volumes/Data/opt/FreeSurfaceHydrodynamics/lib');
+
+addpath('../build');
 
 A = 1;
 T = 12;
@@ -12,9 +15,9 @@ seed = 0;
 Inc = LinearIncidentWave();
 
 Inc.SetSeed(seed);
-Inc.SetToMonoChromatic(A,T,phase,beta);
-Inc.SetToMonoChromatic(A,.3*T,phase,beta);
-%Inc.SetToPiersonMoskowitzSpectrum(2*A,beta);
+%Inc.SetToMonoChromatic(A,T,phase,beta);
+%Inc.SetToMonoChromatic(A,.3*T,phase,beta);
+Inc.SetToPiersonMoskowitzSpectrum(2*A,beta);
 
 x = 0; y = 0;
 
@@ -66,8 +69,8 @@ etadot_1 = NaN(size(t));
 
 for i = 1:length(t)
   etadot(i) = Inc.etadot(x,y,t(i));
-  etadot_0(i) = Inc.etadot(x,y,t(i),0);
-  etadot_1(i) = Inc.etadot(x,y,t(i),1);
+%  etadot_0(i) = Inc.etadot(x,y,t(i),0);
+%  etadot_1(i) = Inc.etadot(x,y,t(i),1);
 end
 
 figure

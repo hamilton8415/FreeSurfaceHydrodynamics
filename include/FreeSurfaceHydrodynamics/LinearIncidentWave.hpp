@@ -61,6 +61,7 @@ public:
   void SetToBretschneiderSpectrumWithCos2Spreading(double Hs, double Tp, double beta, int n_phases, int spreading_factor, int n_sectors);
   void SetToCustomSpectrum(std::vector<double> freq, std::vector<double> S, double beta);
   void SetToCustomSpectrum(std::vector<double> freq, std::vector<double> S, double beta, int n_phases);
+  void PrintWaveInfo() const;
   friend std::ostream &operator<<(std::ostream &out, const LinearIncidentWave &IncWave);
   double eta(double x, double y, double t, int n) const;
   double eta(double x, double y, double t) const;

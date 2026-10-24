@@ -78,48 +78,53 @@ public:
     {
       uint64_t handle = inputs[1][0];
       LinearIncidentWave *obj = reinterpret_cast<LinearIncidentWave *>(handle);
-     
-      switch inputs.size()
+
+      switch (inputs.size())
       {
-      case 4:  // Two arguments
+      case 4: // Two arguments
+      {
         double Hs = inputs[2][0];
         double beta = inputs[3][0];
         obj->SetToPiersonMoskowitzSpectrum(Hs, beta);
         break;
-
+      }
       case 5: // Three Arguments
+      {
         double Hs = inputs[2][0];
         double beta = inputs[3][0];
         int n_phases = inputs[4][0];
         obj->SetToPiersonMoskowitzSpectrum(Hs, beta, n_phases);
         break;
       }
+      }
     }
-
     // ----------------- SetToPiersonMoskowitzSpectrumWithCos2Spreading -----------------
     else if (action == "SetToPiersonMoskowitzSpectrumWithCos2Spreading")
     {
       uint64_t handle = inputs[1][0];
       LinearIncidentWave *obj = reinterpret_cast<LinearIncidentWave *>(handle);
-     
-      switch inputs.size()
+
+      switch (inputs.size())
       {
-      case 6:  // Four arguments
+      case 6: // Four arguments
+      {
         double Hs = inputs[2][0];
         double beta = inputs[3][0];
         double spreading_factor = inputs[4][0];
         int n_sectors = inputs[5][0];
-        obj->SetToPiersonMoskowitzSpectrumWithCos2Spreading(Hs, beta, spreading_factor,n_sectors);
+        obj->SetToPiersonMoskowitzSpectrumWithCos2Spreading(Hs, beta, spreading_factor, n_sectors);
         break;
-
-      case 7:  // Five arguments
+      }
+      case 7: // Five arguments
+      {
         double Hs = inputs[2][0];
         double beta = inputs[3][0];
         int n_phases = inputs[4][0];
         double spreading_factor = inputs[5][0];
         int n_sectors = inputs[6][0];
-        obj->SetToPiersonMoskowitzSpectrumWithCos2Spreading(Hs, beta, n_phases, spreading_factor,n_sectors);
+        obj->SetToPiersonMoskowitzSpectrumWithCos2Spreading(Hs, beta, n_phases, spreading_factor, n_sectors);
         break;
+      }
       }
     }
 
@@ -128,23 +133,26 @@ public:
     {
       uint64_t handle = inputs[1][0];
       LinearIncidentWave *obj = reinterpret_cast<LinearIncidentWave *>(handle);
-     
-      switch inputs.size()
+
+      switch (inputs.size())
       {
-      case 5:  // Three arguments
+      case 5: // Three arguments
+      {
         double Hs = inputs[2][0];
         double Tp = inputs[3][0];
         double beta = inputs[4][0];
         obj->SetToBretschneiderSpectrum(Hs, Tp, beta);
         break;
-
+      }
       case 6: // Four Arguments
+      {
         double Hs = inputs[2][0];
         double Tp = inputs[3][0];
         double beta = inputs[4][0];
         int n_phases = inputs[5][0];
         obj->SetToBretschneiderSpectrum(Hs, Tp, beta, n_phases);
         break;
+      }
       }
     }
 
@@ -153,28 +161,32 @@ public:
     {
       uint64_t handle = inputs[1][0];
       LinearIncidentWave *obj = reinterpret_cast<LinearIncidentWave *>(handle);
-     
-      switch inputs.size()
+
+      switch (inputs.size())
       {
-      case 7:  // Five arguments
+      case 7: // Five arguments
+      {
         double Hs = inputs[2][0];
         double Tp = inputs[3][0];
         double beta = inputs[4][0];
         double spreading_factor = inputs[5][0];
         int n_sectors = inputs[6][0];
-        obj->SetToBretschneiderSpectrumWithCos2Spreading(Hs, Tp, beta, spreading_factor,n_sectors);
+        obj->SetToBretschneiderSpectrumWithCos2Spreading(Hs, Tp, beta, spreading_factor, n_sectors);
         break;
-
-      case 8:  // Six arguments
+      }
+      case 8: // Six arguments
+      {
         double Hs = inputs[2][0];
         double Tp = inputs[3][0];
         double beta = inputs[4][0];
         int n_phases = inputs[5][0];
         double spreading_factor = inputs[6][0];
         int n_sectors = inputs[7][0];
-        obj->SetToBretschneiderSpectrumWithCos2Spreading(Hs, Tp, beta, n_phases, spreading_factor,n_sectors);
+        obj->SetToBretschneiderSpectrumWithCos2Spreading(Hs, Tp, beta, n_phases, spreading_factor, n_sectors);
         break;
       }
+      }
+    }
 
     // ----------------- eta -----------------
     else if (action == "eta")
@@ -287,6 +299,14 @@ public:
 
       int val = obj->PatchVersionNumber();
       outputs[0] = factory.createScalar<int>(val);
+    }
+
+    // ----------------- PrintWaveInfo(); -----------------
+    else if (action == "PrintWaveInfo")
+    {
+      uint64_t handle = inputs[1][0];
+      LinearIncidentWave *obj = reinterpret_cast<LinearIncidentWave *>(handle);
+      obj->PrintWaveInfo();
     }
 
     // ----------------- ACTION: DELETE -----------------

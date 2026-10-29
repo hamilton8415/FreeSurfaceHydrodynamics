@@ -49,6 +49,7 @@ public:
   LinearIncidentWave(unsigned int seed);
   void SetSeed(unsigned int seed);
   void SetToMonoChromatic(double A, double T, double phase, double beta);
+  void SetDepth(double h);
   void SetToPiersonMoskowitzSpectrum(double Hs, double beta);
   void SetToPiersonMoskowitzSpectrum(double Hs, double beta, int n_phases);
   void SetToPiersonMoskowitzSpectrum(double Hs, double UnusedTp, double beta);
@@ -78,14 +79,22 @@ public:
 
   double etadot(double x, double y, double t, int n) const;
   double etadot(double x, double y, double t) const;
+
+  void vel(double x, double y,double z, double t, double *vel_x, double *vel_y, double *vel_z, int n) const;
+  void vel(double x, double y, double z, double t, double *vel_x, double *vel_y, double *vel_z) const;
+
   std::string Version();
   int MajorVersionNumber();
   int MinorVersionNumber();
   int PatchVersionNumber();
 
+private:
+  double WaveNumber(double w);
+
 public:
   double m_grav{9.81};
-  double m_rho{1025.};
+  double m_rho{1025.0};
+  double m_depth{-1.0};
   int NumWaveComponents{0};
   std::vector<WaveSpectrumType> m_SpectrumType;
   std::vector<Eigen::VectorXd> m_Spectrum;

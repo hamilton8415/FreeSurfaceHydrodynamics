@@ -60,6 +60,16 @@ public:
       obj->SetSeed(newVal);
     }
 
+    // ----------------- SetDepth(double h) -----------------
+    else if (action == "SetDepth")
+    {
+      uint64_t handle = inputs[1][0];
+      unsigned int newVal = inputs[2][0];
+
+      LinearIncidentWave *obj = reinterpret_cast<LinearIncidentWave *>(handle);
+      obj->SetDepth(newVal);
+    }
+
     // ----------------- SetToMonoChromatic -----------------
     else if (action == "SetToMonoChromatic")
     {
@@ -269,6 +279,40 @@ public:
         etadot = obj->etadot(x, y, t, n);
 
       outputs[0] = factory.createScalar<double>(etadot);
+    }
+
+    // ----------------- vel -----------------
+    else if (action == "vel")
+    {
+      uint64_t handle = inputs[1][0];
+      LinearIncidentWave *obj = reinterpret_cast<LinearIncidentWave *>(handle);
+      double x, y, z, t;
+      int n;
+      if (inputs.size() >= 6)
+      {
+        x = inputs[2][0];
+        y = inputs[3][0];
+        z = inputs[4][0];
+        t = inputs[5][0];
+      }
+      if (inputs.size() == 7)
+        n = inputs[6][0];
+
+      double vel_x;
+      double vel_y;
+      double vel_z;
+
+      if (inputs.size() == 6)
+        obj->vel(x, y, z, t, &vel_x, &vel_y, &vel_z);
+      if (inputs.size() == 7)
+        obj->vel(x, y, z, t, &vel_x, &vel_y, &vel_z, n);
+
+      if (outputs.size() == 3)
+      {
+        outputs[0] = factory.createScalar<double>(vel_x);
+        outputs[1] = factory.createScalar<double>(vel_y);
+        outputs[2] = factory.createScalar<double>(vel_z);
+      }
     }
 
     // ----------------- Int MajorVersionNumber(); -----------------

@@ -1,4 +1,3 @@
-// Copyright 2022 Monterey Bay Aquarium Research Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +12,7 @@
 // limitations under the License.
 
 #include <Eigen/Dense>
+#include <unsupported/Eigen/NonLinearOptimization>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -22,14 +22,39 @@
 #include <FreeSurfaceHydrodynamics/interp1d.hpp>
 #include <FreeSurfaceHydrodynamics/LinearIncidentWave.hpp>
 
+
+
+// Define a functor for the system of nonlinear equations
+struct DispersionFunctor {
+  //Constructor
+  DispersionFunctor(double omega, double depth, double grav) : w(omega), h(depth),g(grav){};
+  // Number of variables and equations (n x n)
+  int inputs() const { return 1; }
+  int values() const { return 1; }
+
+    // Compute the residual vector fvec given x
+    int operator()(const Eigen::VectorXd &x, Eigen::VectorXd &fvec) const {
+        // Example system:
+        // f1(x1, x2) = x1^2 + x2^2 - 2 = 0
+        // f2(x1, x2) = x1 - x2 = 0
+        fvec(0) = x(0)*tanh(x(0)*h)-w*w/g;
+        return 0;
+    }
+    private:
+    double h;
+    double g;
+    double w;
+};
+
+
 /// \brief Constructor, defaults to monotchromatic wave and default gravity and density
-LinearIncidentWave::LinearIncidentWave() : m_grav(9.81), m_rho(1025)
+LinearIncidentWave::LinearIncidentWave() : m_grav(9.81), m_rho(1025), m_depth(-1.0)
 {
   std::srand(time(0));
 }
 
 /// \brief Constructor, sets seed and defaults to monotchromatic wave and default gravity and density
-LinearIncidentWave::LinearIncidentWave(unsigned int seed) : m_grav(9.81), m_rho(1025)
+LinearIncidentWave::LinearIncidentWave(unsigned int seed) : m_grav(9.81), m_rho(1025), m_depth(-1.0)
 {
   SetSeed(seed);
 }
@@ -41,6 +66,12 @@ void LinearIncidentWave::SetSeed(unsigned int seed)
     std::srand(time(0));
   else
     std::srand(seed);
+}
+
+/// \brief Sets depth, negative values indicate infinite depth
+void LinearIncidentWave::SetDepth(double h)
+{
+  m_depth = h;
 }
 
 /// \brief Select single frequency wave
@@ -58,7 +89,7 @@ void LinearIncidentWave::SetToMonoChromatic(double A, double T, double phase, do
   m_A.push_back(tmp_array);
   m_phases[NumWaveComponents](0) = phase;
   m_omega[NumWaveComponents](0) = 2 * M_PI / T;
-  m_k[NumWaveComponents](0) = (2 * M_PI / T) * (2 * M_PI / T) / m_grav;
+  m_k[NumWaveComponents](0) = WaveNumber(m_omega[NumWaveComponents](0));
   m_A[NumWaveComponents](0) = A;
   NumWaveComponents++; // Adding a wave component
 }
@@ -107,7 +138,7 @@ void LinearIncidentWave::SetToBretschneiderSpectrum(
   for (int i = 0; i < m_k[NumWaveComponents].size(); i++)
   {
     m_omega[NumWaveComponents](i) = d_omega * (i + 1) + (0.25 * d_omega * (std::rand() - RAND_MAX / 2)) / (RAND_MAX / 2);
-    m_k[NumWaveComponents](i) = m_omega[NumWaveComponents](i) * m_omega[NumWaveComponents](i) / m_grav;
+    m_k[NumWaveComponents](i) = WaveNumber(m_omega[NumWaveComponents](i));
     m_Spectrum[NumWaveComponents](i) = 5.0 * Hs * Hs * pow(wp, 4) * exp(-1.25 * pow(wp / m_omega[NumWaveComponents](i), 4)) / (16.0 * pow(m_omega[NumWaveComponents](i), 5));
     if (i == 0)
       m_A[NumWaveComponents](i) = sqrt(2.0 * m_omega[NumWaveComponents](0) * m_Spectrum[NumWaveComponents](i)); // Precompute components once here.
@@ -179,7 +210,7 @@ void LinearIncidentWave::SetToPiersonMoskowitzSpectrum(
   for (int i = 0; i < m_k[NumWaveComponents].size(); i++)
   {
     m_omega[NumWaveComponents](i) = d_omega * (i + 1) + (0.25 * d_omega * (std::rand() - RAND_MAX / 2)) / (RAND_MAX / 2);
-    m_k[NumWaveComponents](i) = m_omega[NumWaveComponents](i) * m_omega[NumWaveComponents](i) / m_grav;
+    m_k[NumWaveComponents](i) = WaveNumber(m_omega[NumWaveComponents](i));
     m_Spectrum[NumWaveComponents](i) = (a * m_grav * m_grav / pow(m_omega[NumWaveComponents](i), 5)) * exp(-b * pow(w0 / m_omega[NumWaveComponents](i), 4));
     if (i == 0)
       m_A[NumWaveComponents](i) = sqrt(2.0 * m_omega[NumWaveComponents](0) * m_Spectrum[NumWaveComponents](i)); // Precompute components once here.
@@ -222,7 +253,7 @@ void LinearIncidentWave::SetToCustomSpectrum(std::vector<double> freq, std::vect
   {
     f(i) = d_freq * (i + 1) + (0.25 * d_freq * (std::rand() - RAND_MAX / 2)) / (RAND_MAX / 2);
     m_omega[NumWaveComponents](i) = 2 * M_PI * f(i);
-    m_k[NumWaveComponents](i) = m_omega[NumWaveComponents](i) * m_omega[NumWaveComponents](i) / m_grav;
+    m_k[NumWaveComponents](i) = WaveNumber(m_omega[NumWaveComponents](i));
     m_Spectrum[NumWaveComponents](i) = CustomSpectrum(f(i)); // Interpolate from supplied spectrum
     if (i == 0)
       m_A[NumWaveComponents](i) = sqrt(2.0 * f(0) * m_Spectrum[NumWaveComponents](i)); // Precompute components once here.
@@ -395,9 +426,8 @@ double LinearIncidentWave::eta(double x, double y, double t,
       deta_dxx -= k * a * sinarg;
     }
 
-    // Eulerian along-wave surface velocity (assume deep water)
-    // can just use omega directly since deep water dispersion w^2 = gk
-    u_along += a * omega * cosarg;
+    // Eulerian along-wave surface velocity
+    u_along += (m_grav * k * a / omega) * cosarg;
   }
 
   // water plane slope
@@ -456,52 +486,128 @@ double LinearIncidentWave::eta(double x, double y, double t,
     if (v_north)
       *v_north = v_north_sum;
   }
-    return eta_sum;
+  return eta_sum;
 }
 
-  double LinearIncidentWave::eta(double x, double y, double t, double *deta_dx, double *deta_dy) const
-  {
-    return eta(x, y, t, deta_dx, deta_dy, nullptr, nullptr);
-  }
+double LinearIncidentWave::eta(double x, double y, double t, double *deta_dx, double *deta_dy) const
+{
+  return eta(x, y, t, deta_dx, deta_dy, nullptr, nullptr);
+}
 
-  double LinearIncidentWave::eta(double x, double y, double t) const
-  {
-    return eta(x, y, t, nullptr, nullptr, nullptr, nullptr);
-  }
+double LinearIncidentWave::eta(double x, double y, double t) const
+{
+  return eta(x, y, t, nullptr, nullptr, nullptr, nullptr);
+}
 
-  double LinearIncidentWave::etadot(double x, double y, double t, int n) const
-  {
-    double etadot = 0;
+double LinearIncidentWave::etadot(double x, double y, double t, int n) const
+{
+  double etadot = 0;
 
-    if ((n < 0) || (n >= NumWaveComponents)) // Test to be sure wave component argument is valid, return zero otherwise
-      return etadot;
-
-    double xx = x * cos(m_beta[n]) + y * sin(m_beta[n]);
-
-    for (int i = 0; i < m_A[n].size(); i++)
-    {
-      etadot += m_omega[n](i) * m_A[n](i) * sin(m_k[n](i) * xx - m_omega[n](i) * t + m_phases[n](i));
-    }
+  if ((n < 0) || (n >= NumWaveComponents)) // Test to be sure wave component argument is valid, return zero otherwise
     return etadot;
-  }
 
-  double LinearIncidentWave::etadot(double x, double y, double t) const
+  double xx = x * cos(m_beta[n]) + y * sin(m_beta[n]);
+
+  for (int i = 0; i < m_A[n].size(); i++)
   {
-    double etadot_sum = 0;
-    for (int n = 0; n < NumWaveComponents; n++)
-      etadot_sum += etadot(x, y, t, n);
+    etadot += m_omega[n](i) * m_A[n](i) * sin(m_k[n](i) * xx - m_omega[n](i) * t + m_phases[n](i));
+  }
+  return etadot;
+}
 
-    return etadot_sum;
+double LinearIncidentWave::etadot(double x, double y, double t) const
+{
+  double etadot_sum = 0;
+  for (int n = 0; n < NumWaveComponents; n++)
+    etadot_sum += etadot(x, y, t, n);
+
+  return etadot_sum;
+}
+
+void LinearIncidentWave::vel(double x, double y, double z, double t, double *vel_x, double *vel_y, double *vel_z) const
+{
+ *vel_x = 0;
+ *vel_y = 0;
+ *vel_z = 0;
+
+  for (int n = 0; n < NumWaveComponents; n++)
+  {
+    double loc_vel_x;
+    double loc_vel_y;
+    double loc_vel_z;
+    vel(x, y, z, t, &loc_vel_x, &loc_vel_y, &loc_vel_z , n);
+    *vel_x += loc_vel_x;
+    *vel_y += loc_vel_y;
+    *vel_z += loc_vel_z;
+  }
+  return;
+}
+
+void LinearIncidentWave::vel(double x, double y, double z, double t, double *vel_x, double *vel_y, double *vel_z, int n) const
+{
+
+  double v_z = 0.0;
+  double v_along = 0.0;
+
+  if ((n < 0) || (n >= NumWaveComponents)) // Test to be sure wave component argument is valid, return zero otherwise
+  {
+    *vel_x = v_along;
+    *vel_y = v_along;
+    *vel_z = v_z;
+    return;
+  } 
+
+  double xx = x * cos(m_beta[n]) + y * sin(m_beta[n]);
+
+  for (int i = 0; i < m_A[n].size(); i++)
+  {
+    double arg = m_k[n](i) * xx - m_omega[n](i) * t + m_phases[n](i);
+    double sinarg = sin(arg);
+    double cosarg = cos(arg);
+    if (m_depth < 0) // Infinite depth
+    {
+      v_z += m_omega[n](i) * m_A[n](i) * exp(m_k[n](i) * z) * sinarg;
+      v_along += m_omega[n](i) * m_A[n](i) * exp(m_k[n](i) * z) * cosarg;
+    }
+    else
+    {
+      v_z += m_grav*m_A[n](i)*m_k[n](i) * (sinh(m_k[n](i)*(z+m_depth)) / cosh(m_k[n](i)*m_depth)) * sinarg / m_omega[n](i);
+      v_along += m_grav*m_A[n](i)*m_k[n](i) * (cosh(m_k[n](i)*(z+m_depth)) / cosh(m_k[n](i)*m_depth)) * cosarg / m_omega[n](i);
+    }
+  }
+  // u/v Eulerian surface velocities
+    *vel_x = v_along * cos(m_beta[n]);
+    *vel_y = v_along * sin(m_beta[n]);
+    *vel_z = v_z;
+  
+  return;
+}
+
+  double LinearIncidentWave::WaveNumber(double w)
+  {
+std::cout << "w = " << w << std::endl;
+    DispersionFunctor functor(w, m_depth, m_grav);
+    // HybridNonLinearSolver uses Powell's hybrid method
+    Eigen::HybridNonLinearSolver<DispersionFunctor> solver(functor);
+
+    Eigen::VectorXd k(1);
+    k(0) = w*w/m_grav;  // Infinite depth result, used as initial guess if needed
+    if(m_depth >=0)
+    {
+    int status = solver.hybrd1(k);   // Solve using hybrd1 (numerical differentiation)
+    //std::cout << "status = " << status << "  k = " << k(0) <<  "  sqrt(g*k*tanh(kh) = " << sqrt(m_grav*k(0)*tanh(k(0)*m_depth)) << std::endl;
+    }
+   return k(0);
   }
 
-  /// \brief Returns Version String
-  std::string LinearIncidentWave::Version() { return PROJECT_VER; }
+/// \brief Returns Version String
+std::string LinearIncidentWave::Version() { return PROJECT_VER; }
 
-  /// \brief Returns Major Version Number
-  int LinearIncidentWave::MajorVersionNumber() { return PROJECT_VER_MAJOR; }
+/// \brief Returns Major Version Number
+int LinearIncidentWave::MajorVersionNumber() { return PROJECT_VER_MAJOR; }
 
-  /// \brief Returns Minor Version Number
-  int LinearIncidentWave::MinorVersionNumber() { return PROJECT_VER_MINOR; }
+/// \brief Returns Minor Version Number
+int LinearIncidentWave::MinorVersionNumber() { return PROJECT_VER_MINOR; }
 
-  /// \brief Returns Major Version Number
-  int LinearIncidentWave::PatchVersionNumber() { return PROJECT_VER_PATCH; }
+/// \brief Returns Major Version Number
+int LinearIncidentWave::PatchVersionNumber() { return PROJECT_VER_PATCH; }

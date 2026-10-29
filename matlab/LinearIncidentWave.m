@@ -16,6 +16,11 @@ classdef LinearIncidentWave < handle
             LinearIncidentWave_mex('SetSeed', obj.ObjectHandle, val);
         end
 
+        %SetDepth method
+        function SetDepth(obj, val)
+            LinearIncidentWave_mex('SetDepth', obj.ObjectHandle, val);
+        end
+
         %SetToMonoChromatic method
         function SetToMonoChromatic(obj, A, T, phase, beta)
             LinearIncidentWave_mex('SetToMonoChromatic', obj.ObjectHandle, A, T, phase, beta);
@@ -140,6 +145,22 @@ classdef LinearIncidentWave < handle
             if (nargin == 5)
                 [varargout{1}] = LinearIncidentWave_mex('etadot', ...
                     obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3}, varargin{4});
+            end
+
+            %end
+        end
+
+        % vel method
+        function varargout = vel(obj, varargin)
+            %if(nargout == 1)
+            if (nargin == 5)
+                [varargout{1} varargout{2} varargout{3}] = LinearIncidentWave_mex('vel', ...
+                    obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3}, varargin{4});
+            end
+
+            if (nargin == 6)
+                [varargout{1} varargout{2} varargout{3}] = LinearIncidentWave_mex('vel', ...
+                    obj.ObjectHandle, varargin{1}, varargin{2}, varargin{3}, varargin{4}, varargin{5});
             end
 
             %end

@@ -1,3 +1,18 @@
+%MY_MEX_FUNCTION High-performance matrix manipulation interface.
+%   OUT = MY_MEX_FUNCTION(A, B) multiplies or manipulates matrices
+%   A and B using highly optimized underlying C++/Fortran code.
+%
+%   Input Arguments:
+%       A - A double precision NxM matrix.
+%       B - A scalar multiplier (double).
+%
+%   Output Arguments:
+%       OUT - The resulting NxM matrix.
+%
+%   See also: SOME_OTHER_FUNCTION, MEX
+%
+%   This is a helper help-file for a compiled MEX-file.
+
 classdef LinearIncidentWave < handle
 
     properties (Access = private)
@@ -117,7 +132,7 @@ classdef LinearIncidentWave < handle
 
             end
 
-            if (nargout == 6)
+            if (nargout == 5)
 
                 if (nargin == 4)
                     [varargout{1} varargout{2} varargout{3} varargout{4} varargout{5}] = ...

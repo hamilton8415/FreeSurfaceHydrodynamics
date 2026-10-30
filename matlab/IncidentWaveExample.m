@@ -9,7 +9,7 @@ addpath('../build');
 A = 1;
 T = 12;
 phase = 0 * pi / 180.0;
-beta = 180 * pi / 180.0;
+beta = 0*180 * pi / 180.0;
 seed = 0;
 
 Inc = LinearIncidentWave();

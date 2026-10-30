@@ -5,4 +5,8 @@ find_package(GTest REQUIRED)
 add_executable(MonoChromeWaves_tests MonoChromeWaves.cpp)
 target_link_libraries(MonoChromeWaves_tests PRIVATE FreeSurfaceHydrodynamics GTest::gtest_main)
 
+add_executable(ConstantsAndRelations_tests CheckConstantsAndRelations.cpp)
+target_link_libraries(ConstantsAndRelations_tests PRIVATE FreeSurfaceHydrodynamics GTest::gtest_main)
+
+gtest_discover_tests(ConstantsAndRelations_tests)
 gtest_discover_tests(MonoChromeWaves_tests)

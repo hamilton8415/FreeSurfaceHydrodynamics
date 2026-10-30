@@ -396,7 +396,7 @@ double LinearIncidentWave::eta(double x, double y, double t,
   if ((n < 0) || (n >= NumWaveComponents)) // Test to be sure wave component argument is valid, return zero otherwise
     return eta;
 
-  double xx = x * cos(m_beta[n]) + y * sin(m_beta[n]);
+  double xx = x * cos(M_PI+m_beta[n]) + y * sin(M_PI+m_beta[n]);
 
   // Per-direction-component slope / along-wave velocity contributions.
   // These must be reset for each directional component before projecting
@@ -585,7 +585,6 @@ void LinearIncidentWave::vel(double x, double y, double z, double t, double *vel
 
   double LinearIncidentWave::WaveNumber(double w)
   {
-std::cout << "w = " << w << std::endl;
     DispersionFunctor functor(w, m_depth, m_grav);
     // HybridNonLinearSolver uses Powell's hybrid method
     Eigen::HybridNonLinearSolver<DispersionFunctor> solver(functor);

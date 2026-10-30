@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
   double A = 1;
   double T = 12;
   double phase = 0 * M_PI / 180.0;
-  double beta = 180 * M_PI / 180.0;
+  double beta = 0*180 * M_PI / 180.0;
   unsigned int seed = 0;
 
   bool make_plots = true;

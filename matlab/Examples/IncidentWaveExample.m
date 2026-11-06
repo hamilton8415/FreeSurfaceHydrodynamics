@@ -2,9 +2,10 @@ close all
 clear all
 clear mex
 
-%setenv('DYLD_LIBRARY_PATH', '/System/Volumes/Data/opt/FreeSurfaceHydrodynamics/lib');
+% Add path to system library if in MacOS.
+%setenv('DYLD_LIBRARY_PATH','/System/Volumes/Data/opt/FreeSurfaceHydrodynamics/lib');
 
-addpath('../build');
+addpath('../../build');  % Add path the .mex file and LinearIncidentWave.m file
 
 A = 1;
 T = 12;

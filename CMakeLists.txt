@@ -58,7 +58,7 @@ set(BOOST_USE_MULTITHREADED ON)
 set(BOOST_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.83.0 REQUIRED CONFIG COMPONENTS system iostreams filesystem)
 
-#find_package(Matlab REQUIRED COMPONENTS MX_LIBRARY MEX_COMPILER)
+find_package(Matlab REQUIRED COMPONENTS MX_LIBRARY MEX_COMPILER)
 
 
 set(CMAKE_INSTALL_PREFIX  /opt/${PROJECT_NAME}/)
@@ -82,10 +82,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1)
 
-#matlab_add_mex(
-#    NAME LinearIncidentWave_mex            # The command name you will call inside MATLAB
-#    SRC matlab/LinearIncidentWave_mex.cpp       # The gateway source file
-#    LINK_TO ${PROJECT_NAME})              # Links your custom C++ library and relevant dependencies
+matlab_add_mex(
+    NAME LinearIncidentWave_mex            # The command name you will call inside MATLAB
+    SRC matlab/LinearIncidentWave_mex.cpp       # The gateway source file
+    LINK_TO ${PROJECT_NAME})              # Links your custom C++ library and relevant dependencies
+
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/matlab/LinearIncidentWave.m"
+     DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/.")
 
 
 #option(BUILD_PYTHON_BINDINGS "build FreeSurfaceHydrodynamics (fshd) python module" ON)
@@ -170,6 +173,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)  # In Root, include targe
   )
 
   install(FILES cmake/etc/ld.so.conf.d/${PROJECT_NAME}.conf DESTINATION /etc/ld.so.conf.d/)
+  
 
   export(TARGETS ${PROJECT_NAME} FILE FreeSurfaceHydrodynamicsConfig.cmake)
 

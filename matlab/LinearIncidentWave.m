@@ -1,5 +1,51 @@
-%MY_MEX_FUNCTION High-performance matrix manipulation interface.
-%   OUT = MY_MEX_FUNCTION(A, B) multiplies or manipulates matrices
+%LinearIncidentWave Matlab interface to the LinearIncidentWave Class from the FreeSurfaceHydrodynamics Libarry
+%https://github.com/hamilton8415/FreeSurfaceHydrodynamics
+%
+% Constructor:
+%   [obj] = LinearIncidentWave();   
+%      Newly constructed object has no wave components added.
+%
+% Methods:
+%   obj.SetDepth(depth_value)
+%      Sets water depth, negative values specify infinite water depth, which is the default if this method is not called.
+%
+%   obj.SetSeed(seed_value)
+%      Sets the seed value for random number generator, useful if one wants the same wave phases for each run of the program.
+%
+%   obj.SetToMonoChromatic(Amplitude, Period, Phase, Direction)
+%      Adds the specified single-frequency wave to the wave-field.  
+%           Amplitude = Wave Amplitude in meters.
+%           Period = Wave Period in seconds.
+%           Direction = Wave-Direction in radians
+%      This can be called repeatedly to build up a wave-field with the desired characteristics 
+%
+%   obj.SetToPiersonMoskowitzSpectrum(SigWaveHeight, Direction)
+%   obj.SetToPiersonMoskowitzSpectrum(SigWaveHeight, Direction, NumPhases)
+%      Adds a wave with the specified Pierson Moskowitz spectrum to the wave-field.  
+%           SigWaveHeight = Significant Wave Height in meters.
+%           Direction = Wave-Direction in radians
+%           NumPhases (optional) = The number of phases to use to create a time-domain representation of the spectrum.  Default = 750 if not specified.
+%      This can be called repeatedly to build up a wave-field with the desired characteristics 
+%
+%   obj.SetToPiersonMoskowitzSpectrum(SigWaveHeight, Direction)
+%   obj.SetToPiersonMoskowitzSpectrum(SigWaveHeight, Direction, NumPhases)
+%      Adds a wave with the specified Pierson Moskowitz spectrum to the wave-field.  
+%           SigWaveHeight = Significant Wave Height in meters.
+%           Direction = Wave-Direction in radians
+%           NumPhases (optional) = The number of phases to use to create a time-domain representation of the spectrum.  Default = 750 if not specified.
+%      This can be called repeatedly to build up a wave-field with the desired characteristics 
+%
+%    obj.SetToPiersonMoskowitzSpectrumWithCos2Spreading(SigWaveHeight, Direction, SpreadingFactor, NumSectors)
+%    obj.SetToPiersonMoskowitzSpectrumWithCos2Spreading(SigWaveHeight, Direction, NumPhases,SpreadingFactor, NumSectors)
+%      Adds a wave with the specified Pierson Moskowitz spectrum to the wave-field.  
+%           SigWaveHeight = Significant Wave Height in meters.
+%           Direction = Center of Wave-Direction in radians.
+%           NumPhases (optional) = The number of phases to use to create a time-domain representation of the spectrum.  Default = 750 if not specified.
+%           SpreadingFactor = Amount of wave-spreading around primary direction.
+%           NumSectors = The number of wave-trains that make up the directional wave-field.
+%      This can be called repeatedly to build up a wave-field with the desired characteristics 
+
+OUT = MY_MEX_FUNCTION(A, B) multiplies or manipulates matrices
 %   A and B using highly optimized underlying C++/Fortran code.
 %
 %   Input Arguments:
@@ -11,7 +57,7 @@
 %
 %   See also: SOME_OTHER_FUNCTION, MEX
 %
-%   This is a helper help-file for a compiled MEX-file.
+%   This is a  help-file for the interface to a compiled MEX-file.
 
 classdef LinearIncidentWave < handle
 

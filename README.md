@@ -16,7 +16,7 @@ To build the library and examples from source, in the top-level directory of the
 By default, python bindings are built, but they can be turned on/off with the cmake flag
 `-DBUILD_PYTHON_BINDINGS=<ON,OFF>`. If `pybind11` is missing, the bindings will not be built.
 
-## Examples
+## C++ Examples
 There are a number of example programs that exercise various portions of the library in an interactive way.  The source for these is in the examples directory and can be run from the build directory as indicated below.  Looking at the source code for these examples is a good way to understand the use of the library:
 
 
@@ -80,8 +80,24 @@ MotionExample.cpp uses both the FS_HydroDynamics and LinearIncidentWave class to
 A default incident wave amplitude, period, phase, and direction are used, but these can be changed with the [-atpb] options.
 Use the [-h] option for more details.
 
+
+## Matlab Examples
+The process of calling a c++ library from matlab involves two files, a compiled .cpp file (known as a mex file) and a .m file that contains the functions user code actually calls from matlab.  Both of these are provided and the mex file is created during the cmake build process if matlab is installed on the machine in question.  Currently no "installation" of these file occurs as there isn't a standard place to put such files in matlab.  Instead the compiled mex file (LinearIncidentWave_mex.mexa64 on Linux) is created in the build directory, and the associated .m file (LinearIncidentWave.m) is copied to the build directory for convenience.
+
+Matlab has an internal copy of the standard c++ libraries that is not always up to date with libraries the library is compiled against.  Because of this it is usually required to start matlab in Linux as follows:
+ ```
+$ LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab &
+ ```
+
+To use this library from within matlab, inform matlab where these files are located using the 'addpath' matlab command, and then interface with the library as described by the matlab documentation present in the header of the LinearIncidentWave.m file.  An example is provided in the FreeSurfaceHydrodynamics/matlab/examples directory of the repository.
+
+To view the matlab online documentation that is provided in the LinearIncidentWave.m file, use '>> help LinearIncidentWave' from within matlab (after executing the addpath command).
+
+The repository includes some matlab examples of using this library in the directory 'FreeSurfaceHydrodynamics/matlab/Examples'.  Examining and running these examples should provide a good overview.  The implementatoin matches the c++ implementation closely, with the primary difference in how return values are handled because matlab has the ability to return multiple values from a method call, whereas c++ does not.
+
+
 ## How to install
-The library can be installed locally after building from source by exectuing the following from the build directory:
+The library can be installed locally after building from source by executing the following from the build directory:
   ```
    $ sudo make install
   ``` 
@@ -107,7 +123,6 @@ After installing by either of the above methods, include the following lines in 
 
 ## Current limitations
 Currently, this library has a number of limitations that may be addressed in future releases.
-- Single Wave Direction:  At this time only long-crestline waves from a single-direction can be included.  Adding additional directions through superposition is a straightforward addition, but computational time for wave-exciting forces will grow linearly with the number of directions included.
 - Hydrodynamic Coefficient Data:  At this time only WAMIT output files can be read to supply the needed hydrodynamic coefficients.  Further, only the *.1, *.3 files can be read for frequency domain data are supported, and *_IR.1 and *_JR.3 files for the time-domain impulse response function.  Of course, the information between the frequency-domain and time-domain is redundant and it is possible to compute the needed impulse-response functions from the frequency domain data.  This is not done at this time, instead relying on the f2t utility that is part of WAMIT. 
 - Axi-symmetric bodies:  This library is currently most useful for axi-symmetric bodies, with this assumption the wave-exciting forces can be computed from a single wave-direction result from the Boundary-Element-Solver (WAMIT), regardless of body orientation in space.  Facilities to read-in hydrodynamic coefficients for more than one wave-direction are not present and would be needed to evaluate the wave-exciting forces on non axi-symmetric bodies of arbitrary orientation.
 

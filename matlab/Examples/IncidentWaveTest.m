@@ -12,10 +12,10 @@ Inc = LinearIncidentWave();
 
 %Inc.SetSeed(seed);
 
-Inc.SetCoordSysType('NED');
+%Inc.SetCoordSysType('NED');
 
-%Inc.SetToPiersonMoskowitzSpectrum(H,beta);
-Inc.SetToBretschneiderSpectrum(H,T,beta);
+Inc.SetToPiersonMoskowitzSpectrum(H,beta);
+Inc.SetToBretschneiderSpectrumWithCos2Spreading(H,T,beta,5,25);
 
 x = 0; 
 y = 0;

@@ -100,7 +100,8 @@ public:
   double m_rho{1025.0};
   double m_depth{-1.0};
   int NumWaveComponents{0};
-  CoordSysType m_CoordSys{CoordSysType::ENU};
+  //CoordSysType m_CoordSys{CoordSysType::ENU};
+  CoordSysType m_CoordSys{CoordSysType::NED};
   std::vector<WaveSpectrumType> m_SpectrumType;
   std::vector<Eigen::VectorXd> m_Spectrum;
   std::vector<Eigen::VectorXd> m_A;

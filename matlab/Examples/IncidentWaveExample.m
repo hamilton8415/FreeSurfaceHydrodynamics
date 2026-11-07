@@ -8,9 +8,9 @@ clear mex
 addpath('../../build');  % Add path the .mex file and LinearIncidentWave.m file
 
 A = 1;
-T = 12;
+T = 8;
 phase = 0 * pi / 180.0;
-beta = 0*180 * pi / 180.0;
+beta = 280 * pi / 180.0;
 seed = 0;
 
 Inc = LinearIncidentWave();
@@ -22,11 +22,11 @@ Inc.SetDepth(1000);
 %Inc.SetToMonoChromatic(A,T,phase,beta);
 %Inc.SetToMonoChromatic(A,.3*T,phase,beta);
 
-Inc.SetToPiersonMoskowitzSpectrum(2*A,beta,5);
-%Inc.SetToPiersonMoskowitzSpectrumWithCos2Spreading(2*A,beta, 34.0, 10);
+%Inc.SetToPiersonMoskowitzSpectrum(2*A,beta,5);
+%Inc.SetToPiersonMoskowitzSpectrumWithCos2Spreading(2*A,beta, 20.0, 20);
 
 %Inc.SetToBretschneiderSpectrum(2*A,T,beta,5);
-%Inc.SetToBretschneiderSpectrumWithCos2Spreading(2*A,T,beta, 50, 34.0, 10);
+Inc.SetToBretschneiderSpectrumWithCos2Spreading(2*A,T,beta, 50, 20.0, 10);
 
 Inc.PrintWaveInfo()
 
@@ -102,28 +102,49 @@ grid on;
 xlabel('time (s)');
 ylabel('etadot (m/s)');
 legend('eta_dot','eta_dot0','vel_x','vel_y','vel_z');
-% 
-% 
-% 
-% 
-% xx = -100:.2:100;
-% yy = -100:.2:100;
-% dt = .1;
-% 
-% [X, Y] = meshgrid(-xx, yy);
-% 
-% Z = NaN(size(X));
-% 
-% t = 3;
-% 
-% Z = NaN(length(xx),length(yy));
-% 
-%     for m = 1:length(xx)
-%         for n = 1:length(yy)
-%             Z(m,n) = Inc.eta(X(m,n),Y(m,n),t);
-%         end
-%     end
-% 
-% figure
-% s = surf(X, Y, Z);
-% s.EdgeColor = "none";
+
+
+
+
+xx = -40:1:40;
+yy = -40:1:40;
+dt = .2;
+
+[X, Y] = meshgrid(-xx, yy);
+
+Z = NaN(size(X));
+
+t = 15;
+
+Z = NaN(length(xx),length(yy));
+
+for i = 0:t/dt
+    t = i*dt;
+
+    for m = 1:length(xx)
+        for n = 1:length(yy)
+            Z(m,n) = Inc.eta(X(m,n),Y(m,n),t);
+        end
+    end
+ titlestr = ['Beta = ' num2str(beta*180/pi,3) ' deg   time = ' num2str(t)];
+
+    if(i==1)
+figure
+s = surf(X, Y, Z);
+s.EdgeColor = "none";
+axis equal;
+title(titlestr);
+
+%NED
+xlabel('N');
+ylabel('E');
+view(90,-90);
+%ENU
+    else
+        s.ZData = Z; 
+        ax = gca;
+        ax.Title.String = titlestr;
+    end
+    pause(0.8*dt);
+
+end

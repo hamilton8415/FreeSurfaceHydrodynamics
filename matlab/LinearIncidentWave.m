@@ -1,3 +1,4 @@
+%obj = LINEARINCIDENTWAVE() 
 %LinearIncidentWave Matlab interface to the LinearIncidentWave Class from the FreeSurfaceHydrodynamics Libarry
 %https://github.com/hamilton8415/FreeSurfaceHydrodynamics
 %
@@ -44,20 +45,8 @@
 %           SpreadingFactor = Amount of wave-spreading around primary direction.
 %           NumSectors = The number of wave-trains that make up the directional wave-field.
 %      This can be called repeatedly to build up a wave-field with the desired characteristics 
-
-OUT = MY_MEX_FUNCTION(A, B) multiplies or manipulates matrices
-%   A and B using highly optimized underlying C++/Fortran code.
 %
-%   Input Arguments:
-%       A - A double precision NxM matrix.
-%       B - A scalar multiplier (double).
-%
-%   Output Arguments:
-%       OUT - The resulting NxM matrix.
-%
-%   See also: SOME_OTHER_FUNCTION, MEX
-%
-%   This is a  help-file for the interface to a compiled MEX-file.
+%    This is a help-file for the interface to a compiled MEX-file.
 
 classdef LinearIncidentWave < handle
 

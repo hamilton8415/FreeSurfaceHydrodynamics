@@ -22,30 +22,30 @@
 #include <FreeSurfaceHydrodynamics/interp1d.hpp>
 #include <FreeSurfaceHydrodynamics/LinearIncidentWave.hpp>
 
-
-
 // Define a functor for the system of nonlinear equations
-struct DispersionFunctor {
-  //Constructor
-  DispersionFunctor(double omega, double depth, double grav) : w(omega), h(depth),g(grav){};
+struct DispersionFunctor
+{
+  // Constructor
+  DispersionFunctor(double omega, double depth, double grav) : w(omega), h(depth), g(grav) {};
   // Number of variables and equations (n x n)
   int inputs() const { return 1; }
   int values() const { return 1; }
 
-    // Compute the residual vector fvec given x
-    int operator()(const Eigen::VectorXd &x, Eigen::VectorXd &fvec) const {
-        // Example system:
-        // f1(x1, x2) = x1^2 + x2^2 - 2 = 0
-        // f2(x1, x2) = x1 - x2 = 0
-        fvec(0) = x(0)*tanh(x(0)*h)-w*w/g;
-        return 0;
-    }
-    private:
-    double h;
-    double g;
-    double w;
-};
+  // Compute the residual vector fvec given x
+  int operator()(const Eigen::VectorXd &x, Eigen::VectorXd &fvec) const
+  {
+    // Example system:
+    // f1(x1, x2) = x1^2 + x2^2 - 2 = 0
+    // f2(x1, x2) = x1 - x2 = 0
+    fvec(0) = x(0) * tanh(x(0) * h) - w * w / g;
+    return 0;
+  }
 
+private:
+  double h;
+  double g;
+  double w;
+};
 
 /// \brief Constructor, defaults to monotchromatic wave and default gravity and density
 LinearIncidentWave::LinearIncidentWave() : m_grav(9.81), m_rho(1025), m_depth(-1.0)
@@ -72,6 +72,12 @@ void LinearIncidentWave::SetSeed(unsigned int seed)
 void LinearIncidentWave::SetDepth(double h)
 {
   m_depth = h;
+}
+
+/// \brief Sets coordinate system type, ENU or NED
+void LinearIncidentWave::SetCoordSysType(CoordSysType CS)
+{
+  m_CoordSys = CS;
 }
 
 /// \brief Select single frequency wave
@@ -379,6 +385,21 @@ std::ostream &operator<<(std::ostream &out, const LinearIncidentWave &IncWave)
   return out; // return std::ostream so we can chain calls to operator<<
 }
 
+double LinearIncidentWave::ComputeDistanceFromOriginAlongWaveDir(double x, double y, int n) const
+{
+  double xx;
+  switch (m_CoordSys)
+  {
+  case CoordSysType::ENU:
+    xx = -y * cos(m_beta[n]) - x * sin(m_beta[n]); // Distance From Origin, component in the direction the wave is traveling.
+    break;
+  case CoordSysType::NED:
+    xx = -x * cos(m_beta[n]) - y * sin(m_beta[n]); // Distance From Origin, component in the direction the wave is traveling.
+    break;
+  }
+  return xx;
+}
+
 double LinearIncidentWave::eta(double x, double y, double t,
                                double *deta_dx, double *deta_dy,
                                double *u_east, double *v_north, int n) const
@@ -396,7 +417,8 @@ double LinearIncidentWave::eta(double x, double y, double t,
   if ((n < 0) || (n >= NumWaveComponents)) // Test to be sure wave component argument is valid, return zero otherwise
     return eta;
 
-  double xx = x * cos(m_beta[n]) + y * sin(m_beta[n]);
+  //  double xx = x * cos(m_beta[n]) + y * sin(m_beta[n]);  // Distance along-wave from origin.  Beta in math coordinates from ENU coordinates
+  double xx = ComputeDistanceFromOriginAlongWaveDir(x, y, n);
 
   // Per-direction-component slope / along-wave velocity contributions.
   // These must be reset for each directional component before projecting
@@ -410,11 +432,14 @@ double LinearIncidentWave::eta(double x, double y, double t,
   {
     double k = m_k[n](i);
     double omega = m_omega[n](i);
-    double a = m_A[n](i);
     double phase = m_phases[n](i);
 
     double arg = k * xx - omega * t + phase;
     double cosarg = cos(arg);
+
+    double a = m_A[n](i);
+    if (m_CoordSys == CoordSysType::NED)
+      a = -a; // Invert amplitude to accomodate z-down
 
     // freesurface heave
     eta += a * cosarg;
@@ -430,17 +455,35 @@ double LinearIncidentWave::eta(double x, double y, double t,
     u_along += (m_grav * k * a / omega) * cosarg;
   }
 
-  // water plane slope
-  if (deta_dx)
-    *deta_dx += deta_dxx * cos(m_beta[n]); // deta/dx
-  if (deta_dy)
-    *deta_dy += deta_dxx * sin(m_beta[n]); // deta/dy
+  switch (m_CoordSys)
+  {
+  case CoordSysType::ENU:
+    // water plane slope
+    if (deta_dx)
+      *deta_dx += -deta_dxx * sin(m_beta[n]); // deta/dx
+    if (deta_dy)
+      *deta_dy += -deta_dxx * cos(m_beta[n]); // deta/dy
 
-  // u/v Eulerian surface velocities
-  if (u_east)
-    *u_east += u_along * cos(m_beta[n]);
-  if (v_north)
-    *v_north += u_along * sin(m_beta[n]);
+    // u/v Eulerian surface velocities
+    if (u_east)
+      *u_east += -u_along * sin(m_beta[n]);
+    if (v_north)
+      *v_north += -u_along * cos(m_beta[n]);
+    break;
+  case CoordSysType::NED:
+    // water plane slope
+    if (deta_dy)
+      *deta_dy += -deta_dxx * sin(m_beta[n]); // deta/dx
+    if (deta_dx)
+      *deta_dx += -deta_dxx * cos(m_beta[n]); // deta/dy
+
+    // u/v Eulerian surface velocities
+    if (v_north)
+      *v_north += -u_along * sin(m_beta[n]);
+    if (u_east)
+      *u_east += -u_along * cos(m_beta[n]);
+    break;
+  }
 
   return eta;
 }
@@ -506,7 +549,7 @@ double LinearIncidentWave::etadot(double x, double y, double t, int n) const
   if ((n < 0) || (n >= NumWaveComponents)) // Test to be sure wave component argument is valid, return zero otherwise
     return etadot;
 
-  double xx = x * cos(m_beta[n]) + y * sin(m_beta[n]);
+  double xx = ComputeDistanceFromOriginAlongWaveDir(x, y, n);
 
   for (int i = 0; i < m_A[n].size(); i++)
   {
@@ -526,16 +569,16 @@ double LinearIncidentWave::etadot(double x, double y, double t) const
 
 void LinearIncidentWave::vel(double x, double y, double z, double t, double *vel_x, double *vel_y, double *vel_z) const
 {
- *vel_x = 0;
- *vel_y = 0;
- *vel_z = 0;
+  *vel_x = 0;
+  *vel_y = 0;
+  *vel_z = 0;
 
   for (int n = 0; n < NumWaveComponents; n++)
   {
     double loc_vel_x;
     double loc_vel_y;
     double loc_vel_z;
-    vel(x, y, z, t, &loc_vel_x, &loc_vel_y, &loc_vel_z , n);
+    vel(x, y, z, t, &loc_vel_x, &loc_vel_y, &loc_vel_z, n);
     *vel_x += loc_vel_x;
     *vel_y += loc_vel_y;
     *vel_z += loc_vel_z;
@@ -555,9 +598,9 @@ void LinearIncidentWave::vel(double x, double y, double z, double t, double *vel
     *vel_y = v_along;
     *vel_z = v_z;
     return;
-  } 
+  }
 
-  double xx = x * cos(m_beta[n]) + y * sin(m_beta[n]);
+  double xx = ComputeDistanceFromOriginAlongWaveDir(x, y, n);
 
   for (int i = 0; i < m_A[n].size(); i++)
   {
@@ -571,33 +614,33 @@ void LinearIncidentWave::vel(double x, double y, double z, double t, double *vel
     }
     else
     {
-      v_z += m_grav*m_A[n](i)*m_k[n](i) * (sinh(m_k[n](i)*(z+m_depth)) / cosh(m_k[n](i)*m_depth)) * sinarg / m_omega[n](i);
-      v_along += m_grav*m_A[n](i)*m_k[n](i) * (cosh(m_k[n](i)*(z+m_depth)) / cosh(m_k[n](i)*m_depth)) * cosarg / m_omega[n](i);
+      v_z += m_grav * m_A[n](i) * m_k[n](i) * (sinh(m_k[n](i) * (z + m_depth)) / cosh(m_k[n](i) * m_depth)) * sinarg / m_omega[n](i);
+      v_along += m_grav * m_A[n](i) * m_k[n](i) * (cosh(m_k[n](i) * (z + m_depth)) / cosh(m_k[n](i) * m_depth)) * cosarg / m_omega[n](i);
     }
   }
   // u/v Eulerian surface velocities
-    *vel_x = v_along * cos(m_beta[n]);
-    *vel_y = v_along * sin(m_beta[n]);
-    *vel_z = v_z;
-  
+  *vel_x = v_along * cos(m_beta[n]);
+  *vel_y = v_along * sin(m_beta[n]);
+  *vel_z = v_z;
+
   return;
 }
 
-  double LinearIncidentWave::WaveNumber(double w)
-  {
-    DispersionFunctor functor(w, m_depth, m_grav);
-    // HybridNonLinearSolver uses Powell's hybrid method
-    Eigen::HybridNonLinearSolver<DispersionFunctor> solver(functor);
+double LinearIncidentWave::WaveNumber(double w)
+{
+  DispersionFunctor functor(w, m_depth, m_grav);
+  // HybridNonLinearSolver uses Powell's hybrid method
+  Eigen::HybridNonLinearSolver<DispersionFunctor> solver(functor);
 
-    Eigen::VectorXd k(1);
-    k(0) = w*w/m_grav;  // Infinite depth result, used as initial guess if needed
-    if(m_depth >=0)
-    {
-    int status = solver.hybrd1(k);   // Solve using hybrd1 (numerical differentiation)
-    //std::cout << "status = " << status << "  k = " << k(0) <<  "  sqrt(g*k*tanh(kh) = " << sqrt(m_grav*k(0)*tanh(k(0)*m_depth)) << std::endl;
-    }
-   return k(0);
+  Eigen::VectorXd k(1);
+  k(0) = w * w / m_grav; // Infinite depth result, used as initial guess if needed
+  if (m_depth >= 0)
+  {
+    int status = solver.hybrd1(k); // Solve using hybrd1 (numerical differentiation)
+    // std::cout << "status = " << status << "  k = " << k(0) <<  "  sqrt(g*k*tanh(kh) = " << sqrt(m_grav*k(0)*tanh(k(0)*m_depth)) << std::endl;
   }
+  return k(0);
+}
 
 /// \brief Returns Version String
 std::string LinearIncidentWave::Version() { return PROJECT_VER; }

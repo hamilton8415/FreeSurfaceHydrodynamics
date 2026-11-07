@@ -30,6 +30,12 @@ enum class WaveSpectrumType
   Custom
 };
 
+enum class CoordSysType
+{
+  ENU,
+  NED 
+};
+
 /**
 \brief The IncidentWave class generates wave heights and fluid velocities at specified points and times.
 The waves are specfied as Monochromatic, Pierson-Moskowitz, or by a supplied spectrum. The wave direction
@@ -50,6 +56,7 @@ public:
   void SetSeed(unsigned int seed);
   void SetToMonoChromatic(double A, double T, double phase, double beta);
   void SetDepth(double h);
+  void SetCoordSysType(CoordSysType CS);
   void SetToPiersonMoskowitzSpectrum(double Hs, double beta);
   void SetToPiersonMoskowitzSpectrum(double Hs, double beta, int n_phases);
   void SetToPiersonMoskowitzSpectrum(double Hs, double UnusedTp, double beta);
@@ -88,14 +95,12 @@ public:
   int MinorVersionNumber();
   int PatchVersionNumber();
 
-private:
-  double WaveNumber(double w);
-
 public:
   double m_grav{9.81};
   double m_rho{1025.0};
   double m_depth{-1.0};
   int NumWaveComponents{0};
+  CoordSysType m_CoordSys{CoordSysType::ENU};
   std::vector<WaveSpectrumType> m_SpectrumType;
   std::vector<Eigen::VectorXd> m_Spectrum;
   std::vector<Eigen::VectorXd> m_A;
@@ -105,6 +110,10 @@ public:
   std::vector<double> m_beta;
   std::vector<double> m_Hs;
   std::vector<double> m_Tp;
+
+private:
+  double WaveNumber(double w);
+  double ComputeDistanceFromOriginAlongWaveDir(double x, double y, int n) const;
 };
 
 #endif // FREESURFACEHYDRODYNAMICS__LIB__LINEARINCIDENTWAVE_HPP_

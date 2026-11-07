@@ -2,16 +2,17 @@ close all
 clear all
 clear mex
 
-addpath('../build');
+addpath('../../build');
 
 H = 2.2;
 T = 12;
-beta = 30 * pi / 180.0;
+beta = 30 * pi / 180.0;  % Wave-direction in meterological convention (specify compass heading waves are coming from).
 
 Inc = LinearIncidentWave();
 
 %Inc.SetSeed(seed);
 
+Inc.SetCoordSysType('NED');
 
 %Inc.SetToPiersonMoskowitzSpectrum(H,beta);
 Inc.SetToBretschneiderSpectrum(H,T,beta);
@@ -57,7 +58,7 @@ linkaxes([ah1 ah2],'x');
 
 fs = 1/dt;
 
-[ Hs, Tp, Dp, E, f, a1, b1, a2, b2, check ] = SBGwaves(vel_x,vel_y,-eta,fs);
+[ Hs, Tp, Dp, E, f, a1, b1, a2, b2, check ] = SBGwaves(vel_x,vel_y,eta,fs);
 
 disp(["Hs_input = " num2str(H) "  Hs_output = " num2str(Hs)]);
 disp(["Tp_input = " num2str(T) "  Tp_output = " num2str(Tp)]);

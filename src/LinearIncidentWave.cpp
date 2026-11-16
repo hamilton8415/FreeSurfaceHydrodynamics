@@ -391,7 +391,8 @@ double LinearIncidentWave::ComputeDistanceFromOriginAlongWaveDir(double x, doubl
   switch (m_CoordSys)
   {
   case CoordSysType::ENU:
-    xx = -y * cos(m_beta[n]) - x * sin(m_beta[n]); // Distance From Origin, component in the direction the wave is traveling.
+ //   xx = -y * cos(m_beta[n]) - x * sin(m_beta[n]); // Distance From Origin, component in the direction the wave is traveling.
+    xx = x * cos(m_beta[n]) + y * sin(m_beta[n]); // Distance From Origin, component in the direction the wave is traveling.
     break;
   case CoordSysType::NED:
     xx = -x * cos(m_beta[n]) - y * sin(m_beta[n]); // Distance From Origin, component in the direction the wave is traveling.
@@ -601,6 +602,7 @@ void LinearIncidentWave::vel(double x, double y, double z, double t, double *vel
   }
 
   double xx = ComputeDistanceFromOriginAlongWaveDir(x, y, n);
+  std::cout << "x = " << x << "  y = " << y << "  z = " << z  << "  xx = " << xx << std::endl;
 
   for (int i = 0; i < m_A[n].size(); i++)
   {

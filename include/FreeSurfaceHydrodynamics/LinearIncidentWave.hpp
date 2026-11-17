@@ -70,7 +70,7 @@ public:
              double *deta_dx, double *deta_dy,
              double *u_east, double *v_north) const;  // includes Eulerian surface velocities
 
-             double etadot(double x, double y, double t, int n) const;
+  double etadot(double x, double y, double t, int n) const;
   double etadot(double x, double y, double t) const;
   std::string Version();
   int MajorVersionNumber();
